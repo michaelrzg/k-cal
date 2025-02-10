@@ -6,98 +6,47 @@
 //
 
 import SwiftUI
-import AVFoundation
 
 struct ContentView: View {
+    @State var todays_calories: Int  = 0
+    @State var todays_progress: Float = 0.0
     var body: some View {
-        BarcodeScannerView()
-            .edgesIgnoringSafeArea(.all)
+    @State  var degress: Double = -110
+        NavigationStack{
+            // top bar with scan icon and  'kcal' title
+            HStack{
+            Image(systemName: "barcode.viewfinder").foregroundStyle(Color("PrimaryColor"))
+                Text("k-cal").font(.headline).foregroundStyle(Color("PrimaryColor"))
+            }
+            // text header todo: add rotating prompts
+            Form{
+                
+                VStack {
+                    ZStack{
+                        ProgressBar(progress: self.$todays_progress, calories: self.$todays_calories)
+                            .frame(width: 250.0, height: 250.0)
+                            .padding(40.0)
+                        
+                        ProgressBarTriangle(progress: self.$todays_progress).frame(width: 280.0, height: 290.0).rotationEffect(.degrees(degress), anchor: .bottom)
+                            .offset(x: 0, y: -150)
+                        //Spacer()
+                    }
+                }
+                
+            }
+           
+      
+        }
+        
     }
+    
 }
-
-struct BarcodeScannerView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIViewController {
-        let controller = ScannerViewController()
-        return controller
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+func scale_progress(progress:Int)-> Float {
+    var output: Float=0
+    output = Float(progress) * 0.6
+    output+=0.3
+    return output
 }
-
-class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
-    var captureSession: AVCaptureSession!
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        view.backgroundColor = .black
-        captureSession = AVCaptureSession()
-
-        guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else { return }
-        let videoInput: AVCaptureDeviceInput
-
-        do {
-            videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
-        } catch {
-            return
-        }
-
-        if (captureSession.canAddInput(videoInput)) {
-            captureSession.addInput(videoInput)
-        } else {
-            failed()
-            return
-        }
-
-        let metadataOutput = AVCaptureMetadataOutput()
-
-        if (captureSession.canAddOutput(metadataOutput)) {
-            captureSession.addOutput(metadataOutput)
-
-            metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-            metadataOutput.metadataObjectTypes = [.ean8, .ean13, .pdf417, .qr]
-        } else {
-            failed()
-            return
-        }
-
-        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.frame = view.layer.bounds
-        previewLayer.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(previewLayer)
-
-        captureSession.startRunning()
-    }
-
-    func failed() {
-        let alertController = UIAlertController(title: "Scanning Not Supported", message: "Your device does not support scanning barcodes.", preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alertController, animated: true)
-        captureSession = nil
-    }
-
-    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-        captureSession.stopRunning()
-
-        if let metadataObject = metadataObjects.first {
-            guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
-            guard let stringValue = readableObject.stringValue else { return }
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            found(code: stringValue)
-        }
-
-        dismiss(animated: true)
-    }
-
-    func found(code: String) {
-        print("Scanned code: \(code)")
-    }
-
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
-    }
+#Preview {
+    ContentView()
 }
