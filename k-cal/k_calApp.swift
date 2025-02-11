@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct k_calApp: App {
@@ -13,5 +14,6 @@ struct k_calApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: [User.self,Day.self, Food.self])
     }
 }
