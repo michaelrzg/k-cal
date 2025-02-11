@@ -22,56 +22,80 @@ struct ContentView: View {
     @State var protein: Int = 0
     @State var carbs: Int = 0
     @State var fat: Int = 0
-    
+    @State var protein_progress: Float = 0.0
+    @State var carbs_progress: Float = 0.0
+    @State var fat_progress: Float = 0.0
    
-    var body: some View {
-        @State var today: Day = fetchTodayDay(context: context, calories: $todays_calories)
-        NavigationStack{
-            // top bar with scan icon and  'kcal' title
-            HStack{
-            Image(systemName: "barcode.viewfinder").foregroundStyle(Color("PrimaryColor"))
-                Text("k-cal").font(.headline).foregroundStyle(Color("PrimaryColor"))
-            }
+    var body: some View
+    {
+        ZStack
+        {
             
-            // text header todo: add rotating prompts
-            Form{
-                Text("Today's Progress")
-                    .frame(maxWidth: .infinity, alignment: .center)
-                ZStack{
-                    ProgressBar(progress: self.$todays_progress, calories: self.$todays_calories, protein: self.$protein, carbs: self.$carbs, fat: self.$fat)
-                        .frame(width: 250.0, height: 220.0)
-                        .padding(40.0)
-                }
-                .onAppear {
-                    fetchTodayDay(context: context, calories: $todays_calories)
-                    load_calorie_goal()
-                }
-                .onChange(of: todays_calories) { newValue in
-                    updateProgress()
-                    print("Protein: \(protein), Carbs: \(carbs), Fat: \(fat)")
-                }
-                Button("Add Snack") {
-                    add_food(food: Food(name: "Snack", calories: 150, timeEaten: Date(), day: today, protein: 20, carbohydrates: 50, fat: 10), context: context)
-                                fetchTodayDay(context: context, calories: $todays_calories) // Refresh today's data
-                            }
-            }
+            Color.green
             
-        }
-        
-        
-        
+            @State var today: Day = fetchTodayDay(context: context, calories: $todays_calories)
+            
+            NavigationStack
+            {
+                
+                // top bar with scan icon and  'kcal' title
+                HStack
+                {
+                    Image(systemName: "barcode.viewfinder").foregroundStyle(Color("PrimaryColor"))
+                    Text("k-cal").font(.headline).foregroundStyle(Color("PrimaryColor"))
+                    
+                }
+                // text header todo: add rotating prompts
+                Form
+                {
+                    Text("Today's Progress")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    ZStack
+                    {
+                        ProgressBar(progress: self.$todays_progress, calories: self.$todays_calories, protein_progress: self.$protein_progress, carb_progress: self.$carbs_progress, fat_progress: self.$fat_progress, total_fat: self.$fat, total_carbs: self.$carbs, total_protein: self.$protein)
+                            .frame(width: 250.0, height: 150.0)
+                            .padding(40.0)
+                    }
+                    .onAppear
+                    {
+                        fetchTodayDay(context: context, calories: $todays_calories)
+                        load_calorie_goal()
+                    }
+                    .onChange(of: todays_calories)
+                    { newValue in
+                        updateProgress()
+                        print("Protein: \(protein), Carbs: \(carbs), Fat: \(fat)")
+                    }
+                    Button("Add Snack")
+                    {
+                        add_food(food: Food(name: "Snack", calories: 150, timeEaten: Date(), day: today, protein: 20, carbohydrates: 50, fat: 5), context: context)
+                        fetchTodayDay(context: context, calories: $todays_calories)
+                    }
+                }
+                
+                
+                
+            }
+        }.ignoresSafeArea()
     }
-    func updateProgress() {
+    
+    func updateProgress()
+    {
         todays_progress = scale_progress(progress: min(Float(todays_calories) / Float(calorie_goal), 1.0))
         print(calorie_goal)
+        protein_progress = scale_progress(progress: Float(protein)/Float(users[0].protein_goal))
+        carbs_progress = scale_progress(progress: Float(carbs)/Float(users[0].carb_goal))
+        fat_progress = scale_progress(progress: Float(fat)/Float(users[0].fat_goal))
     }
     
-    func load_calorie_goal() {
+    func load_calorie_goal()
+    {
         if let user = users.first {
             calorie_goal = user.calorie_goal
         }
     }
-    func add_food(food: Food, context: ModelContext){
+    func add_food(food: Food, context: ModelContext)
+    {
         let today = fetchTodayDay(context: context)
         today.foods.append(food)
         protein = today.totalProtein
@@ -79,14 +103,21 @@ struct ContentView: View {
         fat = today.totalFat
         
     }
+    init(){
+        
+    
+    }
 }
-func scale_progress(progress:Float)-> Float {
+
+func scale_progress(progress:Float)-> Float
+{
     var output: Float = Float(progress)/100
     output = Float(progress) * 0.6
     output+=0.3
     return output
 }
-func fetchTodayDay(context: ModelContext, calories: Binding<Int>? = nil, protein: Binding<Int>? = nil, carbohydrates: Binding<Int>? = nil, fats: Binding<Int>? = nil) -> Day {
+func fetchTodayDay(context: ModelContext, calories: Binding<Int>? = nil, protein: Binding<Int>? = nil, carbohydrates: Binding<Int>? = nil, fats: Binding<Int>? = nil) -> Day
+{
     let todayStart = Calendar.current.startOfDay(for: Date())
     
     let fetchDescriptor = FetchDescriptor<Day>(
