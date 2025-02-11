@@ -35,13 +35,7 @@ struct Home: View {
                 {
                     
                     
-                    // top bar with scan icon and  'kcal' title
-                    HStack
-                    {
-                        Image(systemName: "barcode.viewfinder").foregroundStyle(Color("PrimaryColor"))
-                        Text("k-cal").font(.headline).foregroundStyle(Color("PrimaryColor"))
-                        
-                    }
+                   
                     // text header todo: add rotating prompts
                     Form
                     {
@@ -76,7 +70,7 @@ struct Home: View {
         
         }
         
-        func updateProgress()
+    func updateProgress()
         {
             todays_progress = scale_progress(progress: min(Float(todays_calories) / Float(calorie_goal), 1.0))
             print(calorie_goal)
@@ -85,11 +79,11 @@ struct Home: View {
             fat_progress = scale_progress(progress: Float(fat)/Float(user.fat_goal))
         }
         
-        func load_calorie_goal()
+    func load_calorie_goal()
         {
                 calorie_goal = user.calorie_goal
         }
-        func add_food(food: Food, context: ModelContext)
+    func add_food(food: Food, context: ModelContext)
         {
             let today = fetchTodayDay(context: context)
             today.foods.append(food)
@@ -98,13 +92,14 @@ struct Home: View {
             fat = today.totalFat
             
         }
-        init(){
+        
+    init(){
             
             if !users.isEmpty {
                 user = users[0]
             }
-        }
     }
+}
 
     func scale_progress(progress:Float)-> Float
     {
