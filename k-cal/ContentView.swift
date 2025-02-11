@@ -19,6 +19,9 @@ struct ContentView: View {
     @State var calorie_goal: Int = 0
     @State var todays_calories: Int = 0
     @State var todays_progress: Float = 0.0
+    @State var protein: Int = 0
+    @State var carbs: Int = 0
+    @State var fat: Int = 0
     
    
     var body: some View {
@@ -32,8 +35,10 @@ struct ContentView: View {
             
             // text header todo: add rotating prompts
             Form{
+                Text("Today's Progress")
+                    .frame(maxWidth: .infinity, alignment: .center)
                 ZStack{
-                    ProgressBar(progress: self.$todays_progress, calories: self.$todays_calories)
+                    ProgressBar(progress: self.$todays_progress, calories: self.$todays_calories, protein: self.$protein, carbs: self.$carbs, fat: self.$fat)
                         .frame(width: 250.0, height: 220.0)
                         .padding(40.0)
                 }
@@ -43,9 +48,10 @@ struct ContentView: View {
                 }
                 .onChange(of: todays_calories) { newValue in
                     updateProgress()
+                    print("Protein: \(protein), Carbs: \(carbs), Fat: \(fat)")
                 }
                 Button("Add Snack") {
-                                add_food(food: Food(name: "Snack", calories: 100, day: today), context: context)
+                    add_food(food: Food(name: "Snack", calories: 150, timeEaten: Date(), day: today, protein: 20, carbohydrates: 50, fat: 10), context: context)
                                 fetchTodayDay(context: context, calories: $todays_calories) // Refresh today's data
                             }
             }
@@ -65,7 +71,14 @@ struct ContentView: View {
             calorie_goal = user.calorie_goal
         }
     }
-    
+    func add_food(food: Food, context: ModelContext){
+        let today = fetchTodayDay(context: context)
+        today.foods.append(food)
+        protein = today.totalProtein
+        carbs = today.totalCarbohydrates
+        fat = today.totalFat
+        
+    }
 }
 func scale_progress(progress:Float)-> Float {
     var output: Float = Float(progress)/100
@@ -73,7 +86,7 @@ func scale_progress(progress:Float)-> Float {
     output+=0.3
     return output
 }
-func fetchTodayDay(context: ModelContext, calories: Binding<Int>? = nil) -> Day {
+func fetchTodayDay(context: ModelContext, calories: Binding<Int>? = nil, protein: Binding<Int>? = nil, carbohydrates: Binding<Int>? = nil, fats: Binding<Int>? = nil) -> Day {
     let todayStart = Calendar.current.startOfDay(for: Date())
     
     let fetchDescriptor = FetchDescriptor<Day>(
@@ -82,8 +95,13 @@ func fetchTodayDay(context: ModelContext, calories: Binding<Int>? = nil) -> Day 
 
     do {
         if let existingDay = try context.fetch(fetchDescriptor).first {
-            // Update the state with the total calories
+            // Update the state with the total calories, p, c, f
             calories?.wrappedValue = existingDay.foods.reduce(0) { $0 + $1.calories }
+            protein?.wrappedValue = existingDay.totalProtein
+            carbohydrates?.wrappedValue = existingDay.totalCarbohydrates
+            fats?.wrappedValue = existingDay.totalFat
+            carbohydrates?.wrappedValue = existingDay.foods.reduce(0) { $0 + $1.carbohydrates }
+            fats?.wrappedValue = existingDay.foods.reduce(0) { $0 + $1.fat }
             return existingDay
         } else {
             let newDay = Day(date: todayStart)
@@ -97,11 +115,7 @@ func fetchTodayDay(context: ModelContext, calories: Binding<Int>? = nil) -> Day 
     }
 }
 
-func add_food(food: Food, context: ModelContext){
-    let today = fetchTodayDay(context: context)
-    today.foods.append(food)
-    
-}
+
 
 #Preview {
     ContentView()

@@ -14,7 +14,8 @@ class Day: Identifiable {
     var foods: [Food] = []
     
     var totalCalories: Int {
-        foods.reduce(0) { $0 + $1.calories }
+        foods.reduce(0) { $0 + $1.calories}
+        
     }
     var totalProtein: Int {
         foods.reduce(0) { $0 + $1.protein }

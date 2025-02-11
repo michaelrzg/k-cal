@@ -8,6 +8,9 @@ import SwiftUI
 struct ProgressBar: View {
     @Binding var progress: Float
     @Binding var calories: Int
+    @Binding var protein: Int
+    @Binding var carbs: Int
+    @Binding var fat: Int
     var body: some View {
         ZStack {
             Circle()
