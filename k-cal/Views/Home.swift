@@ -26,21 +26,83 @@ struct Home: View {
         @State var protein_progress: Float = 0.0
         @State var carbs_progress: Float = 0.0
         @State var fat_progress: Float = 0.0
+        @State var excersise_calories: Int = 100 // TODO: Get health data from fitness app
        
+    
+        var calorie_formula_font_size: CGFloat = 15
+    
         var body: some View
         {
                 @State var today: Day = fetchTodayDay(context: context, calories: $todays_calories)
                 
-                NavigationStack
-                {
+            ZStack
+            {
+                
+                       
+                Form
+                {    // header containing date and time
+                    // Remaining calories section
+                    Section(header: Text(Date().formatted()).position(x:40,y:80))
+                    {   ZStack{
+                        Text("Remaining Calories").position(x:69,y:12).padding(1).font(Font.system(size: 20)).bold()
+                        HStack{
+                            
+                            VStack{
+                                Text("\(calorie_goal)").font(Font.system(size: calorie_formula_font_size)).bold()
+                                Text("goal").font(Font.system(size: 12))
+                            }
+                            
+                            Spacer()
+
+                            VStack{
+                                Text("-").font(Font.system(size: calorie_formula_font_size))
+                            }
+                            
+                            Spacer()
+                            
+                            VStack{
+                                Text("\(todays_calories)").font(Font.system(size: calorie_formula_font_size))
+                                Text("food").font(Font.system(size: 12))
+                            }
+                            
+                            Spacer()
+                            
+                            VStack{
+                                Text("+").font(Font.system(size: calorie_formula_font_size))
+                            }
+                            
+                            Spacer()
+                            VStack{
+                                Text("\(excersise_calories)").font(Font.system(size: calorie_formula_font_size))
+                                Text("exercise").font(Font.system(size: 12))
+                            }
+                            
+                            Spacer()
+                            
+                            VStack{
+                                Text("=").font(Font.system(size: calorie_formula_font_size))
+                            }
+                            
+                            Spacer()
+                            
+                            VStack{
+                                Text("\(calorie_goal - todays_calories + excersise_calories)").font(Font.system(size: calorie_formula_font_size)).foregroundStyle(calorie_goal - todays_calories + excersise_calories < 0 ? .red : Color("k-cal")).bold()
+                                Text("remaining").font(Font.system(size: 12))
+                            }
+                            
+                            Spacer()
+                            
+                        }.position(x:160,y:56)
+                        }
+                    }    .listRowInsets(EdgeInsets(top: 10, leading: 30, bottom: 55, trailing: 30))
+                        .frame(height: 40)
                     
                     
-                   
-                    // text header todo: add rotating prompts
-                    Form
-                    {
-                        Text("Today's Progress")
-                            .frame(maxWidth: .infinity, alignment: .center)
+                    Section{
+                        
+                        Text("Calorie Breakdown")
+                            .listRowSeparator(.hidden)
+                            .padding(1).font(Font.system(size: 20)).bold()
                         ZStack
                         {
                             ProgressBar(progress: self.$todays_progress, calories: self.$todays_calories, protein_progress: self.$protein_progress, carb_progress: self.$carbs_progress, fat_progress: self.$fat_progress, total_fat: self.$fat, total_carbs: self.$carbs, total_protein: self.$protein)
@@ -55,6 +117,7 @@ struct Home: View {
                         .onChange(of: todays_calories)
                         { newValue in
                             updateProgress()
+                            fetchTodayDay(context: context, calories: $todays_calories)
                             print("Protein: \(protein), Carbs: \(carbs), Fat: \(fat)")
                         }
                         Button("Add Snack")
@@ -62,11 +125,27 @@ struct Home: View {
                             add_food(food: Food(name: "Snack", calories: 150, timeEaten: Date(), day: today, protein: 20, carbohydrates: 50, fat: 5), context: context)
                             fetchTodayDay(context: context, calories: $todays_calories)
                         }
+                        
                     }
+                    Section{
+                        Text("Meals")
+                            .listRowSeparator(.hidden)
+                            .padding(1).font(Font.system(size: 20)).bold()
+                    }
+                }.listSectionSpacing(18)
+                
+                
+                
+            }.padding(.top,-60)
+            
+                
+            
+            
                     
                     
                     
-                }
+                
+            
         
         }
         
@@ -98,6 +177,7 @@ struct Home: View {
             if !users.isEmpty {
                 user = users[0]
             }
+        
     }
 }
 
@@ -106,7 +186,7 @@ struct Home: View {
         var output: Float = Float(progress)/100
         output = Float(progress) * 0.6
         output+=0.3
-        return output
+        return min(output,0.9)
     }
     func fetchTodayDay(context: ModelContext, calories: Binding<Int>? = nil, protein: Binding<Int>? = nil, carbohydrates: Binding<Int>? = nil, fats: Binding<Int>? = nil) -> Day
     {

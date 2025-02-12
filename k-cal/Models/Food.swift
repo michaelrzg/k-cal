@@ -31,3 +31,12 @@ class Food: Identifiable {
         self.fat = fat
     }
 }
+
+enum meal:  String, CaseIterable, Identifiable{
+    
+        case breakfast
+        case lunch
+        case dinner
+        case snack
+    var id: String { self.rawValue }
+}

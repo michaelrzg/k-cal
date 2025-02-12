@@ -17,10 +17,11 @@ struct ContentView: View {
             // top bar with scan icon and  'kcal' title
             HStack
             {
-                Image(systemName: "barcode.viewfinder").foregroundStyle(Color("PrimaryColor"))
-                Text("k-cal").font(.headline).foregroundStyle(Color("PrimaryColor"))
+                Image(systemName: "barcode.viewfinder").foregroundStyle(Color("k-cal"))
+                Text("k-cal").font(.headline).foregroundStyle(Color("k-cal"))
                 
             }
+            // Bottom tabs
             TabView{
                 Home()
                     .tabItem(){
