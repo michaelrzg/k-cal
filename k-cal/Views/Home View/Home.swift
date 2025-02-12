@@ -138,9 +138,7 @@ struct Home: View {
                         List{
                             ForEach(food_items){ food in
                                 if food.meal == "Breakfast" {
-                                    Text(" \(food.name)").listRowSeparator(.hidden).onTapGesture(perform: {
-                                        food_being_edited = food
-                                    })
+                                    Meals_Item(food:food)
                                 }
                                 
                             }.onDelete{ indexes in
