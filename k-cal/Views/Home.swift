@@ -27,9 +27,11 @@ struct Home: View {
         @State var carbs_progress: Float = 0.0
         @State var fat_progress: Float = 0.0
         @State var excersise_calories: Int = 100 // TODO: Get health data from fitness app
-       
+        @State private var showing_edit_sheet = false
+        @State private var food_being_edited: Food?
     
         var calorie_formula_font_size: CGFloat = 15
+    
     
         var body: some View
         {
@@ -42,7 +44,7 @@ struct Home: View {
                 Form
                 {    // header containing date and time
                     // Remaining calories section
-                    Section(header: Text(Date().formatted()).position(x:40,y:80))
+                    Section(header: Text(Date().formatted(date: .complete, time: .omitted)).position(x:67,y:80))
                     {   ZStack{
                         Text("Remaining Calories").position(x:69,y:12).padding(1).font(Font.system(size: 20)).bold()
                         HStack{
@@ -122,7 +124,7 @@ struct Home: View {
                         }
                         Button("Add Snack")
                         {
-                            add_food(food: Food(name: "Snack", calories: 150, timeEaten: Date(), day: today, protein: 20, carbohydrates: 50, fat: 5), context: context)
+                            add_food(food: Food(name: "Snack", calories: 150, timeEaten: Date(), day: today, protein: 20, carbohydrates: 50, fat: 5, meal: .breakfast), context: context)
                             fetchTodayDay(context: context, calories: $todays_calories)
                         }
                         
@@ -131,6 +133,84 @@ struct Home: View {
                         Text("Meals")
                             .listRowSeparator(.hidden)
                             .padding(1).font(Font.system(size: 20)).bold()
+                    
+                        Text("Breakfast").listRowSeparator(.hidden).bold()
+                        List{
+                            ForEach(food_items){ food in
+                                if food.meal == "Breakfast" {
+                                    Text(" \(food.name)").listRowSeparator(.hidden).onTapGesture(perform: {
+                                        food_being_edited = food
+                                    })
+                                }
+                                
+                            }.onDelete{ indexes in
+                                for index in indexes {
+                                    delete_food(food: food_items[index])
+                                }
+                                
+                            }
+                            
+                            Menu{
+                                Button("Scan"){}
+                                Button("Search"){}
+                                Button("Add Manually"){}
+                            } label: {
+                                Text("Add")
+                            }
+                        }.sheet(item: $food_being_edited ){ food in
+                            UpdateFoodSheet(food: food)
+                        }
+                        
+                        Text("Lunch").listRowSeparator(.hidden).bold()
+                        List{
+                            ForEach(food_items){ food in
+                                if food.meal == "Lunch"{
+                                    Text(" \(food.name)").listRowSeparator(.hidden)
+                                }
+                                
+                            }
+                            Menu{
+                                Button("Scan"){}
+                                Button("Search"){}
+                                Button("Add Manually"){}
+                            } label: {
+                                Text("Add")
+                            }
+                        }
+                        
+                        Text("Diner").listRowSeparator(.hidden).bold()
+                        List{
+                            ForEach(food_items){ food in
+                                if food.meal == "Dinner"{
+                                    Text(" \(food.name)").listRowSeparator(.hidden)
+                                }
+                                
+                            }
+                            Menu{
+                                Button("Scan"){}
+                                Button("Search"){}
+                                Button("Add Manually"){}
+                            } label: {
+                                Text("Add")
+                            }
+                        }
+                        
+                        Text("Snacks").listRowSeparator(.hidden).bold()
+                        List{
+                            ForEach(food_items){ food in
+                                if food.meal == "Snack"{
+                                    Text(" \(food.name)").listRowSeparator(.hidden)
+                                }
+                                
+                            }
+                            Menu{
+                                Button("Scan"){}
+                                Button("Search"){}
+                                Button("Add Manually"){}
+                            } label: {
+                                Text("Add")
+                            }
+                        }
                     }
                 }.listSectionSpacing(18)
                 
@@ -169,9 +249,14 @@ struct Home: View {
             protein = today.totalProtein
             carbs = today.totalCarbohydrates
             fat = today.totalFat
+            try! context.save()
             
         }
-        
+    func delete_food(food: Food){
+        context.delete(food)
+        try! context.save()
+        print(food_items.count)
+    }
     init(){
             
             if !users.isEmpty {

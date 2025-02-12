@@ -18,10 +18,11 @@ class Food: Identifiable {
     var protein: Int
     var carbohydrates: Int
     var fat: Int
-    
+    var meal: String
+    var servings: Int = 1
     @Relationship var day: Day
     
-    init(name: String, calories: Int, timeEaten: Date? = nil, day: Day, protein: Int = 0, carbohydrates: Int = 0, fat: Int = 0) {
+    init(name: String, calories: Int, timeEaten: Date? = nil, day: Day, protein: Int = 0, carbohydrates: Int = 0, fat: Int = 0, meal: Meal, servings: Int = 1) {
         self.name = name
         self.calories = calories
         self.timeEaten = timeEaten
@@ -29,14 +30,30 @@ class Food: Identifiable {
         self.protein = protein
         self.carbohydrates = carbohydrates
         self.fat = fat
+        self.servings=servings
+        switch meal {
+            case .breakfast:
+                self.meal = "Breakfast"
+            break
+            case .lunch:
+                self.meal = "Lunch"
+            break;
+            case .dinner:
+                self.meal = "Dinner"
+            break;
+            case .snack:
+                self.meal = "Snack"
+            break;
+        }
     }
 }
 
-enum meal:  String, CaseIterable, Identifiable{
+enum Meal{
     
         case breakfast
         case lunch
         case dinner
         case snack
-    var id: String { self.rawValue }
+
+    
 }
