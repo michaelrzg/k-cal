@@ -1,52 +1,39 @@
-//
-//  ScanPage.swift
-//  k-cal
-//
-//  Created by Michael Rizig on 2/10/25.
-//
 import Foundation
 import SwiftUI
 import SwiftData
+import AVFoundation
 
 struct ContentView: View {
     @State var meal: Meal?
     var body: some View {
-        NavigationStack
-        {
-            
-            
-            // top bar with scan icon and  'kcal' title
-            HStack
-            {
+        NavigationStack {
+            HStack {
                 Image(systemName: "barcode.viewfinder").foregroundStyle(Color("k-cal"))
                 Text("k-cal").font(.headline).foregroundStyle(Color("k-cal"))
-                
             }
-            
-            // Bottom tabs
-            TabView{
+
+            TabView {
                 Home()
-                    .tabItem(){
+                    .tabItem {
                         Image(systemName: "house")
                         Text("Home")
                     }
-                Scan()
-                    .tabItem(){
+
+                FoodBarcodeScanner()
+                    .tabItem {
                         Image(systemName: "barcode.viewfinder")
                         Text("Scan")
                     }
+
                 Diary()
-                    .tabItem(){
+                    .tabItem {
                         Image(systemName: "book")
                         Text("Log")
                     }
             }
         }
     }
-    
 }
-
 #Preview {
     ContentView()
 }
-

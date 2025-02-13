@@ -41,7 +41,7 @@ struct ProgressBar: View {
             
             VStack{
                 Text("\(calories)").font(Font.system(size: calorie_count_text_size)).bold().foregroundColor(Color("k-cal"))
-                Text("kcal").bold().foregroundColor(.black)
+                Text("kcal").bold()
                 
             }.position(x:126, y:45)
         }

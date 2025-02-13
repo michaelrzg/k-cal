@@ -16,7 +16,7 @@ struct Meals_Item: View {
                 
                 Text( "\(food.name)").frame(maxWidth: .infinity, alignment: .leading)
                 Spacer()
-                Text("\(food.calories) cal").foregroundStyle(Color("k-cal"))
+                Text("\(food.calories)/cal").foregroundStyle(Color("k-cal"))
             }
             HStack{
                 Text("\(food.protein)🥩 ")

@@ -40,6 +40,7 @@ struct Home: View {
             ZStack
             {
                 
+                
                        
                 Form
                 {    // header containing date and time
@@ -180,32 +181,43 @@ struct Home: View {
                         Text("Lunch").listRowSeparator(.hidden).bold()
                         List{
                             ForEach(food_items){ food in
-                                if food.meal == "Lunch"{
-                                    Text(" \(food.name)").listRowSeparator(.hidden)
+                                if food.meal == "Lunch" {
+                                    Meals_Item(food:food)
+                                        .onTapGesture {
+                                            
+                                        food_being_edited = food
+                                            print(food.name)
+                                        showing_edit_sheet = true
+                                        
+                                    }
+                                    
                                 }
                                 
                             }
                             Menu{
-                                Button("Scan"){}
-                                Button("Search"){}
-                                Button("Add Manually"){}
+                                Add_Food_Submenu(meal: .breakfast)
                             } label: {
                                 Text("Add")
                             }
                         }
                         
-                        Text("Diner").listRowSeparator(.hidden).bold()
+                        Text("Dinner").listRowSeparator(.hidden).bold()
                         List{
                             ForEach(food_items){ food in
-                                if food.meal == "Dinner"{
-                                    Text(" \(food.name)").listRowSeparator(.hidden)
+                                if food.meal == "Dinner" {
+                                    Meals_Item(food:food)
+                                        .onTapGesture {
+                                            
+                                        food_being_edited = food
+                                            print(food.name)
+                                        showing_edit_sheet = true
+                                        
+                                    }
+                                    
                                 }
-                                
                             }
                             Menu{
-                                Button("Scan"){}
-                                Button("Search"){}
-                                Button("Add Manually"){}
+                                Add_Food_Submenu(meal: .breakfast)
                             } label: {
                                 Text("Add")
                             }
@@ -214,15 +226,21 @@ struct Home: View {
                         Text("Snacks").listRowSeparator(.hidden).bold()
                         List{
                             ForEach(food_items){ food in
-                                if food.meal == "Snack"{
-                                    Text(" \(food.name)").listRowSeparator(.hidden)
+                                if food.meal == "Snacks" {
+                                    Meals_Item(food:food)
+                                        .onTapGesture {
+                                            
+                                        food_being_edited = food
+                                            print(food.name)
+                                        showing_edit_sheet = true
+                                        
+                                    }
+                                    
                                 }
                                 
                             }
                             Menu{
-                                Button("Scan"){}
-                                Button("Search"){}
-                                Button("Add Manually"){}
+                                Add_Food_Submenu(meal: .breakfast)
                             } label: {
                                 Text("Add")
                             }
