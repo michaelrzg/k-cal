@@ -6,6 +6,8 @@ class OpenFoodFactsFetcher {
     private let baseURL = "https://world.openfoodfacts.org/api/v0/product/"
 
     func fetchFoodData(forBarcode barcode: String, context: ModelContext, day: Day, completion: @escaping (Food?, String?) -> Void) {
+        
+        
         guard let url = URL(string: "\(baseURL)\(barcode).json") else {
             completion(nil, "Invalid URL")
             return
@@ -33,12 +35,13 @@ class OpenFoodFactsFetcher {
                     }
 
                     let caloriesPerServing = self.extractNutrientValue(from: nutriments, for: "energy-kcal_serving") ?? 0
-                    let protein = self.extractNutrientValue(from: nutriments, for: "protein_serving") ?? 0
+                    let protein = self.extractNutrientValue(from: nutriments, for: "proteins_serving") ?? 0
                     let carbohydrates = self.extractNutrientValue(from: nutriments, for: "carbohydrates_serving") ?? 0
                     let fat = self.extractNutrientValue(from: nutriments, for: "fat_serving") ?? 0
 
                     let newFood = Food(name: name, day: day, protein: protein, carbohydrates: carbohydrates, fat: fat, meal: .breakfast, servings: 1, calories_per_serving: caloriesPerServing)
                     context.insert(newFood)
+                    print("ran")
                     try context.save()
                     completion(newFood, nil)
 

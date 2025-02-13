@@ -11,7 +11,7 @@ import SwiftData
 @Model
 class Day: Identifiable {
     @Attribute(.unique) var date: Date
-    var foods: [Food] = []
+    @Relationship(inverse: \Food.day) var foods: [Food] = []
     
     var totalCalories: Int {
         foods.reduce(0) { $0 + $1.calories}

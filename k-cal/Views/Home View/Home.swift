@@ -140,14 +140,13 @@ struct Home: View {
                         
                         Text("Breakfast").listRowSeparator(.hidden).bold()
                         List{
-                            ForEach(food_items){ food in
-                                
+                            ForEach(today.foods){ food in
                                 if food.meal == "Breakfast" {
                                     Meals_Item(food:food)
                                         .onTapGesture {
                                             
                                             food_being_edited = food
-                                            print(food.name)
+                                            print(food_items)
                                             showing_edit_sheet = true
                                             
                                         }
@@ -156,7 +155,7 @@ struct Home: View {
                                 
                             }.onDelete{ indexes in
                                 for index in indexes {
-                                    delete_food(food: food_items[index])
+                                    delete_food(food: today.foods[index])
                                 }
                                 fetchTodayDay(context: context, calories: $todays_calories)
                                 updateProgress()

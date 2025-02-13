@@ -21,7 +21,7 @@ class Food: Identifiable {
     var meal: String
     var servings: Int = 1
     var calories_per_serving: Int
-    @Relationship var day: Day
+    @Relationship var day: Day?
     
     init(name: String, day: Day, protein: Int, carbohydrates: Int, fat: Int , meal: Meal, servings: Int , calories_per_serving: Int ) {
         self.name = name

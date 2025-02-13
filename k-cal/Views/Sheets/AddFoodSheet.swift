@@ -1,14 +1,23 @@
+//
+//  UpdateFoodSheet 2.swift
+//  k-cal
+//
+//  Created by Michael Rizig on 2/13/25.
+//
+
+
 import SwiftUI
 
-struct UpdateFoodSheet: View {
+struct AddFoodSheet: View {
     @Bindable var food: Food
     @State var servings: Int = 1
     @Environment(\.dismiss) var dismiss
-    
+    @Environment(\.modelContext) var context
     @State var calorie_string: String = ""
     @State var calorie_per_serving_string: String
+    
     let mealOptions = ["Breakfast", "Lunch", "Dinner", "Snack"]
-
+    
     init(food: Food) {
         self.food = food
         _calorie_per_serving_string = State(initialValue: "\(food.calories_per_serving)") // Initialize with food.calories_per_serving
@@ -35,6 +44,7 @@ struct UpdateFoodSheet: View {
                                     }
                                 }
                                 .pickerStyle(.menu) 
+                
                 Picker("Servings:", selection: $food.servings) {
                     ForEach(1...100, id: \.self) { number in
                         Text("\(number)")
@@ -100,7 +110,7 @@ struct UpdateFoodSheet: View {
 
 
             }
-            .navigationTitle("Update \(food.name)")
+            .navigationTitle("\(food.name)")
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button("Save") {
@@ -108,70 +118,14 @@ struct UpdateFoodSheet: View {
                         dismiss()
                     }
                 }
-                
+                ToolbarItemGroup(placement: .topBarLeading) {
+                    Button("Cancel") {
+                        print("Cancel...")
+                        context.delete(food)
+                        dismiss()
+                    }
+                }
             }
         }
     }
-}
-
-// Macronutrient Circle Chart
-struct MacronutrientRingView: View {
-    var fat: Int
-    var protein: Int
-    var carbs: Int
-    var calories: Int
-    
-    var total: CGFloat {
-        CGFloat(fat + protein + carbs)
-    }
-    
-    var fatRatio: CGFloat {
-        total > 0 ? CGFloat(fat) / total : 0
-    }
-    
-    var proteinRatio: CGFloat {
-        total > 0 ? CGFloat(protein) / total : 0
-    }
-    
-    var carbsRatio: CGFloat {
-        total > 0 ? CGFloat(carbs) / total : 0
-    }
-
-    var body: some View {
-        ZStack {
-            // Base Circle
-            Circle()
-                .stroke(Color.gray.opacity(0.2), lineWidth: 15)
-            
-            // Fat - Purple
-            Circle()
-                .trim(from: 0, to: fatRatio)
-                .stroke(Color("Fat"), lineWidth: 15)
-                .rotationEffect(.degrees(-90))
-            
-            // Protein - Yellow
-            Circle()
-                .trim(from: fatRatio, to: fatRatio + proteinRatio)
-                .stroke(Color("Protein"), lineWidth: 15)
-                .rotationEffect(.degrees(-90))
-            
-            // Carbs - Blue
-            Circle()
-                .trim(from: fatRatio + proteinRatio, to: 1)
-                .stroke(Color("Carbohydrate"), lineWidth: 15)
-                .rotationEffect(.degrees(-90))
-            
-            // Calorie Label
-            VStack {
-                Text("\(calories)")
-                    .font(.system(size: 30, weight: .bold))
-                Text("cal")
-                    .font(.system(size: 14, weight: .regular))
-            }
-        }
-    }
-}
-
-#Preview {
-    UpdateFoodSheet(food: Food(name: "Zaxby's", day: Day(date: Date()), protein: 10, carbohydrates: 20, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500))
 }
