@@ -39,11 +39,12 @@ struct Home: View {
                 
             ZStack
             {
-                
-                
-                       
+                Color("Background").zIndex(0).opacity(1)
+
                 Form
-                {    // header containing date and time
+                
+                {
+                    // header containing date and time
                     // Remaining calories section
                     Section(header: Text(Date().formatted(date: .complete, time: .omitted)).position(x:67,y:80))
                     {   ZStack{
@@ -56,7 +57,7 @@ struct Home: View {
                             }
                             
                             Spacer()
-
+                            
                             VStack{
                                 Text("-").font(Font.system(size: calorie_formula_font_size))
                             }
@@ -96,9 +97,9 @@ struct Home: View {
                             Spacer()
                             
                         }.position(x:160,y:56)
-                        }
+                    }
                     }    .listRowInsets(EdgeInsets(top: 10, leading: 30, bottom: 55, trailing: 30))
-                        .frame(height: 40)
+                        .frame(height: 40).listRowBackground(Color("Foreground"))
                     
                     
                     Section{
@@ -128,15 +129,15 @@ struct Home: View {
                         {
                             add_food(food: Food(name: "Zaxby's", day: Day(date:Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500), context: context)
                             fetchTodayDay(context: context, calories: $todays_calories)
-
+                            
                         }
                         
-                    }
+                    }.listRowBackground(Color("Foreground"))
                     Section{
                         Text("Meals")
                             .listRowSeparator(.hidden)
                             .padding(1).font(Font.system(size: 20)).bold()
-                    
+                        
                         Text("Breakfast").listRowSeparator(.hidden).bold()
                         List{
                             ForEach(food_items){ food in
@@ -145,11 +146,11 @@ struct Home: View {
                                     Meals_Item(food:food)
                                         .onTapGesture {
                                             
-                                        food_being_edited = food
+                                            food_being_edited = food
                                             print(food.name)
-                                        showing_edit_sheet = true
-                                        
-                                    }
+                                            showing_edit_sheet = true
+                                            
+                                        }
                                     
                                 }
                                 
@@ -163,7 +164,7 @@ struct Home: View {
                             }
                             .onChange(of: food_being_edited){
                                 
-
+                                
                                 fetchTodayDay(context: context, calories: $todays_calories)
                                 updateProgress()
                             }
@@ -172,7 +173,7 @@ struct Home: View {
                                 HStack{
                                     Add_Food_Submenu(meal: .breakfast)
                                 }
-                                   
+                                
                             } label: {
                                 Text("Add")
                             }
@@ -185,13 +186,20 @@ struct Home: View {
                                     Meals_Item(food:food)
                                         .onTapGesture {
                                             
-                                        food_being_edited = food
+                                            food_being_edited = food
                                             print(food.name)
-                                        showing_edit_sheet = true
-                                        
-                                    }
+                                            showing_edit_sheet = true
+                                            
+                                        }
                                     
                                 }
+                                
+                            }.onDelete{ indexes in
+                                for index in indexes {
+                                    delete_food(food: food_items[index])
+                                }
+                                fetchTodayDay(context: context, calories: $todays_calories)
+                                updateProgress()
                                 
                             }
                             Menu{
@@ -208,11 +216,11 @@ struct Home: View {
                                     Meals_Item(food:food)
                                         .onTapGesture {
                                             
-                                        food_being_edited = food
+                                            food_being_edited = food
                                             print(food.name)
-                                        showing_edit_sheet = true
-                                        
-                                    }
+                                            showing_edit_sheet = true
+                                            
+                                        }
                                     
                                 }
                             }
@@ -230,11 +238,11 @@ struct Home: View {
                                     Meals_Item(food:food)
                                         .onTapGesture {
                                             
-                                        food_being_edited = food
+                                            food_being_edited = food
                                             print(food.name)
-                                        showing_edit_sheet = true
-                                        
-                                    }
+                                            showing_edit_sheet = true
+                                            
+                                        }
                                     
                                 }
                                 
@@ -244,24 +252,27 @@ struct Home: View {
                             } label: {
                                 Text("Add")
                             }
-                        }                    }
-                }.listSectionSpacing(18).sheet(item: $food_being_edited){ food in
+                        }
+                    }.listRowBackground(Color("Foreground"))
+                }.listSectionSpacing(18)
+                    .sheet(item: $food_being_edited){ food in
                     
                     UpdateFoodSheet(food: food).onDisappear(){
                         food_being_edited = nil
                         showing_edit_sheet = false
-
+                        fetchTodayDay(context: context, calories: $todays_calories, protein: $protein, carbohydrates: $carbs, fats: $fat)
+                        updateProgress()
                     }
                     
-                }
+                    }.scrollContentBackground(.hidden)
+                
+                
 
-                
-                
-                
-            }.padding(.top,-60)
-                
             
                 
+            }.padding(.top,-60)
+            
+            
             
             
                     
@@ -298,6 +309,8 @@ struct Home: View {
     func delete_food(food: Food){
         context.delete(food)
         try! context.save()
+        fetchTodayDay(context: context, calories: $todays_calories, protein: $protein, carbohydrates: $carbs, fats: $fat)
+        updateProgress()
         print(food_items.count)
     }
     init(){
