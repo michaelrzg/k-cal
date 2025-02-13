@@ -20,17 +20,18 @@ class Food: Identifiable {
     var fat: Int
     var meal: String
     var servings: Int = 1
+    var calories_per_serving: Int
     @Relationship var day: Day
     
-    init(name: String, calories: Int, timeEaten: Date? = nil, day: Day, protein: Int = 0, carbohydrates: Int = 0, fat: Int = 0, meal: Meal, servings: Int = 1) {
+    init(name: String, day: Day, protein: Int, carbohydrates: Int, fat: Int , meal: Meal, servings: Int , calories_per_serving: Int ) {
         self.name = name
-        self.calories = calories
-        self.timeEaten = timeEaten
+        self.timeEaten = day.date
         self.day = day
         self.protein = protein
         self.carbohydrates = carbohydrates
         self.fat = fat
         self.servings=servings
+        self.calories_per_serving = calories_per_serving
         switch meal {
             case .breakfast:
                 self.meal = "Breakfast"
@@ -45,6 +46,8 @@ class Food: Identifiable {
                 self.meal = "Snack"
             break;
         }
+        
+        self.calories = servings * calories_per_serving
     }
 }
 

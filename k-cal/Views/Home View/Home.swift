@@ -12,7 +12,7 @@ import SwiftData
 struct Home: View {
         
         @Environment(\.modelContext) private var context
-        
+
         @Query private var users: [User]
         @Query private var food_items: [Food]
         
@@ -122,10 +122,12 @@ struct Home: View {
                             fetchTodayDay(context: context, calories: $todays_calories)
                             print("Protein: \(protein), Carbs: \(carbs), Fat: \(fat)")
                         }
+                        
                         Button("Add Snack")
                         {
-                            add_food(food: Food(name: "Snack", calories: 150, timeEaten: Date(), day: today, protein: 20, carbohydrates: 50, fat: 5, meal: .breakfast), context: context)
+                            add_food(food: Food(name: "Zaxby's", day: Day(date:Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500), context: context)
                             fetchTodayDay(context: context, calories: $todays_calories)
+
                         }
                         
                     }
@@ -137,26 +139,42 @@ struct Home: View {
                         Text("Breakfast").listRowSeparator(.hidden).bold()
                         List{
                             ForEach(food_items){ food in
+                                
                                 if food.meal == "Breakfast" {
                                     Meals_Item(food:food)
+                                        .onTapGesture {
+                                            
+                                        food_being_edited = food
+                                            print(food.name)
+                                        showing_edit_sheet = true
+                                        
+                                    }
+                                    
                                 }
                                 
                             }.onDelete{ indexes in
                                 for index in indexes {
                                     delete_food(food: food_items[index])
                                 }
+                                fetchTodayDay(context: context, calories: $todays_calories)
+                                updateProgress()
                                 
+                            }
+                            .onChange(of: food_being_edited){
+                                
+
+                                fetchTodayDay(context: context, calories: $todays_calories)
+                                updateProgress()
                             }
                             
                             Menu{
-                                Button("Scan"){}
-                                Button("Search"){}
-                                Button("Add Manually"){}
+                                HStack{
+                                    Add_Food_Submenu(meal: .breakfast)
+                                }
+                                   
                             } label: {
                                 Text("Add")
                             }
-                        }.sheet(item: $food_being_edited ){ food in
-                            UpdateFoodSheet(food: food)
                         }
                         
                         Text("Lunch").listRowSeparator(.hidden).bold()
@@ -208,29 +226,38 @@ struct Home: View {
                             } label: {
                                 Text("Add")
                             }
-                        }
+                        }                    }
+                }.listSectionSpacing(18).sheet(item: $food_being_edited){ food in
+                    
+                    UpdateFoodSheet(food: food).onDisappear(){
+                        food_being_edited = nil
+                        showing_edit_sheet = false
+
                     }
-                }.listSectionSpacing(18)
+                    
+                }
+
                 
                 
                 
             }.padding(.top,-60)
+                
             
                 
             
             
                     
-                    
+            
                     
                 
             
         
         }
+    
         
     func updateProgress()
         {
             todays_progress = scale_progress(progress: min(Float(todays_calories) / Float(calorie_goal), 1.0))
-            print(calorie_goal)
             protein_progress = scale_progress(progress: Float(protein)/Float(user.protein_goal))
             carbs_progress = scale_progress(progress: Float(carbs)/Float(user.carb_goal))
             fat_progress = scale_progress(progress: Float(fat)/Float(user.fat_goal))
@@ -262,6 +289,7 @@ struct Home: View {
             }
         
     }
+    
 }
 
     func scale_progress(progress:Float)-> Float
@@ -288,6 +316,7 @@ struct Home: View {
                 fats?.wrappedValue = existingDay.totalFat
                 carbohydrates?.wrappedValue = existingDay.foods.reduce(0) { $0 + $1.carbohydrates }
                 fats?.wrappedValue = existingDay.foods.reduce(0) { $0 + $1.fat }
+                try! context.save()
                 return existingDay
             } else {
                 let newDay = Day(date: todayStart)
@@ -299,6 +328,7 @@ struct Home: View {
         } catch {
             fatalError("Error fetching or creating today's Day: \(error)")
         }
+        
 }
 
 

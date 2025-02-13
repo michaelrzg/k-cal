@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    @State var meal: Meal?
     var body: some View {
         NavigationStack
         {
@@ -21,6 +22,7 @@ struct ContentView: View {
                 Text("k-cal").font(.headline).foregroundStyle(Color("k-cal"))
                 
             }
+            
             // Bottom tabs
             TabView{
                 Home()
@@ -41,6 +43,7 @@ struct ContentView: View {
             }
         }
     }
+    
 }
 
 #Preview {

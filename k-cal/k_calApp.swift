@@ -15,5 +15,6 @@ struct k_calApp: App {
             ContentView()
         }
         .modelContainer(for: [User.self,Day.self, Food.self])
+        
     }
 }

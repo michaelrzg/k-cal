@@ -15,7 +15,8 @@ struct Meals_Item: View {
             HStack{
                 
                 Text( "\(food.name)").frame(maxWidth: .infinity, alignment: .leading)
-                Text("\(food.calories)k-cal").foregroundStyle(Color("k-cal"))
+                Spacer()
+                Text("\(food.calories) cal").foregroundStyle(Color("k-cal"))
             }
             HStack{
                 Text("\(food.protein)🥩 ")
@@ -29,6 +30,6 @@ struct Meals_Item: View {
 }
 
 #Preview {
-   @State var l: Food = Food(name: "TEst", calories: 100, day: Day(date: Date.now), meal: .breakfast)
+    @State var l: Food = Food(name: "Zaxby's", day: Day(date:Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500)
     Meals_Item(food: l)
 }
