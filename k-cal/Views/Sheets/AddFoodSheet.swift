@@ -4,7 +4,7 @@ struct AddFoodSheet: View {
     @Bindable var food: Food
     @Environment(\ .dismiss) var dismiss
     @Environment(\ .modelContext) var context
-    
+    @Binding var selectedTab: Int
     @State var calorie_per_serving_string: String
     let mealOptions = ["Breakfast", "Lunch", "Dinner", "Snack"]
 
@@ -13,12 +13,13 @@ struct AddFoodSheet: View {
     @State private var carbsPerServing: Int
     @State private var fatPerServing: Int
     
-    init(food: Food) {
+    init(food: Food, selectedTab: Binding<Int>) {
         self.food = food
         _calorie_per_serving_string = State(initialValue: "\(food.calories_per_serving)")
         _proteinPerServing = State(initialValue: food.protein / (food.servings > 0 ? food.servings : 1))
         _carbsPerServing = State(initialValue: food.carbohydrates / (food.servings > 0 ? food.servings : 1))
         _fatPerServing = State(initialValue: food.fat / (food.servings > 0 ? food.servings : 1))
+        self._selectedTab = selectedTab
     }
 
     var body: some View {
@@ -145,6 +146,7 @@ struct AddFoodSheet: View {
                     Button("Save") {
                         print("Saving...")
                         dismiss()
+                        selectedTab=0
                     }
                 }
                 ToolbarItemGroup(placement: .topBarLeading) {
@@ -152,12 +154,11 @@ struct AddFoodSheet: View {
                         print("Cancel...")
                         context.delete(food)
                         dismiss()
+                        selectedTab = 1
                     }
                 }
             }
         }
     }
 }
-#Preview {
-    AddFoodSheet(food: Food(name: "Zaxby's", day: Day(date:Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500, sodium: 0, sugars: 0, fiber: 0, ingredients: "Ingredients"))
-}
+

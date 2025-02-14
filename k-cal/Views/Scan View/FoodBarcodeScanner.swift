@@ -6,6 +6,7 @@ struct FoodBarcodeScanner: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query private var days: [Day]
+    
     let dataFetcher: OpenFoodFactsFetcher
     @State private var isScanning = true
     @State private var barcode: String?
@@ -13,10 +14,13 @@ struct FoodBarcodeScanner: View {
     @State private var showErrorAlert = false
     @State private var errorMessage: String?
     @State private var addFoodSheetOpen: Bool = false
-    @State private var isLoading: Bool = false // New state for loading animation
+    @State private var isLoading: Bool = false
+    
+    @Binding var selectedTab: Int  // Bind to ContentView's tab selection
 
-    init() {
+    init(selectedTab: Binding<Int>) {
         self.dataFetcher = OpenFoodFactsFetcher()
+        self._selectedTab = selectedTab
     }
 
     var body: some View {
@@ -86,16 +90,15 @@ struct FoodBarcodeScanner: View {
             }
         }
         .sheet(isPresented: $addFoodSheetOpen) {
-            if let food = food {
-                AddFoodSheet(food: food)
-                    .onDisappear {
-                        isScanning = true // Restart scanning
-                        barcode = nil // Reset barcode
-                        dismiss()
+                    if let food = food {
+                        AddFoodSheet(food: food, selectedTab: $selectedTab)
+                            .onDisappear {
+                                isScanning = true
+                                barcode = nil
+                                dismiss()
+                            }
                     }
-            }
-        }
-    }
+                }    }
 
     func startScanningIfNeeded() {
         if isScanning {
@@ -127,6 +130,4 @@ struct FoodBarcodeScanner: View {
     }
 }
 
-#Preview {
-    FoodBarcodeScanner()
-}
+

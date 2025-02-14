@@ -4,41 +4,44 @@ import SwiftData
 import AVFoundation
 
 struct ContentView: View {
+    @State private var selectedTab = 0
     @State var meal: Meal?
     var body: some View {
         NavigationStack {
-            ZStack{
-                Color("Background").ignoresSafeArea()
-                HStack {
-                    
-                    Image(systemName: "barcode.viewfinder").foregroundStyle(Color("k-cal")).padding(.top,10)
-                    Text("k-cal").font(.headline).foregroundStyle(Color("k-cal")).padding(.top,10)
-                }.padding(.bottom,10)
-            }.frame(maxHeight:20)
-            ZStack{
-                TabView {
-                    Home()
-                        .tabItem {
-                            Image(systemName: "house")
-                            Text("Home")
+                    ZStack {
+                        Color("Background").ignoresSafeArea()
+                        HStack {
+                            Image(systemName: "barcode.viewfinder").foregroundStyle(Color("k-cal")).padding(.top, 10)
+                            Text("k-cal").font(.headline).foregroundStyle(Color("k-cal")).padding(.top, 10)
+                        }.padding(.bottom, 10)
+                    }.frame(maxHeight: 20)
+
+                    ZStack {
+                        TabView(selection: $selectedTab) {
+                            Home()
+                                .tabItem {
+                                    Image(systemName: "house")
+                                    Text("Home")
+                                }
+                                .tag(0)
+
+                            FoodBarcodeScanner(selectedTab: $selectedTab)
+                                .tabItem {
+                                    Image(systemName: "barcode.viewfinder")
+                                    Text("Scan")
+                                }
+                                .tag(1)
+
+                            Diary()
+                                .tabItem {
+                                    Image(systemName: "book")
+                                    Text("Log")
+                                }
+                                .tag(2)
                         }
-                    
-                    FoodBarcodeScanner()
-                        .tabItem {
-                            Image(systemName: "barcode.viewfinder")
-                            Text("Scan")
-                        }.background(Color("Background"))
-                    
-                    Diary()
-                        .tabItem {
-                            Image(systemName: "book")
-                            Text("Log")
-                        }
-                }.scrollIndicators(.hidden)
-                
-            }
-        }
-    }
+                        .scrollIndicators(.hidden)
+                    }
+                }    }
     init() {
         let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()
