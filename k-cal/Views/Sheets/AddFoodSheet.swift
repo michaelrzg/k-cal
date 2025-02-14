@@ -114,19 +114,19 @@ struct AddFoodSheet: View {
                     HStack {
                         Text("Sodium:")
                         Spacer()
-                        Text(food.sodium > 0 ? "\(food.sodium) mg" : "-")
+                        Text(food.sodium > 0 ? "\(food.sodium * food.servings) mg" : "-")
                             .multilineTextAlignment(.trailing)
                     }
                     HStack {
                         Text("Sugar:")
                         Spacer()
-                        Text(food.sugars > 0 ? "\(food.sugars) g" : "-")
+                        Text(food.sugars > 0 ? "\(food.sugars * food.servings) g" : "-")
                             .multilineTextAlignment(.trailing)
                     }
                     HStack {
                         Text("Fiber:")
                         Spacer()
-                        Text(food.fiber > 0 ? "\(food.fiber) g" : "-")
+                        Text(food.fiber > 0 ? "\(food.fiber * food.servings) g" : "-")
                             .multilineTextAlignment(.trailing)
                     }
                 }

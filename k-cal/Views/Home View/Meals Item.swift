@@ -19,10 +19,16 @@ struct Meals_Item: View {
                 Text("\(food.calories)/cal").foregroundStyle(Color("k-cal"))
             }
             HStack{
-                Text("\(food.protein)🥩 ")
-                Text("\(food.carbohydrates)🍚 ")
-                Text("\(food.fat)🍩 ")
+                Text("\(food.protein)")
+                Text("p").foregroundStyle(Color("Protein"))
+                Text("|")
+                Text("\(food.carbohydrates)")
+                Text("c").foregroundStyle(Color("Carbohydrate"))
+                Text("|")
+                Text("\(food.fat)")
+                Text("f").foregroundStyle(Color("Fat"))
                 Spacer()
+                Text("^[\(food.servings) servings](inflect: true)").foregroundStyle(Color("k-cal"))
             }
         }
         
