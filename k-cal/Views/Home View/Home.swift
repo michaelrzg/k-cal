@@ -127,7 +127,7 @@ struct Home: View {
                         
                         Button("Add Snack")
                         {
-                            add_food(food: Food(name: "Zaxby's", day: Day(date:Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500), context: context)
+                            add_food(food:Food(name: "Zaxby's", day: Day(date:Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500, sodium: 0, sugars: 0, fiber: 0, ingredients: "Ingredients"), context: context)
                             fetchTodayDay(context: context, calories: $todays_calories)
                             
                         }
@@ -180,7 +180,7 @@ struct Home: View {
                         
                         Text("Lunch").listRowSeparator(.hidden).bold()
                         List{
-                            ForEach(food_items){ food in
+                            ForEach(today.foods){ food in
                                 if food.meal == "Lunch" {
                                     Meals_Item(food:food)
                                         .onTapGesture {
@@ -195,7 +195,7 @@ struct Home: View {
                                 
                             }.onDelete{ indexes in
                                 for index in indexes {
-                                    delete_food(food: food_items[index])
+                                    delete_food(food: today.foods[index])
                                 }
                                 fetchTodayDay(context: context, calories: $todays_calories)
                                 updateProgress()
@@ -210,7 +210,7 @@ struct Home: View {
                         
                         Text("Dinner").listRowSeparator(.hidden).bold()
                         List{
-                            ForEach(food_items){ food in
+                            ForEach(today.foods){ food in
                                 if food.meal == "Dinner" {
                                     Meals_Item(food:food)
                                         .onTapGesture {
@@ -222,6 +222,13 @@ struct Home: View {
                                         }
                                     
                                 }
+                            }.onDelete{ indexes in
+                                for index in indexes {
+                                    delete_food(food: today.foods[index])
+                                }
+                                fetchTodayDay(context: context, calories: $todays_calories)
+                                updateProgress()
+                                
                             }
                             Menu{
                                 Add_Food_Submenu(meal: .breakfast)
@@ -232,7 +239,7 @@ struct Home: View {
                         
                         Text("Snacks").listRowSeparator(.hidden).bold()
                         List{
-                            ForEach(food_items){ food in
+                            ForEach(today.foods){ food in
                                 if food.meal == "Snacks" {
                                     Meals_Item(food:food)
                                         .onTapGesture {
@@ -244,6 +251,13 @@ struct Home: View {
                                         }
                                     
                                 }
+                                
+                            }.onDelete{ indexes in
+                                for index in indexes {
+                                    delete_food(food: today.foods[index])
+                                }
+                                fetchTodayDay(context: context, calories: $todays_calories)
+                                updateProgress()
                                 
                             }
                             Menu{

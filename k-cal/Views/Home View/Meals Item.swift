@@ -30,6 +30,6 @@ struct Meals_Item: View {
 }
 
 #Preview {
-    @State var l: Food = Food(name: "Zaxby's", day: Day(date:Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500)
+    @State var l: Food = Food(name: "Zaxby's", day: Day(date:Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500, sodium: 0, sugars: 0, fiber: 0, ingredients: "Ingredients")
     Meals_Item(food: l)
 }
