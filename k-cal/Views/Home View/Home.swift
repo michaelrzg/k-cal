@@ -15,7 +15,7 @@ struct Home: View {
     @Query private var users: [User]
     @Query private var food_items: [Food]
     @Binding var selectedTab: Int // Bind to ContentView's tab selection
-
+    @Binding var isSearchExpanded: Bool
     @State var user: User = .init(name: "Test", calorie_goal: 2500, protein_goal: 120, carb_goal: 250, fat_goal: 50)
     @State var calorie_goal: Int = 0
     @State var todays_calories: Int = 0
@@ -150,7 +150,7 @@ struct Home: View {
 
                         Menu {
                             HStack {
-                                Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab)
+                                Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
                             }
 
                         } label: {
@@ -178,7 +178,7 @@ struct Home: View {
                             updateProgress()
                         }
                         Menu {
-                            Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab)
+                            Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
                         } label: {
                             Text("Add")
                         }
@@ -203,7 +203,7 @@ struct Home: View {
                             updateProgress()
                         }
                         Menu {
-                            Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab)
+                            Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
                         } label: {
                             Text("Add")
                         }
@@ -229,7 +229,7 @@ struct Home: View {
                             updateProgress()
                         }
                         Menu {
-                            Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab)
+                            Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
                         } label: {
                             Text("Add")
                         }
@@ -278,8 +278,9 @@ struct Home: View {
         print(food_items.count)
     }
 
-    init(selectedTab: Binding<Int>) {
+    init(selectedTab: Binding<Int>, isSearchExpanded: Binding<Bool>) {
         _selectedTab = selectedTab
+        _isSearchExpanded = isSearchExpanded
         if !users.isEmpty {
             user = users[0]
         }

@@ -7,6 +7,7 @@ struct ContentView: View {
     @State private var selectedTab = 0
     @State var meal: Meal?
     @State private var showUserView = false
+    @State var isSearchExpanded: Bool = false
     @Query private var users: [User]
     var body: some View {
         NavigationStack {
@@ -36,14 +37,14 @@ struct ContentView: View {
             }
             ZStack {
                 TabView(selection: $selectedTab) {
-                    Home(selectedTab: $selectedTab)
+                    Home(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
                         .tabItem {
                             Image(systemName: "house")
                             Text("Home")
                         }
                         .tag(0)
 
-                    FoodBarcodeScanner(selectedTab: $selectedTab)
+                    FoodBarcodeScanner(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
                         .tabItem {
                             Image(systemName: "barcode.viewfinder")
                             Text("Scan")

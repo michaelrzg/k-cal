@@ -17,12 +17,13 @@ struct FoodBarcodeScanner: View {
     @State private var isLoading: Bool = false
     @State private var searchText: String = ""
     @State private var searchResults: [FoodSearchItem] = []
-    @State private var isSearchExpanded: Bool = false
+    @Binding private var isSearchExpanded: Bool
     @Binding var selectedTab: Int
 
-    init(selectedTab: Binding<Int>) {
+    init(selectedTab: Binding<Int>, isSearchExpanded: Binding<Bool>) {
         dataFetcher = OpenFoodFactsFetcher()
         _selectedTab = selectedTab
+        self._isSearchExpanded = isSearchExpanded
     }
 
     var body: some View {
