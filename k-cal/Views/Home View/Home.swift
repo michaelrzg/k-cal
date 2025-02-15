@@ -243,7 +243,7 @@ struct Home: View {
                         showing_edit_sheet = false
                         fetchTodayDay(context: context, calories: $todays_calories, protein: $protein, carbohydrates: $carbs, fats: $fat)
                         updateProgress()
-                    }
+                    }.interactiveDismissDisabled()
 
                 }.scrollContentBackground(.hidden)
 

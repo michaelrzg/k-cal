@@ -52,6 +52,7 @@ struct FoodBarcodeScanner: View {
                         .onTapGesture {
                             isSearchExpanded=true
                         }
+                
                 }
                 .offset(y:300)// End of ZStack
         .onAppear {
@@ -72,6 +73,7 @@ struct FoodBarcodeScanner: View {
                         } else if let error = error {
                             errorMessage = error
                             showErrorAlert = true
+               
                             isScanning = true
                             self.barcode = nil
                         }
@@ -81,98 +83,136 @@ struct FoodBarcodeScanner: View {
         }
         .sheet(isPresented: $addFoodSheetOpen) {
             if let food = food {
-                AddFoodSheet(food: food, selectedTab: $selectedTab)
+                AddFoodSheet(food: food, selectedTab: $selectedTab).onAppear(){
+                    isSearchExpanded = false
+                }
                     .onDisappear {
                         isScanning = true
+                        
                         barcode = nil
                         dismiss()
-                    }
+                    }.interactiveDismissDisabled()
             }
         }
         .sheet(isPresented: $isSearchExpanded){
             ZStack(alignment: .bottom) {
                 Form {
+                    // Search Bar
                     Section {
-                        TextField("Search for a food", text: $searchText).listRowBackground(Color("Background"))
-                            .padding(.leading, 30) // Add leading padding for the icon
-                            .padding(10) // Standard padding
-                            .background(
-                                ZStack(alignment: .leading) { // Use ZStack to layer icon and background
-                                    RoundedRectangle(cornerRadius: 12) // Rounded background
-                                        .fill(Color("Foreground"))
-                                        .listRowBackground(Color("Background")) // Background color
-
-                                    Image(systemName: "magnifyingglass") // Search icon
-                                        .foregroundColor(.blue) // Icon color
-                                        .padding(.leading, 5)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .listRowBackground(Color("Background"))
-                                }
-                            )
-                            .frame(height: 40) // Fixed height for the TextField
-                            // .padding(.horizontal) // Horizontal padding for the TextField
-                            .onSubmit {
-                                performSearch(searchTerm: searchText)
-                            }
-                    }
-                    var today: Day? { // Computed property
-                        let todayStart = Calendar.current.startOfDay(for: Date()) // Start of today
-                        return days.first { Calendar.current.isDate($0.date, inSameDayAs: todayStart) }
-                    }
-                    if let today = today {
-                        Text("Recent Foods").listRowBackground(Color("Background"))
-                        ForEach(today.foods) { fooditem in
-                            Meals_Item(food: fooditem)
-                        }.listRowBackground(Color("Background"))
-                    }
-
-                    if searchResults.count != 0 {
-                        Text("Search Results")
-                    }
-                    List(searchResults) { item in
                         HStack {
-                            AsyncImage(url: item.imageURL) { image in
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 50, height: 50)
-                            } placeholder: {
-                                ProgressView()
-                            }
-                            VStack(alignment: .leading) {
-                                Text(item.name).font(.headline)
-                                Text(item.brand)
-                            }
-                            Spacer()
-                            Button("Add") {
-                                addFoodFromSearch(item: item)
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.blue)
+                                .padding(.leading, 8)
+
+                            TextField("Search for a food", text: $searchText)
+                                .padding(10)
+                                .background(Color.clear)
+                                .onSubmit { performSearch(searchTerm: searchText) }
+                        }
+                        .frame(height: 44)
+                        .background(RoundedRectangle(cornerRadius: 10).fill(Color("Foreground")))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color(.systemGray4), lineWidth: 1)
+                        )
+                    }
+                    .listRowBackground(Color("Background"))
+
+                    // Recent Foods
+                    if let today = today {
+                        Section(header: Text("Recent Foods").font(.headline).foregroundColor(.primary)) {
+                            ForEach(today.foods) { fooditem in
+                                Meals_Item(food: fooditem)
+                                    .listRowBackground(Color("Background")).onTapGesture {
+                                        
+                                        food = fooditem
+                                        addFoodSheetOpen = true
+                                    }
                             }
                         }
                     }
 
-                }.scrollContentBackground(.hidden)
-                    .listRowBackground(Color.clear)
-            }
+                    // Search Results
+                    if !searchResults.isEmpty {
+                        Section(header: Text("Search Results").font(.headline).foregroundColor(.primary)) {
+                            ForEach(searchResults) { item in
+                                HStack(spacing: 12) {
+                                    AsyncImage(url: item.imageURL) { image in
+                                        image.resizable()
+                                            .scaledToFill()
+                                            .frame(width: 50, height: 50)
+                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    } placeholder: {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color(.systemGray5))
+                                            .frame(width: 50, height: 50)
+                                            .overlay(ProgressView())
+                                    }
 
-            .alert(isPresented: $showErrorAlert) {
-                Alert(title: Text("Error"), message: Text(errorMessage ?? "An error occurred."), dismissButton: .default(Text("OK")))
-            }
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(item.name)
+                                            .font(.headline)
+                                            .foregroundColor(.primary)
 
-            if isLoading {
-                ZStack {
-                    Color("Background")
-                        .edgesIgnoringSafeArea(.all)
-                        .opacity(0.9)
+                                        Text(item.brand)
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
+                                    }
 
-                    VStack {
-                        ProgressView("Fetching food data...")
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                            .foregroundColor(.white)
-                            .padding()
+                                    Spacer()
+
+                                    Button {
+                                        addFoodFromSearch(item: item)
+                                    } label: {
+                                        Text("Add")
+                                            .font(.system(size: 14, weight: .semibold))
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 6)
+                                            .background(Color.blue)
+                                            .foregroundColor(.white)
+                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    }
+                                }
+                                .padding(.vertical, 6)
+                                .listRowBackground(Color("Background"))
+                            }
+                        }
+                    }
+                    
+                }
+                .scrollContentBackground(.hidden)
+                .listRowBackground(Color.clear)
+
+                .alert(isPresented: $showErrorAlert) {
+                    Alert(title: Text("Error"), message: Text(errorMessage ?? "An error occurred."), dismissButton: .default(Text("OK")))
+                }
+
+                // Loading Indicator
+                if isLoading {
+                    ZStack {
+                        Color.black.opacity(0.6).edgesIgnoringSafeArea(.all)
+                        VStack(spacing: 10) {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .scaleEffect(1.5)
+                            Text("Fetching food data...")
+                                .foregroundColor(.white)
+                                .font(.headline)
+                        }
+                        .padding()
+                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray5)).opacity(0.8))
                     }
                 }
             }
+
+            // Computed Property for Today's Date
+            var today: Day? {
+                let todayStart = Calendar.current.startOfDay(for: Date())
+                return days.first { Calendar.current.isDate($0.date, inSameDayAs: todayStart) }
+            }
+
         }
+                
     }
         }
     }
