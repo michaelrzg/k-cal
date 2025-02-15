@@ -7,32 +7,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "CA56C0F4-6237-42CD-BA01-73B117948480"
+            uuid = "1B1E463B-7135-4DE3-B7F4-80A2AD69E77E"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "k-cal/Views/Scan View/OpenFoodFactsFetcher.swift"
+            filePath = "k-cal/Views/Home View/Add Food Submenu.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
-            landmarkName = "fetchFoodData(forBarcode:context:day:completion:)"
-            landmarkType = "7">
+            startingLineNumber = "40"
+            endingLineNumber = "40"
+            landmarkName = "Add_Food_Submenu"
+            landmarkType = "14">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A2576F36-CE9D-4D33-A5D9-E349AD826C53"
+            uuid = "B9448628-D8A9-4437-BC0F-6F0BFC6F53E5"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "k-cal/Views/Scan View/OpenFoodFactsFetcher.swift"
+            filePath = "k-cal/Views/Home View/Add Food Submenu.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
-            landmarkName = "fetchFoodData(forBarcode:context:day:completion:)"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "init(meal:selectedTab:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

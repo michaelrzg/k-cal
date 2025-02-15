@@ -15,7 +15,8 @@ struct Home: View {
 
         @Query private var users: [User]
         @Query private var food_items: [Food]
-        
+        @Binding var selectedTab: Int  // Bind to ContentView's tab selection
+
         @State var user: User = User(name: "Test", calorie_goal: 2500, protein_goal: 120, carb_goal: 250, fat_goal: 50)
         @State var calorie_goal: Int = 0
         @State var todays_calories: Int = 0
@@ -30,7 +31,7 @@ struct Home: View {
         @State private var showing_edit_sheet = false
         @State private var food_being_edited: Food?
     
-        var calorie_formula_font_size: CGFloat = 15
+        var calorie_formula_font_size: CGFloat = 17
     
     
         var body: some View
@@ -48,12 +49,12 @@ struct Home: View {
                     // Remaining calories section
                     Section(header: Text(Date().formatted(date: .complete, time: .omitted)).position(x:67,y:80))
                     {   ZStack{
-                        Text("Remaining Calories").position(x:69,y:12).padding(1).font(Font.system(size: 20)).bold()
+                        Text("  Remaining Calories").position(x:69,y:12).padding(1).font(Font.system(size: 20)).bold()
                         HStack{
                             
                             VStack{
                                 Text("\(calorie_goal)").font(Font.system(size: calorie_formula_font_size)).bold()
-                                Text("goal").font(Font.system(size: 12))
+                                Text("goal").font(Font.system(size: 14))
                             }
                             
                             Spacer()
@@ -66,7 +67,7 @@ struct Home: View {
                             
                             VStack{
                                 Text("\(todays_calories)").font(Font.system(size: calorie_formula_font_size))
-                                Text("food").font(Font.system(size: 12))
+                                Text("food").font(Font.system(size: 14))
                             }
                             
                             Spacer()
@@ -78,7 +79,7 @@ struct Home: View {
                             Spacer()
                             VStack{
                                 Text("\(excersise_calories)").font(Font.system(size: calorie_formula_font_size))
-                                Text("exercise").font(Font.system(size: 12))
+                                Text("exercise").font(Font.system(size: 14))
                             }
                             
                             Spacer()
@@ -91,7 +92,7 @@ struct Home: View {
                             
                             VStack{
                                 Text("\(calorie_goal - todays_calories + excersise_calories)").font(Font.system(size: calorie_formula_font_size)).foregroundStyle(calorie_goal - todays_calories + excersise_calories < 0 ? .red : Color("k-cal")).bold()
-                                Text("remaining").font(Font.system(size: 12))
+                                Text("remaining").font(Font.system(size: 14))
                             }
                             
                             Spacer()
@@ -170,7 +171,7 @@ struct Home: View {
                             
                             Menu{
                                 HStack{
-                                    Add_Food_Submenu(meal: .breakfast)
+                                    Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab)
                                 }
                                 
                             } label: {
@@ -202,7 +203,7 @@ struct Home: View {
                                 
                             }
                             Menu{
-                                Add_Food_Submenu(meal: .breakfast)
+                                Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab)
                             } label: {
                                 Text("Add")
                             }
@@ -231,7 +232,7 @@ struct Home: View {
                                 
                             }
                             Menu{
-                                Add_Food_Submenu(meal: .breakfast)
+                                Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab)
                             } label: {
                                 Text("Add")
                             }
@@ -261,7 +262,7 @@ struct Home: View {
                                 
                             }
                             Menu{
-                                Add_Food_Submenu(meal: .breakfast)
+                                Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab)
                             } label: {
                                 Text("Add")
                             }
@@ -326,11 +327,15 @@ struct Home: View {
         updateProgress()
         print(food_items.count)
     }
-    init(){
-            
+    init(selectedTab: Binding<Int>){
+        self._selectedTab = selectedTab
             if !users.isEmpty {
                 user = users[0]
+                
             }
+       
+       
+        
         
     }
     
@@ -378,6 +383,3 @@ struct Home: View {
 
 
 
-#Preview {
-    Home()
-}

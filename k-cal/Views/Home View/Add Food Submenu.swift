@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct Add_Food_Submenu: View {
+    @Binding var selectedTab: Int  // Bind to ContentView's tab selection
     @State var meal: Meal?
     var body: some View {
         Button(action: {
+            selectedTab = 1
             
         }){
             HStack{
@@ -31,13 +33,15 @@ struct Add_Food_Submenu: View {
             Image(systemName: "keyboard")
         }
     }
-    init(meal: Meal? = nil) {
+    init(meal: Meal? = nil, selectedTab: Binding<Int>) {
         self.meal = meal
+        self._selectedTab = selectedTab
         
     }
     
 }
 
 #Preview {
-    Add_Food_Submenu()
+    @State var tab: Int = 0
+    Add_Food_Submenu(selectedTab: $tab)
 }

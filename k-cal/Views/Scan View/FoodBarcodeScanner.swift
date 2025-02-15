@@ -6,7 +6,7 @@ struct FoodBarcodeScanner: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query private var days: [Day]
-    
+
     let dataFetcher: OpenFoodFactsFetcher
     @State private var isScanning = true
     @State private var barcode: String?
@@ -15,8 +15,10 @@ struct FoodBarcodeScanner: View {
     @State private var errorMessage: String?
     @State private var addFoodSheetOpen: Bool = false
     @State private var isLoading: Bool = false
-    
-    @Binding var selectedTab: Int  // Bind to ContentView's tab selection
+    @State private var searchText: String = ""
+    @State private var searchResults: [FoodSearchItem] = []
+
+    @Binding var selectedTab: Int
 
     init(selectedTab: Binding<Int>) {
         self.dataFetcher = OpenFoodFactsFetcher()
@@ -35,7 +37,6 @@ struct FoodBarcodeScanner: View {
                             Rectangle()
                                 .frame(width: 40, height: 3)
                                 .foregroundColor(.white)
-                                .padding(.top, 0)
                         )
                         .overlay(
                             Rectangle()
@@ -43,18 +44,53 @@ struct FoodBarcodeScanner: View {
                                 .foregroundColor(.white)
                         )
                 }
-            }
+
+                TextField("Search for food...", text: $searchText)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+                    .onSubmit {
+                        if !searchText.isEmpty {
+                            performSearch(searchTerm: searchText)
+                        } else {
+                            searchResults = []
+                        }
+                    }
+
+                List(searchResults) { item in
+                    HStack {
+                        AsyncImage(url: item.imageURL) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 50, height: 50)
+                        } placeholder: {
+                            ProgressView()
+                        }
+                        VStack(alignment: .leading) {
+                            Text(item.name).font(.headline)
+                            Text(item.brand)
+                        }
+                        Spacer()
+                        Button("Add") {
+                            addFoodFromSearch(item: item)
+                        }
+                    }
+                }
+
+            } // End of VStack
+
             .alert(isPresented: $showErrorAlert) {
                 Alert(title: Text("Error"), message: Text(errorMessage ?? "An error occurred."), dismissButton: .default(Text("OK")))
             }
 
-            // Show loading animation when fetching data
             if isLoading {
                 ZStack {
                     Color("Background")
                         .edgesIgnoringSafeArea(.all)
-                        .opacity(0.9) // Slight transparency for better visual effect
-                    
+                        .opacity(0.9)
+
                     VStack {
                         ProgressView("Fetching food data...")
                             .progressViewStyle(CircularProgressViewStyle(tint: .white))
@@ -63,42 +99,87 @@ struct FoodBarcodeScanner: View {
                     }
                 }
             }
-        }
+        } // End of ZStack
         .onAppear {
             startScanningIfNeeded()
         }
         .onChange(of: barcode) { newValue in
             if let barcode = newValue {
                 print("Barcode scanned: \(barcode)")
-                isLoading = true // Show loading indicator
+                isLoading = true
 
                 dataFetcher.fetchFoodData(forBarcode: barcode, context: context, day: fetchTodayDay(context: context)) { fetchedFood, error in
                     DispatchQueue.main.async {
-                        isLoading = false // Hide loading indicator
+                        isLoading = false
                         if let fetchedFood = fetchedFood {
                             food = fetchedFood
-                            addFoodSheetOpen = true // Open sheet *after* fetching data
-                            isScanning = false // Stop scanning *after* opening sheet
+                            addFoodSheetOpen = true
+                            isScanning = false
                         } else if let error = error {
                             errorMessage = error
                             showErrorAlert = true
-                            isScanning = true // Restart scanning on error
-                            self.barcode = nil // Clear barcode on error
+                            isScanning = true
+                            self.barcode = nil
                         }
                     }
                 }
             }
         }
         .sheet(isPresented: $addFoodSheetOpen) {
-                    if let food = food {
-                        AddFoodSheet(food: food, selectedTab: $selectedTab)
-                            .onDisappear {
-                                isScanning = true
-                                barcode = nil
-                                dismiss()
-                            }
+            if let food = food {
+                AddFoodSheet(food: food, selectedTab: $selectedTab)
+                    .onDisappear {
+                        isScanning = true
+                        barcode = nil
+                        dismiss()
                     }
-                }    }
+            }
+        }
+    }
+
+    func performSearch(searchTerm: String) {
+        isLoading = true // Show loading indicator
+
+        let boostedSearchTerm = searchTerm// Boost exact matches in product_name
+
+        dataFetcher.searchFood(for: boostedSearchTerm) { results, error in
+            DispatchQueue.main.async { // Update UI on the main thread
+                isLoading = false // Hide loading indicator
+
+                if let results = results {
+                    
+                    searchResults = results // Use the filtered results
+
+                    print("Search Results (Filtered): \(searchResults)") // Print the filtered results
+
+                } else if let error = error {
+                    errorMessage = error
+                    showErrorAlert = true
+                    print("Search Error: \(error)")
+                }
+            }
+        }
+    }
+
+    func addFoodFromSearch(item: FoodSearchItem) {
+        isLoading = true
+        dataFetcher.fetchFoodData(forBarcode: item.barcode, context: context, day: fetchTodayDay(context: context)) { fetchedFood, error in
+            DispatchQueue.main.async {
+                isLoading = false
+                if let fetchedFood = fetchedFood {
+                    food = fetchedFood
+                    addFoodSheetOpen = true
+                    isScanning = false
+                } else if let error = error {
+                    errorMessage = error
+                    showErrorAlert = true
+                    isScanning = true
+                    barcode = nil
+                }
+            }
+        }
+    }
+
 
     func startScanningIfNeeded() {
         if isScanning {
@@ -129,5 +210,3 @@ struct FoodBarcodeScanner: View {
         }
     }
 }
-
-

@@ -6,19 +6,38 @@ import AVFoundation
 struct ContentView: View {
     @State private var selectedTab = 0
     @State var meal: Meal?
+    @State private var showUserView = false
+    @Query private var users :[User]
     var body: some View {
         NavigationStack {
-                    ZStack {
-                        Color("Background").ignoresSafeArea()
-                        HStack {
-                            Image(systemName: "barcode.viewfinder").foregroundStyle(Color("k-cal")).padding(.top, 10)
-                            Text("k-cal").font(.headline).foregroundStyle(Color("k-cal")).padding(.top, 10)
-                        }.padding(.bottom, 10)
-                    }.frame(maxHeight: 20)
-
+            HStack{
+                ZStack {
+                    Color("Background").ignoresSafeArea()
+                    HStack {
+                        HStack{
+                            HStack{
+                                Image(systemName: "barcode.viewfinder").foregroundStyle(Color("k-cal")).padding(.top, 10)
+                                Text("k-cal").font(.headline).foregroundStyle(Color("k-cal")).padding(.top, 10)
+                            }
+                        }.frame(maxWidth: .infinity, alignment: .center)
+                       
+                    }.padding(.bottom, 10)
+                    HStack{
+                        Button(action: { // Wrap the Image in a Button
+                            showUserView = true // Toggle the UserView
+                        }) {
+                            Image(systemName: "person.crop.circle")
+                                .resizable()
+                                .frame(width: 35, height: 35)
+                                .foregroundStyle(Color("k-cal"))
+                                                }
+                    }.frame(maxWidth: .infinity, alignment: .trailing).padding(.trailing,15)
+                }.frame(maxHeight: 20)
+                
+            }
                     ZStack {
                         TabView(selection: $selectedTab) {
-                            Home()
+                            Home(selectedTab: $selectedTab)
                                 .tabItem {
                                     Image(systemName: "house")
                                     Text("Home")
@@ -40,6 +59,8 @@ struct ContentView: View {
                                 .tag(2)
                         }
                         .scrollIndicators(.hidden)
+                    }.sheet(isPresented: $showUserView) { // Present UserView as a sheet
+                        UserPageView()
                     }
                 }    }
     init() {
@@ -50,6 +71,7 @@ struct ContentView: View {
            if #available(iOS 15.0, *) {
                UITabBar.appearance().scrollEdgeAppearance = appearance
            }
+        
     }
 }
 #Preview {
