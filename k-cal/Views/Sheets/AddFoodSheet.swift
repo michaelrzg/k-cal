@@ -160,12 +160,12 @@ struct AddFoodSheet: View {
             }.gesture(
                 DragGesture()
                     .onEnded { value in
-                        if value.translation.height > 100 { // Adjust threshold as needed
+                        
                             print("Cancel...")
                             context.delete(food)
                             dismiss()
                             selectedTab = 1
-                        }
+                        
                     }
             )
         }
