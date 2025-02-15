@@ -5,9 +5,8 @@
 //  Created by Michael Rizig on 2/13/25.
 //
 
-
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct CreateUserView: View {
     @Environment(\.modelContext) private var context
@@ -59,7 +58,8 @@ struct CreateUserView: View {
         guard let calorieGoalInt = Int(calorieGoal),
               let proteinGoalInt = Int(proteinGoal),
               let carbGoalInt = Int(carbGoal),
-              let fatGoalInt = Int(fatGoal) else {
+              let fatGoalInt = Int(fatGoal)
+        else {
             alertMessage = "Please enter valid numbers for goals."
             showingAlert = true
             return // Exit early if conversion fails

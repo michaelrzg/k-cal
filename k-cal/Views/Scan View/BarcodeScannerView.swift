@@ -5,16 +5,15 @@
 //  Created by Michael Rizig on 2/12/25.
 //
 
-import SwiftUI
 import AVFoundation
 import SwiftData
-
+import SwiftUI
 
 struct BarcodeScannerView: UIViewControllerRepresentable {
     @Binding var barcode: String?
     @Binding var isScanning: Bool
     let dataFetcher: OpenFoodFactsFetcher
-    let context: ModelContext  // Add ModelContext property
+    let context: ModelContext // Add ModelContext property
     let day: Day
 
     func makeUIViewController(context: Context) -> BarcodeScannerViewController {
@@ -23,7 +22,7 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
         return viewController
     }
 
-    func updateUIViewController(_ uiViewController: BarcodeScannerViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: BarcodeScannerViewController, context _: Context) {
         uiViewController.isScanning = isScanning
     }
 
@@ -38,7 +37,7 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
             self.parent = parent
         }
 
-        func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        func metadataOutput(_: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from _: AVCaptureConnection) {
             guard let metadataObject = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
                   let codeValue = metadataObject.stringValue else { return }
 
@@ -49,4 +48,3 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
         }
     }
 }
-

@@ -2,7 +2,6 @@ import Foundation
 import SwiftData
 
 class OpenFoodFactsFetcher {
-
     private let baseURL = "https://world.openfoodfacts.org/api/v0/product/"
     private let searchURL = "https://world.openfoodfacts.org/cgi/search.pl?search_terms="
 
@@ -12,7 +11,7 @@ class OpenFoodFactsFetcher {
             return
         }
 
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
             if let error = error {
                 completion(nil, error.localizedDescription)
                 return
@@ -25,10 +24,11 @@ class OpenFoodFactsFetcher {
 
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let product = json["product"] as? [String: Any] {
-
+                   let product = json["product"] as? [String: Any]
+                {
                     guard let name = product["product_name"] as? String,
-                          let nutriments = product["nutriments"] as? [String: Any] else {
+                          let nutriments = product["nutriments"] as? [String: Any]
+                    else {
                         completion(nil, "Missing data in JSON")
                         return
                     }
@@ -80,12 +80,13 @@ class OpenFoodFactsFetcher {
 
     func searchFood(for searchTerm: String, completion: @escaping ([FoodSearchItem]?, String?) -> Void) {
         guard let encodedSearchTerm = searchTerm.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let url = URL(string: "\(searchURL)\(encodedSearchTerm)&search_options=0&sort_by=unique_scans_n&json=true") else {
+              let url = URL(string: "\(searchURL)\(encodedSearchTerm)&search_options=0&sort_by=unique_scans_n&json=true")
+        else {
             completion(nil, "Invalid search URL")
             return
         }
 
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
             if let error = error {
                 completion(nil, error.localizedDescription)
                 return
@@ -98,15 +99,16 @@ class OpenFoodFactsFetcher {
 
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let products = json["products"] as? [[String: Any]] {
-
+                   let products = json["products"] as? [[String: Any]]
+                {
                     var searchResults: [FoodSearchItem] = []
 
                     for product in products {
                         guard let name = product["product_name"] as? String,
                               let brand = product["brands"] as? String,
                               let imageURLString = product["image_front_thumb_url"] as? String,
-                              let imageURL = URL(string: imageURLString) else {
+                              let imageURL = URL(string: imageURLString)
+                        else {
                             continue // Skip products with missing data
                         }
 
@@ -120,9 +122,9 @@ class OpenFoodFactsFetcher {
                         let item1NameContainsSearch = item1.name.localizedCaseInsensitiveContains(searchTerm)
                         let item2NameContainsSearch = item2.name.localizedCaseInsensitiveContains(searchTerm)
 
-                        if item1NameContainsSearch && !item2NameContainsSearch {
+                        if item1NameContainsSearch, !item2NameContainsSearch {
                             return true // item1 name contains search, item2 doesn't - item1 goes first
-                        } else if !item1NameContainsSearch && item2NameContainsSearch {
+                        } else if !item1NameContainsSearch, item2NameContainsSearch {
                             return false // item2 name contains search, item1 doesn't - item2 goes first
                         } else {
                             return false // Both or neither contain search - maintain original order
@@ -141,7 +143,6 @@ class OpenFoodFactsFetcher {
 
         task.resume()
     }
-
 
     private func extractNutrientValue(from nutriments: [String: Any], for nutrientKey: String) -> Int? {
         if let value = nutriments[nutrientKey] as? Double {

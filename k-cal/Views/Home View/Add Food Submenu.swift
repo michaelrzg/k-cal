@@ -8,40 +8,38 @@
 import SwiftUI
 
 struct Add_Food_Submenu: View {
-    @Binding var selectedTab: Int  // Bind to ContentView's tab selection
+    @Binding var selectedTab: Int // Bind to ContentView's tab selection
     @State var meal: Meal?
     var body: some View {
         Button(action: {
             selectedTab = 1
-            
-        }){
-            HStack{
+
+        }) {
+            HStack {
                 Text("Scan")
                 Image(systemName: "barcode.viewfinder")
             }
         }
-        
-    
-        Button(action: {}){
-        HStack{
-            Text("Search")
-            Image(systemName: "magnifyingglass")
+
+        Button(action: {}) {
+            HStack {
+                Text("Search")
+                Image(systemName: "magnifyingglass")
+            }
         }
-    }
-        Button(action: {}){
+        Button(action: {}) {
             Text("Custom")
             Image(systemName: "keyboard")
         }
     }
+
     init(meal: Meal? = nil, selectedTab: Binding<Int>) {
         self.meal = meal
-        self._selectedTab = selectedTab
-        
+        _selectedTab = selectedTab
     }
-    
 }
 
 #Preview {
-    @State var tab: Int = 0
+    @State var tab = 0
     Add_Food_Submenu(selectedTab: $tab)
 }

@@ -5,8 +5,8 @@
 //  Created by Michael Rizig on 2/10/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct k_calApp: App {
@@ -14,7 +14,6 @@ struct k_calApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [User.self,Day.self, Food.self])
-        
+        .modelContainer(for: [User.self, Day.self, Food.self])
     }
 }

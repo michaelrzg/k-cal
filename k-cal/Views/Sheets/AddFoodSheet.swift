@@ -12,14 +12,14 @@ struct AddFoodSheet: View {
     @State private var proteinPerServing: Int
     @State private var carbsPerServing: Int
     @State private var fatPerServing: Int
-    
+
     init(food: Food, selectedTab: Binding<Int>) {
         self.food = food
         _calorie_per_serving_string = State(initialValue: "\(food.calories_per_serving)")
         _proteinPerServing = State(initialValue: food.protein / (food.servings > 0 ? food.servings : 1))
         _carbsPerServing = State(initialValue: food.carbohydrates / (food.servings > 0 ? food.servings : 1))
         _fatPerServing = State(initialValue: food.fat / (food.servings > 0 ? food.servings : 1))
-        self._selectedTab = selectedTab
+        _selectedTab = selectedTab
     }
 
     var body: some View {
@@ -31,7 +31,7 @@ struct AddFoodSheet: View {
                         set: { food.day?.date = $0 }
                     ))
                 }
-                
+
                 HStack {
                     Text("Name:").frame(maxWidth: .infinity, alignment: .leading)
                     Spacer()
@@ -46,7 +46,7 @@ struct AddFoodSheet: View {
                 .pickerStyle(.menu)
 
                 Picker("Servings:", selection: $food.servings) {
-                    ForEach(1...100, id: \ .self) { number in
+                    ForEach(1 ... 100, id: \ .self) { number in
                         Text("\(number)")
                     }
                 }
@@ -71,8 +71,7 @@ struct AddFoodSheet: View {
                         }
                         .multilineTextAlignment(.trailing)
                 }
-                
-                
+
                 HStack {
                     Spacer()
                     VStack {
@@ -146,7 +145,7 @@ struct AddFoodSheet: View {
                     Button("Save") {
                         print("Saving...")
                         dismiss()
-                        selectedTab=0
+                        selectedTab = 0
                     }
                 }
                 ToolbarItemGroup(placement: .topBarLeading) {
@@ -159,16 +158,14 @@ struct AddFoodSheet: View {
                 }
             }.gesture(
                 DragGesture()
-                    .onEnded { value in
-                        
-                            print("Cancel...")
-                            context.delete(food)
-                            dismiss()
-                            selectedTab = 1
-                        
+                    .onEnded { _ in
+
+                        print("Cancel...")
+                        context.delete(food)
+                        dismiss()
+                        selectedTab = 1
                     }
             )
         }
     }
 }
-

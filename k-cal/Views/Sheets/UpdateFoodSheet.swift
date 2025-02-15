@@ -4,7 +4,7 @@ struct UpdateFoodSheet: View {
     @Bindable var food: Food
     @Environment(\ .dismiss) var dismiss
     @Environment(\ .modelContext) var context
-    
+
     @State var calorie_per_serving_string: String
     let mealOptions = ["Breakfast", "Lunch", "Dinner", "Snack"]
 
@@ -12,7 +12,7 @@ struct UpdateFoodSheet: View {
     @State private var proteinPerServing: Int
     @State private var carbsPerServing: Int
     @State private var fatPerServing: Int
-    
+
     init(food: Food) {
         self.food = food
         _calorie_per_serving_string = State(initialValue: "\(food.calories_per_serving)")
@@ -30,7 +30,7 @@ struct UpdateFoodSheet: View {
                         set: { food.day?.date = $0 }
                     ))
                 }
-                
+
                 HStack {
                     Text("Name:").frame(maxWidth: .infinity, alignment: .leading)
                     Spacer()
@@ -45,7 +45,7 @@ struct UpdateFoodSheet: View {
                 .pickerStyle(.menu)
 
                 Picker("Servings:", selection: $food.servings) {
-                    ForEach(1...100, id: \ .self) { number in
+                    ForEach(1 ... 100, id: \ .self) { number in
                         Text("\(number)")
                     }
                 }
@@ -70,8 +70,7 @@ struct UpdateFoodSheet: View {
                         }
                         .multilineTextAlignment(.trailing)
                 }
-                
-                
+
                 HStack {
                     Spacer()
                     VStack {
@@ -147,14 +146,11 @@ struct UpdateFoodSheet: View {
                         dismiss()
                     }
                 }
-                
             }
         }
     }
 }
 
-
-
 #Preview {
-    UpdateFoodSheet(food: Food(name: "Zaxby's", day: Day(date:Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500, sodium: 0, sugars: 0, fiber: 0, ingredients: "Ingredients"))
+    UpdateFoodSheet(food: Food(name: "Zaxby's", day: Day(date: Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500, sodium: 0, sugars: 0, fiber: 0, ingredients: "Ingredients"))
 }

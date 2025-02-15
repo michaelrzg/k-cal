@@ -4,9 +4,9 @@
 //
 //  Created by Michael Rizig on 2/12/25.
 //
-import SwiftUI
 import AVFoundation
 import SwiftData
+import SwiftUI
 
 class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     var captureSession: AVCaptureSession!
@@ -21,6 +21,7 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
             }
         }
     }
+
     let dataFetcher: OpenFoodFactsFetcher
     let context: ModelContext
     let day: Day
@@ -34,7 +35,8 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -53,13 +55,13 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
             return
         }
 
-        if (captureSession.canAddInput(videoInput)) {
+        if captureSession.canAddInput(videoInput) {
             captureSession.addInput(videoInput)
         } else {
             return
         }
 
-        if (captureSession.canAddOutput(captureOutput)) {
+        if captureSession.canAddOutput(captureOutput) {
             captureSession.addOutput(captureOutput)
 
             captureOutput.setMetadataObjectsDelegate(delegate, queue: DispatchQueue.main)

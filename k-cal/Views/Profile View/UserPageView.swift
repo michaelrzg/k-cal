@@ -1,5 +1,5 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct UserPageView: View {
     @Environment(\.modelContext) private var context
@@ -37,7 +37,7 @@ struct UserPageView: View {
                                         user.calorie_goal = newValue
                                     }
                                 ), format: .number)
-                                .keyboardType(.numberPad)
+                                    .keyboardType(.numberPad)
                             } else {
                                 Text("\(user.calorie_goal)")
                             }
@@ -52,7 +52,7 @@ struct UserPageView: View {
                                         user.protein_goal = newValue
                                     }
                                 ), format: .number)
-                                .keyboardType(.numberPad)
+                                    .keyboardType(.numberPad)
                             } else {
                                 Text("\(user.protein_goal)")
                             }
@@ -67,7 +67,7 @@ struct UserPageView: View {
                                         user.carb_goal = newValue
                                     }
                                 ), format: .number)
-                                .keyboardType(.numberPad)
+                                    .keyboardType(.numberPad)
                             } else {
                                 Text("\(user.carb_goal)")
                             }
@@ -82,7 +82,7 @@ struct UserPageView: View {
                                         user.fat_goal = newValue
                                     }
                                 ), format: .number)
-                                .keyboardType(.numberPad)
+                                    .keyboardType(.numberPad)
                             } else {
                                 Text("\(user.fat_goal)")
                             }
@@ -113,7 +113,7 @@ struct UserPageView: View {
         }
     }
 }
-#Preview {
 
+#Preview {
     UserPageView()
 }
