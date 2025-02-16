@@ -12,7 +12,6 @@ import SwiftData
 class Food: Identifiable {
     var name: String
     var calories: Int
-    var timeEaten: Date?
     var protein: Int
     var carbohydrates: Int
     var fat: Int
@@ -29,7 +28,6 @@ class Food: Identifiable {
 
     init(name: String, day: Day, protein: Int, carbohydrates: Int, fat: Int, meal: Meal, servings: Int, calories_per_serving: Int, sodium: Int?, sugars: Int?, fiber: Int?, ingredients: String?, url: String?) {
         self.name = name
-        timeEaten = day.date
         self.day = day
         self.protein = protein * servings
         self.carbohydrates = carbohydrates * servings

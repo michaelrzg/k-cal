@@ -4,65 +4,81 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("hasLaunchedBefore") var hasLaunchedBefore = false
     @State private var selectedTab = 0
     @State var meal: Meal?
     @State private var showUserView = false
     @State var isSearchExpanded: Bool = false
     @Query private var users: [User]
     var body: some View {
-        NavigationStack {
-            HStack {
-                ZStack {
-                    Color("Background").ignoresSafeArea()
-                    HStack {
-                        HStack {
-                            HStack {
-                                Image(systemName: "barcode.viewfinder").foregroundStyle(Color("k-cal")).padding(.top, 10)
-                                Text("k-cal").font(.headline).foregroundStyle(Color("k-cal")).padding(.top, 10)
-                            }
-                        }.frame(maxWidth: .infinity, alignment: .center)
-
-                    }.padding(.bottom, 10)
-                    HStack {
-                        Button(action: { // Wrap the Image in a Button
-                            showUserView = true // Toggle the UserView
-                        }) {
-                            Image(systemName: "person.crop.circle")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .foregroundStyle(Color("k-cal"))
-                        }
-                    }.frame(maxWidth: .infinity, alignment: .trailing).padding(.trailing, 15)
-                }.frame(maxHeight: 25)
-            }
-            ZStack {
-                TabView(selection: $selectedTab) {
-                    Home(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
-                        .tabItem {
-                        Image(systemName: "house")
-                            Text("home")
-                            
-                        }
-                        .tag(0)
-
-                    FoodBarcodeScanner(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
-                        .tabItem {
-                            Image(systemName: "barcode.viewfinder")
-                            Text("scan/search")
-                        }
-                        .tag(1)
-
-                    Diary()
-                        .tabItem {
-                            Image(systemName: "book")
-                            Text("diary")
-                        }
-                        .tag(2)
+        Group{
+            if !hasLaunchedBefore{
+                WelcomeView().onDisappear(){
+                    if hasLaunchedBefore == false{
+                        hasLaunchedBefore = true
+                        print("firstlaunch  ")
+                    }
+                    
                 }
-                .scrollIndicators(.hidden)
                 
-            }.sheet(isPresented: $showUserView) { // Present UserView as a sheet
-                UserPageView()
+            }
+            else{
+                
+                NavigationStack {
+                    HStack {
+                        ZStack {
+                            Color("Background").ignoresSafeArea()
+                            HStack {
+                                HStack {
+                                    HStack {
+                                        Image(systemName: "barcode.viewfinder").foregroundStyle(Color("k-cal")).padding(.top, 10)
+                                        Text("k-cal").font(.headline).foregroundStyle(Color("k-cal")).padding(.top, 10)
+                                    }
+                                }.frame(maxWidth: .infinity, alignment: .center)
+                                
+                            }.padding(.bottom, 10)
+                            HStack {
+                                Button(action: { // Wrap the Image in a Button
+                                    showUserView = true // Toggle the UserView
+                                }) {
+                                    Image(systemName: "person.crop.circle")
+                                        .resizable()
+                                        .frame(width: 30, height: 30)
+                                        .foregroundStyle(Color("k-cal"))
+                                }
+                            }.frame(maxWidth: .infinity, alignment: .trailing).padding(.trailing, 15)
+                        }.frame(maxHeight: 25)
+                    }
+                    ZStack {
+                        TabView(selection: $selectedTab) {
+                            Home(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
+                                .tabItem {
+                                    Image(systemName: "house")
+                                    Text("home")
+                                    
+                                }
+                                .tag(0)
+                            
+                            FoodBarcodeScanner(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
+                                .tabItem {
+                                    Image(systemName: "barcode.viewfinder")
+                                    Text("scan/search")
+                                }
+                                .tag(1)
+                            
+                            Diary()
+                                .tabItem {
+                                    Image(systemName: "book")
+                                    Text("diary")
+                                }
+                                .tag(2)
+                        }
+                        .scrollIndicators(.hidden)
+                        
+                    }.sheet(isPresented: $showUserView) { // Present UserView as a sheet
+                        UserPageView()
+                    }
+                }
             }
         }
     }
