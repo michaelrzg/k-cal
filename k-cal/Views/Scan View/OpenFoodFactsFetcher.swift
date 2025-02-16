@@ -61,6 +61,8 @@ class OpenFoodFactsFetcher {
                     
                     print(newFood.url)
                     context.insert(newFood)
+                    let search = Search(food: newFood, day: Date())
+                    context.insert(search)
 
                     do {
                         try context.save()

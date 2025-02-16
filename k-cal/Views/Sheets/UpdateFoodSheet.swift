@@ -71,7 +71,7 @@ struct UpdateFoodSheet: View {
                     food.calories = (Int(calorie_per_serving_string) ?? 0) * newValue
                     food.protein = proteinPerServing * newValue
                     food.carbohydrates = carbsPerServing * newValue
-                    food.fat = fatPerServing * newValue
+                    food.fat = fatPerServing * newValue                   
                 }
 
                 HStack {

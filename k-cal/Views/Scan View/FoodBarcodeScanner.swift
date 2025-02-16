@@ -6,7 +6,7 @@ struct FoodBarcodeScanner: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query private var days: [Day]
-
+    @Query(sort: [SortDescriptor(\Search.day, order: .reverse)]) var recentSearches: [Search]
     let dataFetcher: OpenFoodFactsFetcher
     @State private var isScanning = true
     @State private var barcode: String?
@@ -18,6 +18,7 @@ struct FoodBarcodeScanner: View {
     @State private var searchText: String = ""
     @State private var searchResults: [FoodSearchItem] = []
     @State private var cardPosition: CardPosition = .bottom
+    @State private var enterPressed: Bool = false
     @Binding private var isSearchExpanded: Bool
     @Binding var selectedTab: Int
     @FocusState private var isFocused: Bool
@@ -96,7 +97,10 @@ struct FoodBarcodeScanner: View {
                                         TextField("Search for a food", text: $searchText)  .ignoresSafeArea(.keyboard, edges: .bottom).scrollDismissesKeyboard(.interactively)
                                         
                                             .background(Color.clear)
-                                            .onSubmit { performSearch(searchTerm: searchText) }
+                                            .onSubmit {
+                                                performSearch(searchTerm: searchText)
+                                                enterPressed = true
+                                            }
                                             .focused($isFocused)
                                     }  .ignoresSafeArea(.keyboard, edges: .bottom)
                                         .frame(height: 50)
@@ -159,6 +163,73 @@ struct FoodBarcodeScanner: View {
                                                 .scrollContentBackground(.hidden)
                                         }  .ignoresSafeArea(.keyboard, edges: .bottom)
                                     }
+                                    else if searchText.isEmpty && !enterPressed {
+                                        ZStack{
+                                            Color("Background")
+                                            List{
+                                                Section(header: Text("Recent Searches").font(.headline).foregroundColor(.primary)) {
+                                                    ForEach(recentSearches) { item in
+                                                        HStack(spacing: 12) {
+                                                            
+                                                            if let url = URL(string: item.food.url){
+                                                                AsyncImage(url: url) { image in
+                                                                    image.resizable()
+                                                                        .scaledToFill()
+                                                                        .frame(width: 50, height: 50)
+                                                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                } placeholder: {
+                                                                    RoundedRectangle(cornerRadius: 8)
+                                                                        .fill(Color(.systemGray5))
+                                                                        .frame(width: 50, height: 50)
+                                                                        .overlay(ProgressView())
+                                                                }
+                                                            }
+                                                            
+                                                            VStack(alignment: .leading, spacing: 4) {
+                                                                Text(item.food.name)
+                                                                    .font(.headline)
+                                                                    .foregroundColor(.primary)
+                                                                
+                                                          
+                                                            }
+                                                            
+                                                            Spacer()
+                                                            
+                                                            Button {
+                                                               food = item.food
+                                                                addFoodSheetOpen = true
+                                                            } label: {
+                                                                Text("Add")
+                                                                    .font(.system(size: 14, weight: .semibold))
+                                                                    .padding(.horizontal, 12)
+                                                                    .padding(.vertical, 6)
+                                                                    .background(Color.blue)
+                                                                    .foregroundColor(.white)
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                            }
+                                                        }
+                                                        .padding(.vertical, 6)
+                                                        .listRowBackground(Color("Background"))
+                                                    }
+                                                }.listRowBackground(Color("Background"))
+                                            }.listRowBackground(Color("Foreground"))
+                                                .scrollContentBackground(.hidden)
+                                        }  .ignoresSafeArea(.keyboard, edges: .bottom)
+                                    }
+                                    else if searchResults.isEmpty && enterPressed && !isLoading{
+                                        List{
+                                            Section{
+                                                Text("No Results").frame(maxWidth: .infinity, maxHeight: .infinity)
+                                            }.scrollContentBackground(.hidden).listRowBackground(Color("Background"))
+                                        }.scrollContentBackground(.hidden).listRowBackground(Color("Background"))
+                                    }
+                                    else if searchResults.isEmpty && searchText.isEmpty {
+                                        List{
+                                            Section{
+                                                Text("Whats for lunch?").frame(maxWidth: .infinity, maxHeight: .infinity)
+                                            }.scrollContentBackground(.hidden).listRowBackground(Color("Background"))
+                                        }.scrollContentBackground(.hidden).listRowBackground(Color("Background"))
+                                    }
                                     Spacer()
                                     
                                     Spacer()
@@ -201,7 +272,7 @@ struct FoodBarcodeScanner: View {
                                         }
                                     }
                                 }
-                            }.onChange(of: isLoading){
+                            }.onChange(of: searchText){
                                 print("Loading")
                             }
                             .onChange(of: cardPosition){
@@ -286,6 +357,7 @@ struct FoodBarcodeScanner: View {
                     food = fetchedFood
                     addFoodSheetOpen = true
                     isScanning = false
+                    
                 } else if let error = error {
                     errorMessage = error
                     showErrorAlert = true
@@ -294,6 +366,8 @@ struct FoodBarcodeScanner: View {
                 }
             }
         }
+       
+        
     }
 
     func startScanningIfNeeded() {

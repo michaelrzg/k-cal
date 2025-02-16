@@ -39,26 +39,28 @@ struct ContentView: View {
                 TabView(selection: $selectedTab) {
                     Home(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
                         .tabItem {
-                            Image(systemName: "house")
-                            Text("Home")
+                        Image(systemName: "house")
+                            Text("home")
+                            
                         }
                         .tag(0)
 
                     FoodBarcodeScanner(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
                         .tabItem {
                             Image(systemName: "barcode.viewfinder")
-                            Text("Scan")
+                            Text("scan/search")
                         }
                         .tag(1)
 
                     Diary()
                         .tabItem {
                             Image(systemName: "book")
-                            Text("Log")
+                            Text("diary")
                         }
                         .tag(2)
                 }
                 .scrollIndicators(.hidden)
+                
             }.sheet(isPresented: $showUserView) { // Present UserView as a sheet
                 UserPageView()
             }
@@ -75,7 +77,16 @@ struct ContentView: View {
         }
     }
 }
-
+struct MyLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            configuration.icon
+                .imageScale(.large) // Adjust image size
+                .padding(.top, 5) // Adjust this value
+            configuration.title
+        }
+    }
+}
 #Preview {
     ContentView()
 }

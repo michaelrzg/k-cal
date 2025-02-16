@@ -95,7 +95,7 @@ struct Home: View {
                     .frame(height: 40).listRowBackground(Color("Foreground"))
 
                 Section {
-                    Text("Calorie Breakdown")
+                    Text("Progress")
                         .listRowSeparator(.hidden)
                         .padding(1).font(Font.system(size: 20)).bold()
                     ZStack {
@@ -124,7 +124,7 @@ struct Home: View {
                         .listRowSeparator(.hidden)
                         .padding(1).font(Font.system(size: 20)).bold()
 
-                    Text("Breakfast").listRowSeparator(.hidden).bold()
+                    Text("breakfast").listRowSeparator(.hidden).bold()
                     List {
                         ForEach(today.foods) { food in
                             if food.meal == "Breakfast" {
@@ -154,11 +154,11 @@ struct Home: View {
                             }
 
                         } label: {
-                            Text("Add")
+                            Text("add")
                         }
                     }
 
-                    Text("Lunch").listRowSeparator(.hidden).bold()
+                    Text("lunch").listRowSeparator(.hidden).bold()
                     List {
                         ForEach(today.foods) { food in
                             if food.meal == "Lunch" {
@@ -180,11 +180,11 @@ struct Home: View {
                         Menu {
                             Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
                         } label: {
-                            Text("Add")
+                            Text("add")
                         }
                     }
 
-                    Text("Dinner").listRowSeparator(.hidden).bold()
+                    Text("dinner").listRowSeparator(.hidden).bold()
                     List {
                         ForEach(today.foods) { food in
                             if food.meal == "Dinner" {
@@ -205,11 +205,11 @@ struct Home: View {
                         Menu {
                             Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
                         } label: {
-                            Text("Add")
+                            Text("add")
                         }
                     }
 
-                    Text("Snacks").listRowSeparator(.hidden).bold()
+                    Text("snacks").listRowSeparator(.hidden).bold()
                     List {
                         ForEach(today.foods) { food in
                             if food.meal == "Snacks" {
@@ -231,7 +231,7 @@ struct Home: View {
                         Menu {
                             Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
                         } label: {
-                            Text("Add")
+                            Text("add")
                         }
                     }
                 }.listRowBackground(Color("Foreground"))
