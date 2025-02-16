@@ -25,13 +25,30 @@ struct AddFoodSheet: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section{
+                    HStack{
+                        if let url = URL(string: food.url){
+                            AsyncImage(url: url) { image in
+                                image.resizable()
+                                    .scaledToFit()
+                                    .frame(height: 200)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                            } placeholder: {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color(.systemGray5))
+                                    .frame( height: 200)
+                                    .overlay(ProgressView())
+                            }
+                        }
+                    }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                }.listSectionSpacing(5)
+
                 if let day = food.day {
                     DatePicker("Date", selection: Binding(
                         get: { day.date },
                         set: { food.day?.date = $0 }
                     ))
                 }
-
                 HStack {
                     Text("Name:").frame(maxWidth: .infinity, alignment: .leading)
                     Spacer()

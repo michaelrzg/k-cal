@@ -24,9 +24,10 @@ class Food: Identifiable {
     var sugars: Int = 0
     var fiber: Int = 0
     var ingredients: String = ""
+    var url: String = ""
     @Relationship var day: Day?
 
-    init(name: String, day: Day, protein: Int, carbohydrates: Int, fat: Int, meal: Meal, servings: Int, calories_per_serving: Int, sodium: Int?, sugars: Int?, fiber: Int?, ingredients: String?) {
+    init(name: String, day: Day, protein: Int, carbohydrates: Int, fat: Int, meal: Meal, servings: Int, calories_per_serving: Int, sodium: Int?, sugars: Int?, fiber: Int?, ingredients: String?, url: String?) {
         self.name = name
         timeEaten = day.date
         self.day = day
@@ -39,6 +40,7 @@ class Food: Identifiable {
         self.sugars = sugars ?? 0
         self.fiber = fiber ?? 0
         self.ingredients = ingredients ?? ""
+        self.url = url ?? ""
         switch meal {
         case .breakfast:
             self.meal = "Breakfast"

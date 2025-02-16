@@ -24,13 +24,30 @@ struct UpdateFoodSheet: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section{
+                    HStack{
+                        if let url = URL(string: food.url){
+                            AsyncImage(url: url) { image in
+                                image.resizable()
+                                    .scaledToFit()
+                                    .frame(height: 200)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                            } placeholder: {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color(.systemGray5))
+                                    .frame( height: 200)
+                                    .overlay(ProgressView())
+                            }
+                        }
+                    }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                }.listSectionSpacing(5)
                 if let day = food.day {
                     DatePicker("Date", selection: Binding(
                         get: { day.date },
                         set: { food.day?.date = $0 }
                     ))
                 }
-
+                
                 HStack {
                     Text("Name:").frame(maxWidth: .infinity, alignment: .leading)
                     Spacer()
@@ -151,6 +168,4 @@ struct UpdateFoodSheet: View {
     }
 }
 
-#Preview {
-    UpdateFoodSheet(food: Food(name: "Zaxby's", day: Day(date: Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500, sodium: 0, sugars: 0, fiber: 0, ingredients: "Ingredients"))
-}
+

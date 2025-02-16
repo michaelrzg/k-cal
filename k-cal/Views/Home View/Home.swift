@@ -112,11 +112,11 @@ struct Home: View {
                         fetchTodayDay(context: context, calories: $todays_calories)
                         print("Protein: \(protein), Carbs: \(carbs), Fat: \(fat)")
                     }
-
-                    Button("Add Snack") {
-                        add_food(food: Food(name: "Zaxby's", day: Day(date: Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500, sodium: 0, sugars: 0, fiber: 0, ingredients: "Ingredients"), context: context)
-                        fetchTodayDay(context: context, calories: $todays_calories)
-                    }
+// test button
+//                    Button("Add Snack") {
+//                        add_food(food: Food(name: "Zaxby's", day: Day(date: Date()), protein: 10, carbohydrates: 10, fat: 10, meal: .lunch, servings: 1, calories_per_serving: 1500, sodium: 0, sugars: 0, fiber: 0, ingredients: "Ingredients", url:), context: context)
+//                        fetchTodayDay(context: context, calories: $todays_calories)
+//                    }
 
                 }.listRowBackground(Color("Foreground"))
                 Section {

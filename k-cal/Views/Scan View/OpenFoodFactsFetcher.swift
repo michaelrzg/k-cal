@@ -40,7 +40,7 @@ class OpenFoodFactsFetcher {
                     let sugar = self.extractNutrientValue(from: nutriments, for: "sugars") ?? 0
                     let fiber = self.extractNutrientValue(from: nutriments, for: "fiber") ?? 0
                     let sodium = self.extractNutrientValue(from: nutriments, for: "sodium") ?? 0
-
+                    let url = product["image_url"] as? String ?? ""
                     let ingredients = product["ingredients_text"] as? String ?? "No ingredients available"
 
                     let newFood = Food(
@@ -55,9 +55,11 @@ class OpenFoodFactsFetcher {
                         sodium: sodium,
                         sugars: sugar,
                         fiber: fiber,
-                        ingredients: ingredients
+                        ingredients: ingredients,
+                        url: url
                     )
-
+                    
+                    print(newFood.url)
                     context.insert(newFood)
 
                     do {

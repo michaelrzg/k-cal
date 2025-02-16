@@ -29,11 +29,11 @@ struct ContentView: View {
                         }) {
                             Image(systemName: "person.crop.circle")
                                 .resizable()
-                                .frame(width: 35, height: 35)
+                                .frame(width: 30, height: 30)
                                 .foregroundStyle(Color("k-cal"))
                         }
                     }.frame(maxWidth: .infinity, alignment: .trailing).padding(.trailing, 15)
-                }.frame(maxHeight: 20)
+                }.frame(maxHeight: 25)
             }
             ZStack {
                 TabView(selection: $selectedTab) {
