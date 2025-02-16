@@ -208,6 +208,9 @@ struct FoodBarcodeScanner: View {
                                 if cardPosition == .bottom{
                                     isFocused = false
                                 }
+                                else if isFocused{
+                                    cardPosition = .top
+                                }
                             }
                             .sheet(isPresented: $addFoodSheetOpen) {
                                 if isLoading {

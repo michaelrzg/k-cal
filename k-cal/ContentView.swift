@@ -51,12 +51,12 @@ struct ContentView: View {
                         }
                         .tag(1)
 
-//                    Diary()
-//                        .tabItem {
-//                            Image(systemName: "book")
-//                            Text("Log")
-//                        }
-//                        .tag(2)
+                    Diary()
+                        .tabItem {
+                            Image(systemName: "book")
+                            Text("Log")
+                        }
+                        .tag(2)
                 }
                 .scrollIndicators(.hidden)
             }.sheet(isPresented: $showUserView) { // Present UserView as a sheet
