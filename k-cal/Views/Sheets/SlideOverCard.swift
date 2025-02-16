@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SlideOverCard<Content: View> : View {
     @GestureState private var dragState = DragState.inactive
-    @State var position = CardPosition.bottom
+    @Binding var position: CardPosition
     
     var content: () -> Content
     var body: some View {
@@ -62,12 +62,13 @@ struct SlideOverCard<Content: View> : View {
             self.position = closestPosition
         }
     }
+
 }
 
 enum CardPosition: CGFloat {
-    case top = 100
-    case middle = 500
-    case bottom = 750
+    case top = 20
+    case middle = 100
+    case bottom = 585
 }
 
 enum DragState {
@@ -94,7 +95,7 @@ enum DragState {
 }
 
 struct Handle : View {
-    private let handleThickness = CGFloat(5.0)
+    private let handleThickness = CGFloat(4.0)
     var body: some View {
         RoundedRectangle(cornerRadius: handleThickness / 2.0)
             .frame(width: 40, height: handleThickness)

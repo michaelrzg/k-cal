@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct Diary: View {
+    @State private var position: CardPosition = .bottom
     var body: some View {
         Text("Diary")
         ZStack(alignment: .top){
-            SlideOverCard {
+            SlideOverCard(position: $position) {
                 VStack {
                     
                     HStack{

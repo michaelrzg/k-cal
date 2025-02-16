@@ -17,8 +17,25 @@ struct FoodBarcodeScanner: View {
     @State private var isLoading: Bool = false
     @State private var searchText: String = ""
     @State private var searchResults: [FoodSearchItem] = []
+    @State private var cardPosition: CardPosition = .bottom
     @Binding private var isSearchExpanded: Bool
     @Binding var selectedTab: Int
+    @FocusState private var isFocused: Bool
+    let loadingPrompts = [
+        "Hang tight... calculating deliciousness! 🍔",
+        "Avocados are still expensive... but we’re loading! 🥑",
+        "Summoning the food gods... 🍕",
+        "Loading... don’t snack yet! 🍩",
+        "Setting the table... almost there! 🍽",
+        "Taco-bout patience! We’re loading... 🌮",
+        "An apple a day... but this might take a second. 🍎",
+        "Cheeseburgers don’t rush, neither should you! 🍔",
+        "Healthy choices incoming... or are they? 🥗",
+        "Barbecue takes time, so does this! 🍗",
+        "Flipping pancakes... I mean, loading! 🥞",
+        "Rolling up some data sushi... 🍣",
+        "Popcorn’s not ready yet... loading! 🍿"
+    ]
 
     init(selectedTab: Binding<Int>, isSearchExpanded: Binding<Bool>) {
         dataFetcher = OpenFoodFactsFetcher()
@@ -27,195 +44,212 @@ struct FoodBarcodeScanner: View {
     }
 
     var body: some View {
-        ZStack {
-            ZStack {
-                if isScanning {
-                    BarcodeScannerView(barcode: $barcode, isScanning: $isScanning, dataFetcher: dataFetcher, context: context, day: fetchTodayDay(context: context))
-                        .overlay(
-                            Rectangle()
-                                .frame(width: 40, height: 3)
-                                .foregroundColor(.white)
-                        )
-                        .overlay(
-                            Rectangle()
-                                .frame(width: 3, height: 40)
-                                .foregroundColor(.white)
-                        ).ignoresSafeArea(.keyboard, edges: .bottom)
-                }
-                // Search block
-
-                ZStack{
-                    RoundedRectangle(cornerRadius: 25)
-                                    .fill(Color("Foreground"))
-                                    .frame(width:50,height: 50)
-                    Image(systemName: "magnifyingglass")
-                        .onTapGesture {
-                            isSearchExpanded=true
+        GeometryReader{ geo in
+            ScrollView{
+                ZStack {
+                    ZStack {
+                        if isScanning {
+                            BarcodeScannerView(barcode: $barcode, isScanning: $isScanning, dataFetcher: dataFetcher, context: context, day: fetchTodayDay(context: context))  .ignoresSafeArea(.keyboard, edges: .bottom)
+                                .overlay(
+                                    Rectangle()
+                                        .frame(width: 40, height: 3)
+                                        .foregroundColor(.white).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center).offset(y:-100)
+                                )  .ignoresSafeArea(.keyboard, edges: .bottom)
+                                .overlay(
+                                    Rectangle()
+                                        .frame(width: 3, height: 40)
+                                        .foregroundColor(.white).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center).offset(y:-100)
+                                ).ignoresSafeArea(.keyboard, edges: .bottom)
                         }
-                
-                }
-                .offset(y:300)// End of ZStack
-        .onAppear {
-            startScanningIfNeeded()
-        }
-        .onChange(of: barcode) { newValue in
-            if let barcode = newValue {
-                print("Barcode scanned: \(barcode)")
-                isLoading = true
-
-                dataFetcher.fetchFoodData(forBarcode: barcode, context: context, day: fetchTodayDay(context: context)) { fetchedFood, error in
-                    DispatchQueue.main.async {
-                        isLoading = false
-                        if let fetchedFood = fetchedFood {
-                            food = fetchedFood
-                            addFoodSheetOpen = true
-                            isScanning = false
-                        } else if let error = error {
-                            errorMessage = error
-                            showErrorAlert = true
-               
-                            isScanning = true
-                            self.barcode = nil
+                        // Search block
+                        if isLoading {
+                            ZStack {
+                                
+                                VStack(spacing: 10) {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                        .scaleEffect(1.5)
+                                    Text(loadingPrompts.randomElement() ?? "")
+                                        .foregroundColor(.white)
+                                        .font(.headline)
+                                }
+                                .padding()
+                                .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray5)).opacity(0.8))
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                            }.zIndex(3).offset(y:-100)
                         }
-                    }
-                }
-            }
-        }
-        .sheet(isPresented: $addFoodSheetOpen) {
-            if let food = food {
-                AddFoodSheet(food: food, selectedTab: $selectedTab).onAppear(){
-                    isSearchExpanded = false
-                }
-                    .onDisappear {
-                        isScanning = true
-                        
-                        barcode = nil
-                        dismiss()
-                    }.interactiveDismissDisabled()
-            }
-        }
-        .sheet(isPresented: $isSearchExpanded){
-            ZStack(alignment: .bottom) {
-                Form {
-                    // Search Bar
-                    Section {
-                        HStack {
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(.blue)
-                                .padding(.leading, 8)
-
-                            TextField("Search for a food", text: $searchText)
-                                .padding(10)
-                                .background(Color.clear)
-                                .onSubmit { performSearch(searchTerm: searchText) }
-                        }
-                        .frame(height: 44)
-                        .background(RoundedRectangle(cornerRadius: 10).fill(Color("Foreground")))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color(.systemGray4), lineWidth: 1)
-                        )
-                    }
-                    .listRowBackground(Color("Background"))
-
-                    // Recent Foods
-                    if let today = today {
-                        Section(header: Text("Recent Foods").font(.headline).foregroundColor(.primary)) {
-                            ForEach(today.foods) { fooditem in
-                                Meals_Item(food: fooditem)
-                                    .listRowBackground(Color("Background")).onTapGesture {
+                        ZStack(alignment: .top){
+                            
+                            
+                            SlideOverCard(position: $cardPosition) {
+                                
+                                VStack {
+                                    
+                                    Handle().padding(.top,10)  .ignoresSafeArea(.keyboard, edges: .bottom)
+                                    
+                                    HStack {
                                         
-                                        food = fooditem
-                                        addFoodSheetOpen = true
+                                        Image(systemName: "magnifyingglass")
+                                            .foregroundColor(.blue)
+                                            .padding(.leading, 8).scaledToFill()  .ignoresSafeArea(.keyboard, edges: .bottom)
+                                        
+                                        TextField("Search for a food", text: $searchText)  .ignoresSafeArea(.keyboard, edges: .bottom).scrollDismissesKeyboard(.interactively)
+                                        
+                                            .background(Color.clear)
+                                            .onSubmit { performSearch(searchTerm: searchText) }
+                                            .focused($isFocused)
+                                    }  .ignoresSafeArea(.keyboard, edges: .bottom)
+                                        .frame(height: 50)
+                                        .background(RoundedRectangle(cornerRadius: 10).fill(Color("Foreground")))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(Color(.systemGray4), lineWidth: 1)
+                                        )
+                                    
+                                        .listRowBackground(Color("Background")).padding(.horizontal,10)
+                                   
+                                    if !searchResults.isEmpty {
+                                        ZStack{
+                                            Color("Background")
+                                            List{
+                                                Section(header: Text("Search Results").font(.headline).foregroundColor(.primary)) {
+                                                    ForEach(searchResults) { item in
+                                                        HStack(spacing: 12) {
+                                                            AsyncImage(url: item.imageURL) { image in
+                                                                image.resizable()
+                                                                    .scaledToFill()
+                                                                    .frame(width: 50, height: 50)
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                            } placeholder: {
+                                                                RoundedRectangle(cornerRadius: 8)
+                                                                    .fill(Color(.systemGray5))
+                                                                    .frame(width: 50, height: 50)
+                                                                    .overlay(ProgressView())
+                                                            }
+                                                            
+                                                            VStack(alignment: .leading, spacing: 4) {
+                                                                Text(item.name)
+                                                                    .font(.headline)
+                                                                    .foregroundColor(.primary)
+                                                                
+                                                                Text(item.brand)
+                                                                    .font(.subheadline)
+                                                                    .foregroundColor(.secondary)
+                                                            }
+                                                            
+                                                            Spacer()
+                                                            
+                                                            Button {
+                                                                addFoodFromSearch(item: item)
+                                                            } label: {
+                                                                Text("Add")
+                                                                    .font(.system(size: 14, weight: .semibold))
+                                                                    .padding(.horizontal, 12)
+                                                                    .padding(.vertical, 6)
+                                                                    .background(Color.blue)
+                                                                    .foregroundColor(.white)
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                            }
+                                                        }
+                                                        .padding(.vertical, 6)
+                                                        .listRowBackground(Color("Background"))
+                                                    }
+                                                }.listRowBackground(Color("Background"))
+                                            }.listRowBackground(Color("Foreground"))
+                                                .scrollContentBackground(.hidden)
+                                        }  .ignoresSafeArea(.keyboard, edges: .bottom)
                                     }
-                            }
-                        }
-                    }
-
-                    // Search Results
-                    if !searchResults.isEmpty {
-                        Section(header: Text("Search Results").font(.headline).foregroundColor(.primary)) {
-                            ForEach(searchResults) { item in
-                                HStack(spacing: 12) {
-                                    AsyncImage(url: item.imageURL) { image in
-                                        image.resizable()
-                                            .scaledToFill()
-                                            .frame(width: 50, height: 50)
-                                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                                    } placeholder: {
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(Color(.systemGray5))
-                                            .frame(width: 50, height: 50)
-                                            .overlay(ProgressView())
-                                    }
-
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(item.name)
-                                            .font(.headline)
-                                            .foregroundColor(.primary)
-
-                                        Text(item.brand)
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
-                                    }
-
                                     Spacer()
-
-                                    Button {
-                                        addFoodFromSearch(item: item)
-                                    } label: {
-                                        Text("Add")
-                                            .font(.system(size: 14, weight: .semibold))
-                                            .padding(.horizontal, 12)
-                                            .padding(.vertical, 6)
-                                            .background(Color.blue)
-                                            .foregroundColor(.white)
-                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    
+                                    Spacer()
+                                    
+                                }.background(Color("Background"))  .ignoresSafeArea(.keyboard, edges: .bottom)
+                                
+                                
+                            }.edgesIgnoringSafeArea(.vertical)  .frame(maxWidth: .infinity)  .ignoresSafeArea(.keyboard, edges: .bottom)
+                            
+                            
+                        }.onChange(of: isFocused){ newvalue in
+                            if isFocused{
+                                cardPosition = .top
+                            }
+                            
+                        }  .ignoresSafeArea(.keyboard, edges: .bottom)
+                        
+                            .onAppear {
+                                startScanningIfNeeded()
+                            }
+                            .onChange(of: barcode) { newValue in
+                                if let barcode = newValue {
+                                    print("Barcode scanned: \(barcode)")
+                                    isLoading = true
+                                    addFoodSheetOpen = true
+                                    dataFetcher.fetchFoodData(forBarcode: barcode, context: context, day: fetchTodayDay(context: context)) { fetchedFood, error in
+                                        DispatchQueue.main.async {
+                                            isLoading = false
+                                            if let fetchedFood = fetchedFood {
+                                                food = fetchedFood
+                                                
+                                                isScanning = false
+                                            } else if let error = error {
+                                                errorMessage = error
+                                                showErrorAlert = true
+                                                
+                                                isScanning = true
+                                                self.barcode = nil
+                                            }
+                                        }
                                     }
                                 }
-                                .padding(.vertical, 6)
-                                .listRowBackground(Color("Background"))
+                            }.onChange(of: isLoading){
+                                print("Loading")
                             }
-                        }
-                    }
+                            .onChange(of: cardPosition){
+                                if cardPosition == .bottom{
+                                    isFocused = false
+                                }
+                            }
+                            .sheet(isPresented: $addFoodSheetOpen) {
+                                if isLoading {
+                                    ZStack {
+                                        
+                                        VStack(spacing: 10) {
+                                            ProgressView()
+                                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                                .scaleEffect(1.5)
+                                            Text(loadingPrompts.randomElement() ?? "")
+                                                .foregroundColor(.white)
+                                                .font(.headline)
+                                        }
+                                        .padding()
+                                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray5)).opacity(0.8))
+                                    }
+                                }
+                                if let food = food {
+                                    AddFoodSheet(food: food, selectedTab: $selectedTab).onAppear(){
+                                        isSearchExpanded = false
+                                    }
+                                    .onDisappear {
+                                        isScanning = true
+                                        
+                                        barcode = nil
+                                        dismiss()
+                                        cardPosition = .bottom
+                                    }.interactiveDismissDisabled()
+                                }
+                            }  .ignoresSafeArea(.keyboard, edges: .bottom)
+                        
+                        
+                    }  .ignoresSafeArea(.keyboard, edges: .bottom)
                     
-                }
-                .scrollContentBackground(.hidden)
-                .listRowBackground(Color.clear)
-
-                .alert(isPresented: $showErrorAlert) {
-                    Alert(title: Text("Error"), message: Text(errorMessage ?? "An error occurred."), dismissButton: .default(Text("OK")))
-                }
-
-                // Loading Indicator
-                if isLoading {
-                    ZStack {
-                        Color.black.opacity(0.6).edgesIgnoringSafeArea(.all)
-                        VStack(spacing: 10) {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                .scaleEffect(1.5)
-                            Text("Fetching food data...")
-                                .foregroundColor(.white)
-                                .font(.headline)
-                        }
-                        .padding()
-                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray5)).opacity(0.8))
-                    }
-                }
+                    // Computed Property for Today's Date
+                    
+                    
+                }  .ignoresSafeArea(.keyboard, edges: .bottom)
             }
-
-            // Computed Property for Today's Date
-            var today: Day? {
-                let todayStart = Calendar.current.startOfDay(for: Date())
-                return days.first { Calendar.current.isDate($0.date, inSameDayAs: todayStart) }
-            }
-
-        }
-                
+        }.scrollDisabled(true).scrollDismissesKeyboard(.interactively)
     }
-        }
-    }
+    
 
     func performSearch(searchTerm: String) {
         isLoading = true // Show loading indicator
@@ -287,4 +321,5 @@ struct FoodBarcodeScanner: View {
             fatalError("Error fetching or creating today's Day: \(error)")
         }
     }
+    
 }
