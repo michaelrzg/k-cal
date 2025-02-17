@@ -16,7 +16,6 @@ struct Home: View {
     @Query private var food_items: [Food]
     @Binding var selectedTab: Int // Bind to ContentView's tab selection
     @Binding var isSearchExpanded: Bool
-    @State var user: User = .init(name: "Test", calorie_goal: 2500, protein_goal: 120, carb_goal: 250, fat_goal: 50)
     @State var calorie_goal: Int = 0
     @State var todays_calories: Int = 0
     @State var todays_progress: Float = 0.0
@@ -29,7 +28,10 @@ struct Home: View {
     @State var excersise_calories: Int = 100 // TODO: Get health data from fitness app
     @State private var showing_edit_sheet = false
     @State private var food_being_edited: Food?
-
+    private var user: User? {
+        users.first
+    }
+  
     var calorie_formula_font_size: CGFloat = 17
 
     var body: some View {
@@ -111,6 +113,9 @@ struct Home: View {
                         updateProgress()
                         fetchTodayDay(context: context, calories: $todays_calories)
                         print("Protein: \(protein), Carbs: \(carbs), Fat: \(fat)")
+                    }.onChange(of: food_items) { _ in
+                        print("Food inserted here")
+                        
                     }
 // test button
 //                    Button("Add Snack") {
@@ -147,6 +152,7 @@ struct Home: View {
                             fetchTodayDay(context: context, calories: $todays_calories)
                             updateProgress()
                         }
+                        
 
                         Menu {
                             HStack {
@@ -251,14 +257,18 @@ struct Home: View {
     }
 
     func updateProgress() {
-        todays_progress = scale_progress(progress: min(Float(todays_calories) / Float(calorie_goal), 1.0))
-        protein_progress = scale_progress(progress: Float(protein) / Float(user.protein_goal))
-        carbs_progress = scale_progress(progress: Float(carbs) / Float(user.carb_goal))
-        fat_progress = scale_progress(progress: Float(fat) / Float(user.fat_goal))
+        if let currentUser = user {
+            todays_progress = scale_progress(progress: min(Float(todays_calories) / Float(calorie_goal), 1.0))
+            protein_progress = scale_progress(progress: Float(protein) / Float(currentUser.protein_goal))
+            carbs_progress = scale_progress(progress: Float(carbs) / Float(currentUser.carb_goal))
+            fat_progress = scale_progress(progress: Float(fat) / Float(currentUser.fat_goal))
+        }
     }
 
     func load_calorie_goal() {
-        calorie_goal = user.calorie_goal
+        if let currentUser = user { // Use currentUser safely
+                  calorie_goal = currentUser.calorie_goal
+              }
     }
 
     func add_food(food: Food, context: ModelContext) {
@@ -271,9 +281,10 @@ struct Home: View {
     }
 
     func delete_food(food: Food) {
-        context.delete(food)
-        try! context.save()
-        fetchTodayDay(context: context, calories: $todays_calories, protein: $protein, carbohydrates: $carbs, fats: $fat)
+        
+        
+        var today = fetchTodayDay(context: context, calories: $todays_calories, protein: $protein, carbohydrates: $carbs, fats: $fat)
+        today.foods.removeAll (where:{ $0 == food } )
         updateProgress()
         print(food_items.count)
     }
@@ -281,9 +292,6 @@ struct Home: View {
     init(selectedTab: Binding<Int>, isSearchExpanded: Binding<Bool>) {
         _selectedTab = selectedTab
         _isSearchExpanded = isSearchExpanded
-        if !users.isEmpty {
-            user = users[0]
-        }
     }
 }
 

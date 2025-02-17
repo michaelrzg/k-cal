@@ -42,7 +42,7 @@ class OpenFoodFactsFetcher {
                     let sodium = self.extractNutrientValue(from: nutriments, for: "sodium") ?? 0
                     let url = product["image_url"] as? String ?? ""
                     let ingredients = product["ingredients_text"] as? String ?? "No ingredients available"
-
+                    let brand = product["brands"] as? String
                     let newFood = Food(
                         name: name,
                         day: day,
@@ -56,13 +56,12 @@ class OpenFoodFactsFetcher {
                         sugars: sugar,
                         fiber: fiber,
                         ingredients: ingredients,
-                        url: url
+                        url: url,
+                        barcode: barcode,
+                        brand: brand
                     )
                     
-                    print(newFood.url)
-                    context.insert(newFood)
-                    let search = Search(food: newFood, day: Date())
-                    context.insert(search)
+                   
 
                     do {
                         try context.save()
@@ -104,20 +103,25 @@ class OpenFoodFactsFetcher {
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                    let products = json["products"] as? [[String: Any]]
-                {
+                {   print(json)
                     var searchResults: [FoodSearchItem] = []
 
                     for product in products {
                         guard let name = product["product_name"] as? String,
                               let brand = product["brands"] as? String,
                               let imageURLString = product["image_front_thumb_url"] as? String,
-                              let imageURL = URL(string: imageURLString)
+                              let imageURL = URL(string: imageURLString),
+                              let nutriments = product["nutriments"] as? [String: Any],
+                              let calories = self.extractNutrientValue(from: nutriments, for: "energy-kcal"),
+                              let fat = self.extractNutrientValue(from: nutriments, for: "fat_serving"),
+                              let protein = self.extractNutrientValue(from: nutriments, for: "proteins_serving"),
+                              let carbs = self.extractNutrientValue(from: nutriments, for: "carbohydrates")
                         else {
                             continue // Skip products with missing data
                         }
 
                         let barcode = product["code"] as? String ?? ""
-                        let foodSearchItem = FoodSearchItem(name: name, brand: brand, barcode: barcode, imageURL: imageURL)
+                        let foodSearchItem = FoodSearchItem(name: name, brand: brand, barcode: barcode, imageURL: imageURL, calories: calories as! Int, protein: protein as! Int, carbohydrates: carbs as! Int, fat: fat as! Int)
                         searchResults.append(foodSearchItem)
                     }
 
@@ -164,4 +168,8 @@ struct FoodSearchItem: Identifiable {
     let brand: String
     let barcode: String
     let imageURL: URL?
+    let calories: Int
+    let protein: Int
+    let carbohydrates: Int
+    let fat: Int
 }

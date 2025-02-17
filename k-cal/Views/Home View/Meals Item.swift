@@ -18,6 +18,11 @@ struct Meals_Item: View {
                 Text("\(food.calories)/cal").foregroundStyle(Color("k-cal"))
             }
             HStack {
+                Text("\(food.brand ?? "")").font(.subheadline)
+                    .foregroundColor(.secondary)
+                Spacer()
+                Spacer()
+                Spacer()
                 Text("\(food.protein)")
                 Text("p").foregroundStyle(Color("Protein"))
                 Text("|")
@@ -26,8 +31,7 @@ struct Meals_Item: View {
                 Text("|")
                 Text("\(food.fat)")
                 Text("f").foregroundStyle(Color("Fat"))
-                Spacer()
-                Text("^[\(food.servings) servings](inflect: true)").foregroundStyle(Color("k-cal"))
+                
             }
         }
     }

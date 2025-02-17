@@ -19,7 +19,7 @@ struct CreateUserView: View {
     @State private var fatGoal: String = ""
     @State private var showingAlert = false
     @State private var alertMessage = ""
-
+    @Binding private var welcome_complete: Bool
     var body: some View {
         NavigationView {
             Form {
@@ -37,6 +37,9 @@ struct CreateUserView: View {
 
                 Button("Create User") {
                     createUser()
+                    dismiss()
+                    welcome_complete = true
+                    
                 }
                 .disabled(name.isEmpty || calorieGoal.isEmpty || proteinGoal.isEmpty || carbGoal.isEmpty || fatGoal.isEmpty) // Disable button if any field is empty
             }
@@ -77,5 +80,8 @@ struct CreateUserView: View {
             alertMessage = "Error creating user. Please try again."
             showingAlert = true
         }
+    }
+    init(welcome_complete: Binding<Bool>){
+        self._welcome_complete = welcome_complete
     }
 }

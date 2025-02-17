@@ -6,7 +6,20 @@ struct FoodBarcodeScanner: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query private var days: [Day]
+    @Query private var food_items: [Food]
     @Query(sort: [SortDescriptor(\Search.day, order: .reverse)]) var recentSearches: [Search]
+    var uniqueRecentSearches: [Search] {
+           var seen = Set<String>() // Create a Set to track seen items
+           var uniqueItems = [Search]()
+
+        for item in recentSearches {
+            if !seen.contains(item.food.name) { // Check if the item has been seen
+                   uniqueItems.append(item) // Add the item to the unique array
+                seen.insert(item.food.name) // Add the item to the Set
+               }
+           }
+           return uniqueItems // Return the array of unique items
+       }
     let dataFetcher: OpenFoodFactsFetcher
     @State private var isScanning = true
     @State private var barcode: String?
@@ -22,6 +35,7 @@ struct FoodBarcodeScanner: View {
     @Binding private var isSearchExpanded: Bool
     @Binding var selectedTab: Int
     @FocusState private var isFocused: Bool
+    
     let loadingPrompts = [
         "Hang tight... calculating deliciousness! 🍔",
         "Avocados are still expensive... but we’re loading! 🥑",
@@ -50,7 +64,7 @@ struct FoodBarcodeScanner: View {
                 ZStack {
                     ZStack {
                         if isScanning {
-                            BarcodeScannerView(barcode: $barcode, isScanning: $isScanning, dataFetcher: dataFetcher, context: context, day: fetchTodayDay(context: context))  .ignoresSafeArea(.keyboard, edges: .bottom)
+                            BarcodeScannerView(barcode: $barcode, isScanning: $isScanning, dataFetcher: dataFetcher, context: context, day: fetchTodayDay(context: context))  .ignoresSafeArea(.keyboard, edges: .bottom).ignoresSafeArea()
                                 .overlay(
                                     Rectangle()
                                         .frame(width: 40, height: 3)
@@ -75,7 +89,7 @@ struct FoodBarcodeScanner: View {
                                         .font(.headline)
                                 }
                                 .padding()
-                                .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray5)).opacity(0.8))
+                                //.background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray5)).opacity(0.8))
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                             }.zIndex(3).offset(y:-100)
                         }
@@ -136,39 +150,46 @@ struct FoodBarcodeScanner: View {
                                                                     .font(.headline)
                                                                     .foregroundColor(.primary)
                                                                 
-                                                                Text(item.brand)
-                                                                    .font(.subheadline)
-                                                                    .foregroundColor(.secondary)
+                                                                HStack{
+                                                                    Text(item.brand)
+                                                                        .font(.subheadline)
+                                                                        .foregroundColor(.secondary)
+                                                                    Spacer()
+                                                                    Text("\(item.protein)")
+                                                                    Text("p").foregroundStyle(Color("Protein"))
+                                                                    Text("|")
+                                                                    Text("\(item.carbohydrates)")
+                                                                    Text("c").foregroundStyle(Color("Carbohydrate"))
+                                                                    Text("|")
+                                                                    Text("\(item.fat)")
+                                                                    Text("f").foregroundStyle(Color("Fat"))
+                                                                }
                                                             }
                                                             
                                                             Spacer()
                                                             
                                                             Button {
                                                                 addFoodFromSearch(item: item)
+                                                                searchText = ""
                                                             } label: {
-                                                                Text("Add")
-                                                                    .font(.system(size: 14, weight: .semibold))
-                                                                    .padding(.horizontal, 12)
-                                                                    .padding(.vertical, 6)
-                                                                    .background(Color.blue)
-                                                                    .foregroundColor(.white)
-                                                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                Image(systemName: "plus.circle").scaleEffect(1.3)
                                                             }
                                                         }
                                                         .padding(.vertical, 6)
                                                         .listRowBackground(Color("Background"))
                                                     }
                                                 }.listRowBackground(Color("Background"))
+                                                Spacer()
                                             }.listRowBackground(Color("Foreground"))
                                                 .scrollContentBackground(.hidden)
                                         }  .ignoresSafeArea(.keyboard, edges: .bottom)
                                     }
-                                    else if searchText.isEmpty && !enterPressed {
+                                    else if searchText.isEmpty || !enterPressed{
                                         ZStack{
                                             Color("Background")
                                             List{
-                                                Section(header: Text("Recent Searches").font(.headline).foregroundColor(.primary)) {
-                                                    ForEach(recentSearches) { item in
+                                                Section(header: Text("History").font(.headline).foregroundColor(.primary)) {
+                                                    ForEach(uniqueRecentSearches.prefix(5)) { item in
                                                         HStack(spacing: 12) {
                                                             
                                                             if let url = URL(string: item.food.url){
@@ -189,23 +210,28 @@ struct FoodBarcodeScanner: View {
                                                                 Text(item.food.name)
                                                                     .font(.headline)
                                                                     .foregroundColor(.primary)
-                                                                
-                                                          
+                                                                HStack{
+                                                                    Text(item.food.brand ?? "")
+                                                                        .font(.subheadline)
+                                                                        .foregroundColor(.secondary)
+                                                                    Spacer()
+                                                                    Text("\(item.food.protein)")
+                                                                    Text("p").foregroundStyle(Color("Protein"))
+                                                                    Text("|")
+                                                                    Text("\(item.food.carbohydrates)")
+                                                                    Text("c").foregroundStyle(Color("Carbohydrate"))
+                                                                    Text("|")
+                                                                    Text("\(item.food.fat)")
+                                                                    Text("f").foregroundStyle(Color("Fat"))
+                                                                }
                                                             }
                                                             
                                                             Spacer()
                                                             
                                                             Button {
-                                                               food = item.food
-                                                                addFoodSheetOpen = true
+                                                                addFoodFromBarcode(item: item.food)
                                                             } label: {
-                                                                Text("Add")
-                                                                    .font(.system(size: 14, weight: .semibold))
-                                                                    .padding(.horizontal, 12)
-                                                                    .padding(.vertical, 6)
-                                                                    .background(Color.blue)
-                                                                    .foregroundColor(.white)
-                                                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                Image(systemName: "plus.circle").scaleEffect(1.3)
                                                             }
                                                         }
                                                         .padding(.vertical, 6)
@@ -245,6 +271,11 @@ struct FoodBarcodeScanner: View {
                                 cardPosition = .top
                             }
                             
+                        }.onChange(of: searchText) { newValue in
+                            if newValue.isEmpty {
+                                searchResults = [] // Clear search results
+                                enterPressed = false // Reset enterPressed
+                            }
                         }  .ignoresSafeArea(.keyboard, edges: .bottom)
                         
                             .onAppear {
@@ -349,6 +380,27 @@ struct FoodBarcodeScanner: View {
     }
 
     func addFoodFromSearch(item: FoodSearchItem) {
+        isLoading = true
+        dataFetcher.fetchFoodData(forBarcode: item.barcode, context: context, day: fetchTodayDay(context: context)) { fetchedFood, error in
+            DispatchQueue.main.async {
+                isLoading = false
+                if let fetchedFood = fetchedFood {
+                    food = fetchedFood
+                    addFoodSheetOpen = true
+                    isScanning = false
+                    
+                } else if let error = error {
+                    errorMessage = error
+                    showErrorAlert = true
+                    isScanning = true
+                    barcode = nil
+                }
+            }
+        }
+       
+        
+    }
+    func addFoodFromBarcode(item: Food) {
         isLoading = true
         dataFetcher.fetchFoodData(forBarcode: item.barcode, context: context, day: fetchTodayDay(context: context)) { fetchedFood, error in
             DispatchQueue.main.async {

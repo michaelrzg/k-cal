@@ -161,6 +161,10 @@ struct AddFoodSheet: View {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button("Save") {
                         print("Saving...")
+                        context.insert(food)
+                        print("serch inserted")
+                        let search = Search(food: food, day: Date())
+                        context.insert(search)
                         dismiss()
                         selectedTab = 0
                     }
@@ -168,7 +172,6 @@ struct AddFoodSheet: View {
                 ToolbarItemGroup(placement: .topBarLeading) {
                     Button("Cancel") {
                         print("Cancel...")
-                        context.delete(food)
                         dismiss()
                         selectedTab = 1
                     }
@@ -178,7 +181,6 @@ struct AddFoodSheet: View {
                     .onEnded { _ in
 
                         print("Cancel...")
-                        context.delete(food)
                         dismiss()
                         selectedTab = 1
                     }

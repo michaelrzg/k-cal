@@ -1,9 +1,9 @@
-//
 //  BarcodeScannerViewController.swift
 //  k-cal
 //
 //  Created by Michael Rizig on 2/12/25.
 //
+
 import AVFoundation
 import SwiftData
 import SwiftUI
@@ -72,8 +72,26 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
 
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         previewLayer.videoGravity = .resizeAspectFill
-        previewLayer.frame = view.layer.bounds
-        view.layer.addSublayer(previewLayer)
+
+        // *** KEY CHANGES START HERE ***
+        view.backgroundColor = .black // Fill behind safe area
+
+        // Set video orientation (CRUCIAL!)
+        if let connection = previewLayer.connection {
+            if connection.isVideoOrientationSupported {
+                connection.videoOrientation = .portrait // Or your desired orientation
+            }
+        }
+
+        view.layer.addSublayer(previewLayer) // Add *before* setting frame
+
+        previewLayer.frame = view.layer.bounds // Initial frame
+
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
+        previewLayer.frame = view.layer.bounds // Frame after layout
+
+        // *** KEY CHANGES END HERE ***
 
         startScanning()
     }
@@ -94,6 +112,7 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        previewLayer.frame = view.layer.bounds
+        // *** KEY CHANGE: Ensure frame is updated ***
+        previewLayer.frame = view.layer.bounds // Update in case of layout changes
     }
 }

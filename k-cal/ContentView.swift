@@ -9,14 +9,17 @@ struct ContentView: View {
     @State var meal: Meal?
     @State private var showUserView = false
     @State var isSearchExpanded: Bool = false
+    @State var welcome_complete: Bool = false
+    @State var header_color: Color = Color("Background")
     @Query private var users: [User]
     var body: some View {
         Group{
-            if !hasLaunchedBefore{
-                WelcomeView().onDisappear(){
+            if !hasLaunchedBefore && !welcome_complete{
+                
+                WelcomeView(welcome_complete: $welcome_complete).onDisappear(){
                     if hasLaunchedBefore == false{
                         hasLaunchedBefore = true
-                        print("firstlaunch  ")
+                        print("first launch complete")
                     }
                     
                 }
@@ -27,7 +30,7 @@ struct ContentView: View {
                 NavigationStack {
                     HStack {
                         ZStack {
-                            Color("Background").ignoresSafeArea()
+                            header_color.ignoresSafeArea()
                             HStack {
                                 HStack {
                                     HStack {
@@ -77,6 +80,18 @@ struct ContentView: View {
                         
                     }.sheet(isPresented: $showUserView) { // Present UserView as a sheet
                         UserPageView()
+                    }.onChange(of: selectedTab){
+                        if selectedTab == 1{
+                            withAnimation(.easeInOut(duration: 1)){
+                                header_color = Color.clear
+                            }
+                            
+                        }
+                        else{
+                            
+                                header_color = Color("Background")
+                            
+                        }
                     }
                 }
             }

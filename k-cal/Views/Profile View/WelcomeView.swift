@@ -8,15 +8,19 @@
 import SwiftUI
 
 struct WelcomeView: View {
+    @Environment(\.dismiss) var dismiss
     @State private var isAnimating = false
     @State private var opacity = 0.0
     @State private var welcome_opacity = 0.0
     @State private var logo_opacity = 0.0
     @State private var tap_below_opacity = 0.0
+    @State private var button_opacity = 0.0
     @State private var free_opacy = 0.0
     @State private var free_opacy2 = 0.0
     @State private var free_opacy3 = 0.0
     @State private var showingCreateUser = false
+    @Binding private var welcome_complete: Bool
+    @State private var welcome_complete_buffer: Bool = false
     var body: some View {
 
 
@@ -32,11 +36,12 @@ struct WelcomeView: View {
                                      HStack {
                                          Image(systemName: "barcode.viewfinder").foregroundStyle(Color("k-cal")).padding(.top, 10)
                                          Text("k-cal").font(.headline).foregroundStyle(Color("k-cal")).padding(.top, 10)
-                                     }.scaleEffect(2.5)
+                                     }.scaleEffect(3.0)
                                  }.frame(maxWidth: .infinity, alignment: .center)
                                  
                              }.padding(.bottom, 10).opacity(opacity)
                             Spacer()
+                             Spacer()
                              Spacer()
                          }
                     VStack{
@@ -65,10 +70,16 @@ struct WelcomeView: View {
                                         .cornerRadius(12) // Match Apple's corner radius
                                 }.padding(.vertical, 2) // Adjust padding for height
                             .padding(.horizontal, 24)
-                            .opacity(tap_below_opacity)
+                            .opacity(button_opacity)
                             .fullScreenCover(isPresented: $showingCreateUser) { // Present the view
-                                        CreateUserView()
+                                CreateUserView(welcome_complete: $welcome_complete_buffer).onDisappear(){
+                                    if welcome_complete_buffer
+                                    {
+                                        welcome_complete = true
+                                        print("GE")
                                     }
+                                }
+                            }
                         
                          }
                         
@@ -80,7 +91,7 @@ struct WelcomeView: View {
                          } completion: {
                              
                              
-                             withAnimation(.easeInOut(duration: 1.5)) { // Opacity animation
+                             withAnimation(.easeInOut(duration: 1.0)) { // Opacity animation
                                  welcome_opacity = 1.0
                              } completion: {
                                  withAnimation(.easeInOut(duration: 1.2)) { // Opacity animation
@@ -92,8 +103,11 @@ struct WelcomeView: View {
                                          withAnimation(.easeInOut(duration: 1.2)) { // Opacity animation
                                              free_opacy3 = 1.0
                                          } completion: {
-                                             withAnimation(.easeInOut(duration: 2.5)) { // Opacity animation
+                                             withAnimation(.easeInOut(duration: 3.0)) { // Opacity animation
                                                  tap_below_opacity = 1.0
+                                             }
+                                             withAnimation(.easeInOut(duration: 1.0)) { // Opacity animation
+                                                 button_opacity = 1.0
                                              }
                                          }
                                      }
@@ -101,18 +115,22 @@ struct WelcomeView: View {
                                  
                              }
                          }
-                        
-                         withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) { // Scale animation
-                             isAnimating = true
-                         }
-                         print("ani")
+                     }
+                     .onChange(of: welcome_complete){
+                         dismiss()
                      }
                  
             }
         
     }
+    
+    init(welcome_complete: Binding<Bool>)
+    {
+        self._welcome_complete = welcome_complete
+    }
 }
 
 #Preview {
-    WelcomeView()
+    @State var sh = false
+    WelcomeView(welcome_complete: $sh)
 }
