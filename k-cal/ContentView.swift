@@ -10,32 +10,35 @@ struct ContentView: View {
     @State private var showUserView = false
     @State var isSearchExpanded: Bool = false
     @State var welcome_complete: Bool = false
-    @State var header_color: Color = Color("Background")
+    @State var header_text: String = "k-cal"
+    
     @Query private var users: [User]
     var body: some View {
-        Group{
-            if !hasLaunchedBefore && !welcome_complete{
-                
-                WelcomeView(welcome_complete: $welcome_complete).onDisappear(){
-                    if hasLaunchedBefore == false{
-                        hasLaunchedBefore = true
-                        print("first launch complete")
-                    }
-                    
-                }
-                
+        ZStack{}.onAppear(){
+            if users.isEmpty == true{
+                hasLaunchedBefore = false
             }
-            else{
+        }.fullScreenCover(isPresented: .constant(!hasLaunchedBefore && !welcome_complete)) {
+            WelcomeView(welcome_complete: $welcome_complete)
+                .onDisappear {
+                    if !hasLaunchedBefore, !users.isEmpty {
+                        hasLaunchedBefore = true
+                        print("First launch complete")
+                    }
+                }
+        }
+        Group{
+            
                 
                 NavigationStack {
                     HStack {
                         ZStack {
-                            header_color.ignoresSafeArea()
+                            Color("Background").ignoresSafeArea()
                             HStack {
                                 HStack {
                                     HStack {
                                         Image(systemName: "barcode.viewfinder").foregroundStyle(Color("k-cal")).padding(.top, 10)
-                                        Text("k-cal").font(.headline).foregroundStyle(Color("k-cal")).padding(.top, 10)
+                                        Text(header_text).font(.headline).foregroundStyle(Color("k-cal")).padding(.top, 10)
                                     }
                                 }.frame(maxWidth: .infinity, alignment: .center)
                                 
@@ -81,20 +84,26 @@ struct ContentView: View {
                     }.sheet(isPresented: $showUserView) { // Present UserView as a sheet
                         UserPageView()
                     }.onChange(of: selectedTab){
-                        if selectedTab == 1{
-                            withAnimation(.easeInOut(duration: 1)){
-                                header_color = Color.clear
+                         if selectedTab == 0{
+                             withAnimation(.easeInOut(duration: 0.5)){
+                                header_text = "k-cal"
                             }
                             
                         }
-                        else{
+                        else if selectedTab == 1{
+                            withAnimation(.easeInOut(duration: 0.5)){
+                                header_text = "scan barcode"
+                            }
                             
-                                header_color = Color("Background")
-                            
+                        }
+                        else if selectedTab == 2{
+                            withAnimation(.easeInOut(duration: 0.5)){
+                                header_text = "diary"
+                            }
                         }
                     }
                 }
-            }
+            
         }
     }
 

@@ -67,7 +67,7 @@ struct SlideOverCard<Content: View> : View {
 
 enum CardPosition: CGFloat {
     case top = 20
-    case middle = 100
+    case middle = 21
     case bottom = 585
 }
 

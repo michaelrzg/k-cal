@@ -37,19 +37,18 @@ struct FoodBarcodeScanner: View {
     @FocusState private var isFocused: Bool
     
     let loadingPrompts = [
-        "Hang tight... calculating deliciousness! 🍔",
-        "Avocados are still expensive... but we’re loading! 🥑",
         "Summoning the food gods... 🍕",
-        "Loading... don’t snack yet! 🍩",
-        "Setting the table... almost there! 🍽",
-        "Taco-bout patience! We’re loading... 🌮",
-        "An apple a day... but this might take a second. 🍎",
-        "Cheeseburgers don’t rush, neither should you! 🍔",
-        "Healthy choices incoming... or are they? 🥗",
-        "Barbecue takes time, so does this! 🍗",
-        "Flipping pancakes... I mean, loading! 🥞",
-        "Rolling up some data sushi... 🍣",
-        "Popcorn’s not ready yet... loading! 🍿"
+        "Consulting the avocado oracle... 🥑",
+        "Asking the cheeseburger council... 🍔",
+        "Taco-vering all the details... 🌮",
+        "Rolling the donut of destiny... 🍩",
+        "Bribing the broccoli board... 🥦",
+        "Slicing through the data... 🍉",
+        "Fishing for facts... 🍣",
+        "Calculating the cheese-to-crust ratio... 🍕",
+        "Popping the data kernels... 🍿",
+        "Marinating the results... 🍗",
+        "Flipping through the pancake archives... 🥞"
     ]
 
     init(selectedTab: Binding<Int>, isSearchExpanded: Binding<Bool>) {
@@ -64,17 +63,28 @@ struct FoodBarcodeScanner: View {
                 ZStack {
                     ZStack {
                         if isScanning {
-                            BarcodeScannerView(barcode: $barcode, isScanning: $isScanning, dataFetcher: dataFetcher, context: context, day: fetchTodayDay(context: context))  .ignoresSafeArea(.keyboard, edges: .bottom).ignoresSafeArea()
-                                .overlay(
-                                    Rectangle()
-                                        .frame(width: 40, height: 3)
-                                        .foregroundColor(.white).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center).offset(y:-100)
-                                )  .ignoresSafeArea(.keyboard, edges: .bottom)
-                                .overlay(
-                                    Rectangle()
-                                        .frame(width: 3, height: 40)
-                                        .foregroundColor(.white).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center).offset(y:-100)
-                                ).ignoresSafeArea(.keyboard, edges: .bottom)
+                            BarcodeScannerView(barcode: $barcode, isScanning: $isScanning, dataFetcher: dataFetcher, context: context, day: fetchTodayDay(context: context))  .ignoresSafeArea(.keyboard, edges: .bottom).ignoresSafeArea().overlay(
+                                ZStack {
+                                    // Black overlay with 60% opacity
+                                    Color.black.opacity(0.6)
+                                        .edgesIgnoringSafeArea(.all)
+                                        .overlay(
+                                            // Clear rectangle in the center
+                                            Rectangle()
+                                                .frame(width: 200, height: 100)
+                                                .blendMode(.destinationOut)
+                                        )
+                                        .overlay(
+                                            // Clear rectangle in the center
+                                            Rectangle()
+                                                .stroke(Color.white,lineWidth: 2)
+                                                .frame(width: 200, height: 100)
+                                                
+                                        )
+                                }
+                                    .compositingGroup().offset(y:-130) // Ensures blendMode works correctly
+                            )
+                                
                         }
                         // Search block
                         if isLoading {
@@ -89,7 +99,7 @@ struct FoodBarcodeScanner: View {
                                         .font(.headline)
                                 }
                                 .padding()
-                                //.background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray5)).opacity(0.8))
+                                .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray5)).opacity(0.8))
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                             }.zIndex(3).offset(y:-100)
                         }
@@ -100,7 +110,7 @@ struct FoodBarcodeScanner: View {
                                 
                                 VStack {
                                     
-                                    Handle().padding(.top,10)  .ignoresSafeArea(.keyboard, edges: .bottom)
+                                    Handle()  .ignoresSafeArea(.keyboard, edges: .bottom)
                                     
                                     HStack {
                                         
@@ -108,7 +118,7 @@ struct FoodBarcodeScanner: View {
                                             .foregroundColor(.blue)
                                             .padding(.leading, 8).scaledToFill()  .ignoresSafeArea(.keyboard, edges: .bottom)
                                         
-                                        TextField("Search for a food", text: $searchText)  .ignoresSafeArea(.keyboard, edges: .bottom).scrollDismissesKeyboard(.interactively)
+                                        TextField("Search by name", text: $searchText)  .ignoresSafeArea(.keyboard, edges: .bottom).scrollDismissesKeyboard(.interactively)
                                         
                                             .background(Color.clear)
                                             .onSubmit {
