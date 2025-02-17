@@ -25,7 +25,7 @@ struct ContentView: View {
                         hasLaunchedBefore = true
                         print("First launch complete")
                     }
-                }
+                }.ignoresSafeArea(.keyboard, edges: .bottom)
         }
         Group{
             

@@ -12,6 +12,7 @@ struct WeightScale: View {
     @State private var step = 0
     @State private var isBouncing = true
     @Binding private var next_disabled: Bool
+    @Binding private var user: User
     @State private var selectedCalories: Int = 2000  // Default starting value
    
     @State private var selectedActivityLevel: ActivityLevel = .lightlyActive // Default activity level
@@ -19,10 +20,10 @@ struct WeightScale: View {
     var calorieGoals: [Int] {
         return stride(from: 1500, to: 5050, by: 50).map { $0 }
     }
-    @State private var title_opacity = 0.0
-    @State private var activity_opacity = 0.0
-    @State private var calories_opacity = 0.0
-    @State private var protein_opacity = 0.0
+    @State private var title_opacity = 1.0
+    @State private var activity_opacity = 1.0
+    @State private var calories_opacity = 1.0
+    @State private var protein_opacity = 1.0
     @State private var protein: Int = 0 // Protein value (grams)
       @State private var carbs: Int = 0 // Carbs value (grams)
       @State private var fat: Int = 0 // Fat value (grams)
@@ -193,23 +194,8 @@ struct WeightScale: View {
             }.onAppear(){
                 isBouncing.toggle()
                 updateMacronutrients(for: selectedCalories, activityLevel: selectedActivityLevel)
-                withAnimation(.easeInOut(duration: 1)){
-                    title_opacity = 1
-                } completion: {
-                   
-                        withAnimation(.easeInOut(duration: 1)){
-                            activity_opacity = 1
-                        } completion: {
-                            withAnimation(.easeInOut(duration: 1)){
-                                calories_opacity = 1
-                            } completion: {
-                                withAnimation(.easeInOut(duration: 1)){
-                                    protein_opacity = 1
-                                }
-                            
-                        }
-                    }
-                }
+               
+                
             }
 
            
@@ -221,6 +207,7 @@ struct WeightScale: View {
             protein = Int(Double(calories) * proteinPercentage / 4) // Protein has 4 calories per gram
               carbs = Int(Double(calories) * carbsPercentage / 4)   // Carbs have 4 calories per gram
               fat = Int(Double(calories) * fatPercentage / 9)
+        update_user_profile()
        }
     func getMacronutrientRatios(for activityLevel: ActivityLevel) -> (Double, Double, Double) {
             switch activityLevel {
@@ -231,6 +218,7 @@ struct WeightScale: View {
             case .veryActive:
                 return (0.30, 0.50, 0.20)
             }
+        update_user_profile()
         }
     func updateCaloriesBasedOnActivityLevel() {
         switch selectedActivityLevel {
@@ -241,10 +229,18 @@ struct WeightScale: View {
         case .veryActive:
             selectedCalories = 3000
         }
+        update_user_profile()
     }
-    init(next_disabled: Binding<Bool>)
+    func update_user_profile(){
+        user.calorie_goal = selectedCalories
+        user.carb_goal = carbs
+        user.protein_goal = protein
+        user.fat_goal = fat
+    }
+    init(next_disabled: Binding<Bool>, user: Binding<User>)
     {
         self._next_disabled = next_disabled
+        self._user = user
     }
     
 }
@@ -257,5 +253,7 @@ enum ActivityLevel: String, CaseIterable {
 
 #Preview {
     @State var b = false
-    WeightScale(next_disabled: $b)
+    @State var user: User = User(name: "", calorie_goal: 0, protein_goal: 0, carb_goal: 0, fat_goal: 0)
+
+    WeightScale(next_disabled: $b, user: $user)
 }

@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CC7E94682D6323C200CA289F /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = CC7E94672D6323C200CA289F /* SDWebImageSwiftUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		CCC01F872D5A9F7D0058BF50 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC7E94682D6323C200CA289F /* SDWebImageSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = "k-cal";
 			packageProductDependencies = (
+				CC7E94672D6323C200CA289F /* SDWebImageSwiftUI */,
 			);
 			productName = "k-cal";
 			productReference = CCC01F762D5A9F7C0058BF50 /* k-cal.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = CCC01F6D2D5A9F7C0058BF50;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CCDDBDCE2D6322DC00C5188B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CCC01F772D5A9F7C0058BF50 /* Products */;
 			projectDirPath = "";
@@ -560,6 +569,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CCDDBDCE2D6322DC00C5188B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CC7E94672D6323C200CA289F /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CCDDBDCE2D6322DC00C5188B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CCC01F6E2D5A9F7C0058BF50 /* Project object */;
 }

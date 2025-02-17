@@ -12,6 +12,7 @@ struct WelcomeView: View {
     @State private var button_opacity = 0.0
     @State private var currentStep = 0
     @State private var next_disabled: Bool = false
+   @State var user: User = User(name: "", calorie_goal: 0, protein_goal: 0, carb_goal: 0, fat_goal: 0)
         let totalSteps = 3
     var body: some View {
         ZStack{
@@ -20,11 +21,14 @@ struct WelcomeView: View {
             VStack{
                 TabView(selection: $currentStep){
                     landing_page(welcome_complete: $welcome_complete).ignoresSafeArea().tag(0)
-                    WeightScale(next_disabled: $next_disabled).tag(1)
+                    User_Info(user: $user, next_disabled: $next_disabled).tag(1)
+                    WeightScale(next_disabled: $next_disabled, user: $user).tag(2)
                     
-                }
+                }.onAppear {
+                    UIScrollView.appearance().isScrollEnabled = false
+              }
                 .tabViewStyle(.page)
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
+                .ignoresSafeArea(.keyboard, edges: .bottom)
                 .gesture(DragGesture().onChanged { _ in })
                 Button(action: {
                     if currentStep < totalSteps - 1 {
@@ -38,10 +42,12 @@ struct WelcomeView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.blue)
+                        .background(Capsule().fill(next_disabled ? Color.gray : Color.blue))
                         .cornerRadius(12)
                         .padding(.horizontal, 24)
                 }.opacity(button_opacity)
+                    .ignoresSafeArea(.keyboard, edges: .bottom)
+                    .disabled(next_disabled)
                     
             }.onAppear(){
                 withAnimation(.easeInOut(duration: 1)){
