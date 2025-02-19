@@ -57,7 +57,9 @@ struct ContentView: View {
                     }
                     ZStack {
                         TabView(selection: $selectedTab) {
-                            Home(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
+                            Home(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, welcome_complete: $welcome_complete).onAppear() {
+                               
+                            }
                                 .tabItem {
                                     Image(systemName: "house")
                                     Text("home")

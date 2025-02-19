@@ -14,7 +14,7 @@ struct WeightScale: View {
     @Binding private var next_disabled: Bool
     @Binding private var user: User
     @State private var selectedCalories: Int = 2000  // Default starting value
-   
+   @State private var selectedCaloriesString: String = "2000"
     @State private var selectedActivityLevel: ActivityLevel = .lightlyActive // Default activity level
 
     var calorieGoals: [Int] {
@@ -109,22 +109,39 @@ struct WeightScale: View {
                            .opacity(activity_opacity)
                 VStack{
                 
-                    HStack{
-                        Text("Select your calorie goal:")
-                            .font(.title3) // Make the title large
-                            .bold()  // Make it bold for a better effect
-                            .padding(.leading, 20).offset(y:-90)
+                    HStack {
+                        Text("Choose your calorie goal:")
+                            .font(.title3)
+                            .bold()
+                            .padding(.leading, 20)
+                            .offset(y: -90)
+                        
                         Spacer()
-                        // The Picker for selecting calorie goal
-                        Picker("Select Calories", selection: $selectedCalories) {
-                            ForEach(calorieGoals, id: \.self) { calorie in
-                                Text("\(calorie) kcal")
-                                    .tag(calorie) // Tagging each value
+                        
+                        TextField("Calories", text: $selectedCaloriesString)
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.center)
+                            .padding(.vertical, 8) // Reduce vertical padding to make it shorter
+                            .padding(.horizontal, 10) // Keep horizontal padding for spacing
+                            .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray6)))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.blue.opacity(0.8), lineWidth: 1.5) // Slightly thinner border
+                            )
+                            .toolbar {
+                                ToolbarItemGroup(placement: .keyboard) {
+                                    Spacer()
+                                    Button("Done") {
+                                        hideKeyboard()
+                                    }
+                                }
                             }
-                        }
-                        .pickerStyle(.menu)  // Use the wheel picker style for scrollable effect
-                        .clipped().offset(y:-90)
-                    }.opacity(calories_opacity)
+                            .frame(width: 80, height: 35) // Control width & explicitly set height
+                            .padding(.trailing, 20)
+                            .offset(y: -90)
+
+                    }
+                    .opacity(calories_opacity)
                                 
                                
                                 
@@ -145,7 +162,12 @@ struct WeightScale: View {
                                    TextField("g", value: $protein, format: .number)
                                        .keyboardType(.numberPad)
                                        .multilineTextAlignment(.center)
-                                       .frame(width: 80)
+                                       .frame(width: 50)
+                                       .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray6)))
+                                       .overlay(
+                                           RoundedRectangle(cornerRadius: 8)
+                                               .stroke(Color.blue.opacity(0.8), lineWidth: 1.5) // Slightly thinner border
+                                       )
                                        .onChange(of: protein) { newValue in
                                            // Handle any additional logic or validation for protein here
                                        }
@@ -157,7 +179,12 @@ struct WeightScale: View {
                                    TextField("g", value: $carbs, format: .number)
                                        .keyboardType(.numberPad)
                                        .multilineTextAlignment(.center)
-                                       .frame(width: 80)
+                                       .frame(width: 50)
+                                       .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray6)))
+                                       .overlay(
+                                           RoundedRectangle(cornerRadius: 8)
+                                               .stroke(Color.blue.opacity(0.8), lineWidth: 1.5) // Slightly thinner border
+                                       )
                                        .onChange(of: carbs) { newValue in
                                            // Handle any additional logic or validation for carbs here
                                        }
@@ -169,7 +196,12 @@ struct WeightScale: View {
                                    TextField("g", value: $fat, format: .number)
                                        .keyboardType(.numberPad)
                                        .multilineTextAlignment(.center)
-                                       .frame(width: 80)
+                                       .frame(width: 50)
+                                       .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray6)))
+                                       .overlay(
+                                           RoundedRectangle(cornerRadius: 8)
+                                               .stroke(Color.blue.opacity(0.8), lineWidth: 1.5) // Slightly thinner border
+                                       )
                                        .onChange(of: fat) { newValue in
                                            // Handle any additional logic or validation for fat here
                                        }
@@ -194,7 +226,12 @@ struct WeightScale: View {
             }.onAppear(){
                 isBouncing.toggle()
                 updateMacronutrients(for: selectedCalories, activityLevel: selectedActivityLevel)
-               
+                update_user_profile()
+            }
+            .onChange(of: selectedCaloriesString){ value in
+                if let newCalories = Int(value) {
+                selectedCalories = newCalories
+                }
                 
             }
 
@@ -256,4 +293,9 @@ enum ActivityLevel: String, CaseIterable {
     @State var user: User = User(name: "", calorie_goal: 0, protein_goal: 0, carb_goal: 0, fat_goal: 0)
 
     WeightScale(next_disabled: $b, user: $user)
+}
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
 }

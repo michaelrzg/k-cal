@@ -16,6 +16,7 @@ struct Home: View {
     @Query private var food_items: [Food]
     @Binding var selectedTab: Int // Bind to ContentView's tab selection
     @Binding var isSearchExpanded: Bool
+    @Binding private var welcome_complete: Bool
     @State var calorie_goal: Int = 0
     @State var todays_calories: Int = 0
     @State var todays_progress: Float = 0.0
@@ -253,7 +254,10 @@ struct Home: View {
 
                 }.scrollContentBackground(.hidden)
 
-        }.padding(.top, -60)
+        }.padding(.top, -60).onChange(of: welcome_complete){
+            load_calorie_goal()
+            updateProgress()
+        }
     }
 
     func updateProgress() {
@@ -289,9 +293,11 @@ struct Home: View {
         print(food_items.count)
     }
 
-    init(selectedTab: Binding<Int>, isSearchExpanded: Binding<Bool>) {
+    init(selectedTab: Binding<Int>, isSearchExpanded: Binding<Bool>, welcome_complete: Binding<Bool>) {
         _selectedTab = selectedTab
         _isSearchExpanded = isSearchExpanded
+        _welcome_complete = welcome_complete
+        
     }
 }
 

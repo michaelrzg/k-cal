@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct WelcomeView: View {
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var context
     @Binding private var welcome_complete: Bool
     @State private var button_opacity = 0.0
     @State private var currentStep = 0
     @State private var next_disabled: Bool = false
+    @State private var button_text: String = "Start"
    @State var user: User = User(name: "", calorie_goal: 0, protein_goal: 0, carb_goal: 0, fat_goal: 0)
         let totalSteps = 3
     var body: some View {
@@ -31,13 +34,25 @@ struct WelcomeView: View {
                 .ignoresSafeArea(.keyboard, edges: .bottom)
                 .gesture(DragGesture().onChanged { _ in })
                 Button(action: {
-                    if currentStep < totalSteps - 1 {
-                        withAnimation {
-                            currentStep += 1
-                        }
+                    currentStep+=1
+                    switch (currentStep){
+                    case 1:
+                        button_text = "Next"
+                        break
+                    case 2:
+                        button_text = "Save"
+                        break
+                    case 3:
+                        welcome_complete = true
+                        context.insert(user)
+                        dismiss()
+                    default:
+                        break
                     }
+               
+                
                 }) {
-                    Text(currentStep < 0 ? "Get Started" : "Next")
+                    Text(button_text)
                         .font(.headline)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
