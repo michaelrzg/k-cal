@@ -1,9 +1,12 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
+
 struct User_Info: View {
     @State private var title_opacity = 1.0
     @State private var name = ""
+    @State private var age = ""
+    @State private var gender: GenderOption = .male
     @FocusState private var isFocused: Bool
     @Binding private var user: User
     @Binding private var next_disabled: Bool
@@ -18,7 +21,7 @@ struct User_Info: View {
                     .opacity(title_opacity)
                 Spacer()
             }
-            
+
             AnimatedImage(name: "waitamin.gif")
                 .resizable()
                 .scaledToFit()
@@ -26,7 +29,7 @@ struct User_Info: View {
                 .clipShape(RoundedRectangle(cornerRadius: 25))
                 .overlay(RoundedRectangle(cornerRadius: 25).stroke(Color.gray.opacity(0.3), lineWidth: 2))
                 .shadow(radius: 5)
-            
+
             HStack {
                 Text("Who are you?")
                     .font(.title)
@@ -43,32 +46,61 @@ struct User_Info: View {
                 }
                 next_disabled = true
             }
-            
-            
+
             VStack(alignment: .leading, spacing: 10) {
+                
                 TextField("Enter your name", text: $name)
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray6)))
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.blue.opacity(0.6), lineWidth: name.isEmpty ? 0 : 2)
+                            .stroke(Color.blue.opacity(0.6), lineWidth:2)
                     )
-                    .padding(.horizontal)
+                    .padding(.horizontal).background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray6))).padding(.horizontal)
+                Text("What are you?")
+                    .font(.title)
+                    .bold()
+                    .opacity(title_opacity)
+                    .focused($isFocused)
+                    .offset(y: 10)
+                    .padding(.bottom,15)
+                Picker("Select Gender", selection: $gender) {
+                    ForEach(GenderOption.allCases, id: \.self) { genderOption in
+                        Text(genderOption.rawValue)
+                            .tag(genderOption)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
                 
+                .padding(.vertical, 8)
+                
+                .padding(.horizontal)
+
                 Spacer()
             }
             .padding()
-        }.onChange(of: name){
+        }
+        .onChange(of: name) {
             user.name = name
-            if name.isEmpty{
-                next_disabled = true
-            }
-            else{
-                next_disabled = false
-            }
+            updateNextButtonState()
+        }
+        .onChange(of: age) {
+            updateNextButtonState()
+        }
+        .onChange(of: gender){
+            updateNextButtonState()
         }
     }
-    init(user: Binding<User>, next_disabled: Binding<Bool>){
+
+    func updateNextButtonState() {
+        if name.isEmpty {
+            next_disabled = true
+        } else {
+            next_disabled = false
+        }
+    }
+
+    init(user: Binding<User>, next_disabled: Binding<Bool>) {
         self._user = user
         self._next_disabled = next_disabled
     }
@@ -76,7 +108,11 @@ struct User_Info: View {
 
 #Preview {
     @State var b = false
-
     @State var user: User = User(name: "", calorie_goal: 0, protein_goal: 0, carb_goal: 0, fat_goal: 0)
     User_Info(user: $user, next_disabled: $b)
+}
+enum GenderOption: String, CaseIterable {
+    case male = "Male"
+    case female = "Female"
+    case nonBinary = "Other"
 }

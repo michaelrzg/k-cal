@@ -118,6 +118,8 @@
 			name = "k-cal";
 			packageProductDependencies = (
 				CC7E94672D6323C200CA289F /* SDWebImageSwiftUI */,
+				CC7E94B12D66AA2400CA289F /* Lottie */,
+				CC7E94B32D66AA2400CA289F /* Lottie-Dynamic */,
 			);
 			productName = "k-cal";
 			productReference = CCC01F762D5A9F7C0058BF50 /* k-cal.app */;
@@ -203,6 +205,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				CCDDBDCE2D6322DC00C5188B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				CC7E94B02D66AA2400CA289F /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CCC01F772D5A9F7C0058BF50 /* Products */;
@@ -571,6 +574,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		CC7E94B02D66AA2400CA289F /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.1;
+			};
+		};
 		CCDDBDCE2D6322DC00C5188B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI";
@@ -586,6 +597,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CCDDBDCE2D6322DC00C5188B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
+		};
+		CC7E94B12D66AA2400CA289F /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC7E94B02D66AA2400CA289F /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+		CC7E94B32D66AA2400CA289F /* Lottie-Dynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC7E94B02D66AA2400CA289F /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = "Lottie-Dynamic";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

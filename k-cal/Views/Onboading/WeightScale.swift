@@ -32,7 +32,7 @@ struct WeightScale: View {
                        
             VStack {
                 HStack {
-                    Text("Lets start on your goals.")
+                    Text("Tell me about your goals.")
                         .font(.title) // Make the title large
                         .bold()  // Make it bold for a better effect
                         .padding(.leading, 20)
@@ -66,7 +66,7 @@ struct WeightScale: View {
                                 .rotationEffect(.degrees(Double(i) * 30)) // 360 / 12 numbers = 30 degrees between each
                                 .offset(x: 60, y: -75)
                                 .rotationEffect(.degrees(Double(i) * 30))
-                        }
+                        }.scaleEffect(0.6)
                         
                         // The needle of the scale (animated)
                         Rectangle()
@@ -82,7 +82,7 @@ struct WeightScale: View {
                             .frame(width: 20, height: 20)
                     }
                     .frame(width: 200, height: 200)
-                    .offset(y:-100)
+                    .offset(y:-180)
                 }.scaleEffect(0.3)
                     .offset(y:-45)
                     .opacity(title_opacity)

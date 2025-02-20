@@ -26,6 +26,7 @@ struct ContentView: View {
                         print("First launch complete")
                     }
                 }.ignoresSafeArea(.keyboard, edges: .bottom)
+            
         }
         Group{
             

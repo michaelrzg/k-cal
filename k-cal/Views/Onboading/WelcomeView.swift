@@ -23,9 +23,11 @@ struct WelcomeView: View {
 
             VStack{
                 TabView(selection: $currentStep){
+                    
                     landing_page(welcome_complete: $welcome_complete).ignoresSafeArea().tag(0)
-                    User_Info(user: $user, next_disabled: $next_disabled).tag(1)
-                    WeightScale(next_disabled: $next_disabled, user: $user).tag(2)
+                    Tutorial().tag(1)
+                    User_Info(user: $user, next_disabled: $next_disabled).tag(2)
+                    WeightScale(next_disabled: $next_disabled, user: $user).tag(3)
                     
                 }.onAppear {
                     UIScrollView.appearance().isScrollEnabled = false
@@ -39,10 +41,10 @@ struct WelcomeView: View {
                     case 1:
                         button_text = "Next"
                         break
-                    case 2:
+                    case 3:
                         button_text = "Save"
                         break
-                    case 3:
+                    case 4:
                         welcome_complete = true
                         context.insert(user)
                         dismiss()
