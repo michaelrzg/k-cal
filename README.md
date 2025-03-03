@@ -2,19 +2,31 @@
 
 k-cal is a user-friendly iOS app designed to simplify your calorie tracking journey, a free alternative to myfitnesspal. With a seamless interface and powerful features, k-cal empowers you to achieve your health and fitness goals with ease.
 Ad-free, no tracking, no subscriptions.
+
+<table style="border-collapse: collapse; border: none;">
+  <tr>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Launch1.png" alt="Launch Page" width="100%"></td>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Launch2.png" alt="Launch Page" width="100%"></td>
+    <td style="border: none; padding-top: 15px;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Home_Light.png" alt="Launch Page" width="100%"></td>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/BigMac.png" alt="Launch Page" width="100%"></td>
+  </tr>
+  
+</table>
+
+
 ## Key Features
 
 ### 1. Seamless Meal Tracking
 
 Effortlessly log your meals with k-cal's intuitive interface. Add items, adjust quantities, and keep a clear record of your daily intake.
 
-[Insert Screenshot: Meal Tracking Interface]
+![Home DarkMode](https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Home_Dark.png) 
 
 ### 2. (Free) Barcode Scanning with Access to Over 3 Million Foods
 
 Quickly and accurately log packaged foods using k-cal's integrated barcode scanner. Access a vast database of over 3 million food items, saving you time and ensuring accurate calorie counts.
 
-[Insert Screenshot: Barcode Scanning Interface]
+![Home LightMode](https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Home_Light.png) 
 
 ### 3. Real-Time Goal Updates
 
@@ -26,7 +38,7 @@ Stay motivated and on track with real-time updates on your progress. k-cal provi
 
 Find specific food items quickly and easily with k-cal's powerful search functionality. Filter by category, brand, or keyword to streamline your meal logging process.
 
-[Insert Screenshot: Food Search Interface]
+![Search](https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Search2.png)) 
 
 ### 5. Customizable Daily Goals
 
