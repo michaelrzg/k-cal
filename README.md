@@ -26,7 +26,7 @@ Effortlessly log your meals with k-cal's intuitive interface. Add items, adjust 
 
 Quickly and accurately log packaged foods using k-cal's integrated barcode scanner. Access a vast database of over 3 million food items, saving you time and ensuring accurate calorie counts.
 
-[<img src="https://github.com/michaelrzg/k-cal/main/k-cal/Screenshots/scangif.gif" width="600">
+[[<img src="https://github.com/michaelrzg/k-cal/main/k-cal/Screenshots/scangif.gif" width="600">
 ](https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/scangif.gif)
 
 ### 3. Real-Time Goal Updates
