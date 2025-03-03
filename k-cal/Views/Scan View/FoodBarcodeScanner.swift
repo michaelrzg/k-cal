@@ -66,7 +66,7 @@ struct FoodBarcodeScanner: View {
                             BarcodeScannerView(barcode: $barcode, isScanning: $isScanning, dataFetcher: dataFetcher, context: context, day: fetchTodayDay(context: context))  .ignoresSafeArea(.keyboard, edges: .bottom).ignoresSafeArea().overlay(
                                 ZStack {
                                     // Black overlay with 60% opacity
-                                    Color.black.opacity(0.6)
+                                    Color.black.opacity(0.3)
                                         .edgesIgnoringSafeArea(.all)
                                         .overlay(
                                             // Clear rectangle in the center
