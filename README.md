@@ -20,7 +20,16 @@ Ad-free, no tracking, no subscriptions.
 
 Effortlessly log your meals with k-cal's intuitive interface. Add items, adjust quantities, and keep a clear record of your daily intake.
 
-![Home DarkMode](https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Home_Dark.png) 
+<table style="border-collapse: collapse; border: none;">
+  <tr>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Meals.png" alt="Launch Page" width="100%"></td>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Meal4.png" alt="Launch Page" width="100%"></td>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Meal2.png" alt="Launch Page" width="100%"></td>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Meal3.png" alt="Launch Page" width="100%"></td>
+
+  </tr>
+  
+</table>
 
 ### 2. (Free) Barcode Scanning with Access to Over 3 Million Foods
 
