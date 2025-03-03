@@ -150,7 +150,7 @@ struct Home: View {
                             updateProgress()
                         }
                         .onChange(of: food_being_edited) {
-                            fetchTodayDay(context: context, calories: $todays_calories)
+                            fetchTodayDay(context: context, calories: $todays_calories, protein: $protein, carbohydrates: $carbs, fats: $fat)
                             updateProgress()
                         }
                         
@@ -181,7 +181,7 @@ struct Home: View {
                             for index in indexes {
                                 delete_food(food: today.foods[index])
                             }
-                            fetchTodayDay(context: context, calories: $todays_calories)
+                            fetchTodayDay(context: context, calories: $todays_calories, protein: $protein, carbohydrates: $carbs, fats: $fat)
                             updateProgress()
                         }
                         Menu {
@@ -206,7 +206,7 @@ struct Home: View {
                             for index in indexes {
                                 delete_food(food: today.foods[index])
                             }
-                            fetchTodayDay(context: context, calories: $todays_calories)
+                            fetchTodayDay(context: context, calories: $todays_calories, protein: $protein, carbohydrates: $carbs, fats: $fat)
                             updateProgress()
                         }
                         Menu {
@@ -232,7 +232,7 @@ struct Home: View {
                             for index in indexes {
                                 delete_food(food: today.foods[index])
                             }
-                            fetchTodayDay(context: context, calories: $todays_calories)
+                            fetchTodayDay(context: context, calories: $todays_calories, protein: $protein, carbohydrates: $carbs, fats: $fat)
                             updateProgress()
                         }
                         Menu {
@@ -261,6 +261,11 @@ struct Home: View {
     }
 
     func updateProgress() {
+        load_calorie_goal()
+        let today = fetchTodayDay(context: context)
+        protein = today.totalProtein
+        carbs = today.totalCarbohydrates
+        fat = today.totalFat
         if let currentUser = user {
             todays_progress = scale_progress(progress: min(Float(todays_calories) / Float(calorie_goal), 1.0))
             protein_progress = scale_progress(progress: Float(protein) / Float(currentUser.protein_goal))
