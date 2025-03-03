@@ -340,13 +340,13 @@ struct FoodBarcodeScanner: View {
                                         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray5)).opacity(0.8))
                                     }
                                 }
-                                if let food = food {
-                                    AddFoodSheet(food: food, selectedTab: $selectedTab).onAppear(){
+                                if let food1 = food {
+                                    AddFoodSheet(food: food1, selectedTab: $selectedTab).onAppear(){
                                         isSearchExpanded = false
                                     }
                                     .onDisappear {
-                                        isScanning = true
-                                        
+                                        isScanning = true;
+                                        food = nil;
                                         barcode = nil
                                         dismiss()
                                         cardPosition = .bottom
