@@ -113,6 +113,8 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         // *** KEY CHANGE: Ensure frame is updated ***
-        previewLayer.frame = view.layer.bounds // Update in case of layout changes
+        if let previewLayer = previewLayer { // Safe unwrapping
+            previewLayer.frame = view.layer.bounds // Update in case of layout changes
+        }
     }
 }
