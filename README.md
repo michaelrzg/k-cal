@@ -35,32 +35,42 @@ Effortlessly log your meals with k-cal's intuitive interface. Add items, adjust 
 
 Quickly and accurately log packaged foods using k-cal's integrated barcode scanner. Access a vast database of over 3 million food items, saving you time and ensuring accurate calorie counts.
 
-[<img src="https://github.com/michaelrzg/k-cal/main/k-cal/Screenshots/scangif.gif" width="600">
-](https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/scangif.gif)
+<table style="border-collapse: collapse; border: none;">
+  <tr>
+    <td style="border: none;">Instantly Scan Barcodes </td>
+    <td style="border: none;">Search 3M+ Foods</td>
+    <td style="border: none;">Quick Add Recent Foods</td>
+    <td style="border: none;">Edit/Add/Delete Foods</td>
+
+  </tr>
+  <tr>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/scangif.png" alt="Scan Food Demo" width="100%"></td>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Searchgif.png" alt="Search Food Demo" width="100%"></td>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/QuickAddGif.png" alt="Quick Add Food Demo" width="100%"></td>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Edit-DeleteGif.png" alt="Edit/Delete Food Demo" width="100%"></td>
+
+  </tr>
+  
+  
+</table>
 
 ### 3. Real-Time Goal Updates
 
 Stay motivated and on track with real-time updates on your progress. k-cal provides clear visualizations of your calorie intake, helping you make informed decisions and stay within your daily goals.
 
-[Insert Screenshot: Goal Tracking/Progress Visualization]
-
-### 4. Effortless Food Item Search
+### 4. Effortless Search 3M+ Brands
 
 Find specific food items quickly and easily with k-cal's powerful search functionality. Filter by category, brand, or keyword to streamline your meal logging process.
-
-![Search](https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Search2.png)) 
 
 ### 5. Customizable Daily Goals
 
 Tailor k-cal to your individual needs by setting personalized daily calorie goals. Adjust your targets based on your activity level and fitness objectives.
 
-[Insert Screenshot: Goal Customization Settings]
 
 ### 6. SwiftData Persistence
 
 k-cal utilizes SwiftData for efficient and reliable data storage. Your meal logs and progress are securely saved, ensuring you never lose your valuable tracking information.
 
-[Insert Screenshot: (Optional) If you have a screen showing data being used, or a settings screen]
 
 ## Technologies Used
 
@@ -69,18 +79,12 @@ k-cal utilizes SwiftData for efficient and reliable data storage. Your meal logs
 * **AVFoundation:** For barcode scanning and camera integration.
 * **Open Food Facts API:** For accessing a vast food database.
 * **UIKit (via UIViewControllerRepresentable):** For integrating custom view controllers for barcode scanning.
-* **[Add any other technologies used, e.g., third-party libraries, APIs, etc.]**
 
-## Getting Started
-
-1.  Clone the repository: `git clone [repository URL]`
+## Try it out
+### Option 1: Download from the IOS AppStore
+(In progress)
+### Option 2: Direct Compile
+1.  Clone the repository: `git clone https://github.com/michaelrzg/k-cal.git`
 2.  Open the project in Xcode.
 3.  Build and run the app on your iOS device or simulator.
 
-## Contributing
-
-We welcome contributions from the community! If you have any ideas, bug fixes, or feature requests, please feel free to open an issue or submit a pull request.
-
-## License
-
-[Insert License Information (e.g., MIT License)]
