@@ -39,7 +39,7 @@ Quickly and accurately log packaged foods using k-cal's integrated barcode scann
   <tr>
     <td style="border: none;">Instantly Scan Barcodes </td>
     <td style="border: none;">Search 3M+ Foods</td>
-    <td style="border: none;">Quick Add Recent Foods</td>
+    <td style="border: none;">Quick-Add Foods</td>
     <td style="border: none;">Edit/Add/Delete Foods</td>
 
   </tr>
@@ -80,7 +80,7 @@ k-cal utilizes SwiftData for efficient and reliable data storage. Your meal logs
 * **Open Food Facts API:** For accessing a vast food database.
 * **UIKit (via UIViewControllerRepresentable):** For integrating custom view controllers for barcode scanning.
 
-## Try it out
+## Try it out!
 ### Option 1: Download from the IOS AppStore
 (In progress)
 ### Option 2: Direct Compile
