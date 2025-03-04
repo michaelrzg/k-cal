@@ -39,7 +39,7 @@ Quickly and accurately log packaged foods using k-cal's integrated barcode scann
   <tr>
     <td style="border: none;">Instantly Scan Barcodes </td>
     <td style="border: none;">Search 3M+ Foods</td>
-    <td style="border: none;">Quick-Add Foods</td>
+    <td style="border: none;">Quick-Add Recent Foods</td>
     <td style="border: none;">Edit/Add/Delete Foods</td>
 
   </tr>
