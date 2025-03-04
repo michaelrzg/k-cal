@@ -44,10 +44,10 @@ Quickly and accurately log packaged foods using k-cal's integrated barcode scann
 
   </tr>
   <tr>
-    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/scangif.png" alt="Scan Food Demo" width="100%"></td>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/scangif.png" alt="Scan Food Demo" width="96%"></td>
     <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Searchgif.png" alt="Search Food Demo" width="100%"></td>
     <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/QuickAddGif.png" alt="Quick Add Food Demo" width="100%"></td>
-    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Edit-DeleteGif.png" alt="Edit/Delete Food Demo" width="100%"></td>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Edit-DeleteGif.png" alt="Edit/Delete Food Demo" width="91%"></td>
 
   </tr>
   
