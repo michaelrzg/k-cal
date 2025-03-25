@@ -2,6 +2,7 @@ import AVFoundation
 import Foundation
 import SwiftData
 import SwiftUI
+import GoogleMobileAds
 
 struct ContentView: View {
     @AppStorage("hasLaunchedBefore") var hasLaunchedBefore = false
@@ -11,7 +12,7 @@ struct ContentView: View {
     @State var isSearchExpanded: Bool = false
     @State var welcome_complete: Bool = false
     @State var header_text: String = "k-cal"
-    
+    var bannerView: BannerView!
     @Query private var users: [User]
     var body: some View {
         ZStack{}.onAppear(){
@@ -108,7 +109,9 @@ struct ContentView: View {
                 }
             
         }
+        
     }
+    
 
     init() {
         let appearance = UITabBarAppearance()
@@ -119,6 +122,7 @@ struct ContentView: View {
             UITabBar.appearance().scrollEdgeAppearance = appearance
         }
     }
+    
 }
 struct MyLabelStyle: LabelStyle {
     func makeBody(configuration: Configuration) -> some View {

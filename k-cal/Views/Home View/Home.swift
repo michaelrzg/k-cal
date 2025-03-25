@@ -40,7 +40,7 @@ struct Home: View {
 
         ZStack {
             Color("Background").zIndex(0).opacity(1)
-
+            
             Form {
                 // header containing date and time
                 // Remaining calories section
@@ -96,6 +96,7 @@ struct Home: View {
                 }
                 }.listRowInsets(EdgeInsets(top: 10, leading: 30, bottom: 55, trailing: 30))
                     .frame(height: 40).listRowBackground(Color("Foreground"))
+                AdBannerView(adUnitID: "ca-app-pub-3940256099942544/3986624511").frame(width: 320, height: 50) // Standard banner size
 
                 Section {
                     Text("Progress")

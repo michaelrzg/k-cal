@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CC52FCB12D9353AE00E2191D /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = CC52FCB02D9353AE00E2191D /* GoogleMobileAds */; };
 		CC7E94682D6323C200CA289F /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = CC7E94672D6323C200CA289F /* SDWebImageSwiftUI */; };
 /* End PBXBuildFile section */
 
@@ -33,9 +34,22 @@
 		CCC01F902D5A9F7D0058BF50 /* k-calUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "k-calUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CC52FCB32D9354EA00E2191D /* Exceptions for "k-cal" folder in "k-cal" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CCC01F752D5A9F7C0058BF50 /* k-cal */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CCC01F782D5A9F7C0058BF50 /* k-cal */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CC52FCB32D9354EA00E2191D /* Exceptions for "k-cal" folder in "k-cal" target */,
+			);
 			path = "k-cal";
 			sourceTree = "<group>";
 		};
@@ -56,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC52FCB12D9353AE00E2191D /* GoogleMobileAds in Frameworks */,
 				CC7E94682D6323C200CA289F /* SDWebImageSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -118,6 +133,7 @@
 			name = "k-cal";
 			packageProductDependencies = (
 				CC7E94672D6323C200CA289F /* SDWebImageSwiftUI */,
+				CC52FCB02D9353AE00E2191D /* GoogleMobileAds */,
 			);
 			productName = "k-cal";
 			productReference = CCC01F762D5A9F7C0058BF50 /* k-cal.app */;
@@ -203,6 +219,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				CCDDBDCE2D6322DC00C5188B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				CC52FCAF2D9353AE00E2191D /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CCC01F772D5A9F7C0058BF50 /* Products */;
@@ -410,6 +427,7 @@
 				DEVELOPMENT_TEAM = WRDKQDVMU9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "k-cal/Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to the camera to scan barcodes.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -440,6 +458,7 @@
 				DEVELOPMENT_TEAM = WRDKQDVMU9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "k-cal/Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to the camera to scan barcodes.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -573,6 +592,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		CC52FCAF2D9353AE00E2191D /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.2.0;
+			};
+		};
 		CCDDBDCE2D6322DC00C5188B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI";
@@ -584,6 +611,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		CC52FCB02D9353AE00E2191D /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC52FCAF2D9353AE00E2191D /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
 		CC7E94672D6323C200CA289F /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CCDDBDCE2D6322DC00C5188B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;

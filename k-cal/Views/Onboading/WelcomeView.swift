@@ -130,7 +130,7 @@ struct landing_page: View {
                         
                         Text("Welcome to k-cal.").opacity(welcome_opacity).foregroundStyle(Color("k-cal"))
                         Text("\n 100% Free.").opacity(free_opacy).foregroundStyle(Color("k-cal")).offset(y:10)
-                        Text("\n No Ads. ").opacity(free_opacy2).foregroundStyle(Color("k-cal")).offset(y:30)
+                        Text("\n No Tracking. ").opacity(free_opacy2).foregroundStyle(Color("k-cal")).offset(y:30)
                         Text("\n No Subscriptions. ").opacity(free_opacy3).foregroundStyle(Color("k-cal")).offset(y:50)
                     }
                     Spacer()
