@@ -37,14 +37,14 @@ struct Home: View {
 
     var body: some View {
         @State var today: Day = fetchTodayDay(context: context, calories: $todays_calories)
-
         ZStack {
             Color("Background").zIndex(0).opacity(1)
             
             Form {
                 // header containing date and time
                 // Remaining calories section
-                Section(header: Text(Date().formatted(date: .complete, time: .omitted)).position(x: 67, y: 80)) { ZStack {
+                Section(header: Text(Date().formatted(date: .complete, time: .omitted)).position(x: 67, y: 80)) {
+                    ZStack {
                     Text("  Remaining Calories").position(x: 69, y: 12).padding(1).font(Font.system(size: 20)).bold()
                     HStack {
                         VStack {
@@ -96,7 +96,7 @@ struct Home: View {
                 }
                 }.listRowInsets(EdgeInsets(top: 10, leading: 30, bottom: 55, trailing: 30))
                     .frame(height: 40).listRowBackground(Color("Foreground"))
-                AdBannerView(adUnitID: "ca-app-pub-3940256099942544/3986624511").frame(width: 320, height: 50) // Standard banner size
+                AdBannerView(adUnitID: "ca-app-pub-3940256099942544/2435281174").frame(width: 320, height: 50) // Standard banner size
 
                 Section {
                     Text("Progress")
@@ -126,6 +126,7 @@ struct Home: View {
 //                    }
 
                 }.listRowBackground(Color("Foreground"))
+                
                 Section {
                     Text("Meals")
                         .listRowSeparator(.hidden)
