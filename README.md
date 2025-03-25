@@ -39,15 +39,15 @@ Quickly and accurately log packaged foods using k-cal's integrated barcode scann
   <tr>
     <td style="border: none;">Instantly Scan Barcodes </td>
     <td style="border: none;">Search 3M+ Foods</td>
-    <td style="border: none;">Quick-Add Foods</td>
+    <td style="border: none;">Quick-Add Recent Foods</td>
     <td style="border: none;">Edit/Add/Delete Foods</td>
 
   </tr>
   <tr>
-    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/scangif.png" alt="Scan Food Demo" width="100%"></td>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/scangif.png" alt="Scan Food Demo" width="96%"></td>
     <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Searchgif.png" alt="Search Food Demo" width="100%"></td>
     <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/QuickAddGif.png" alt="Quick Add Food Demo" width="100%"></td>
-    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Edit-DeleteGif.png" alt="Edit/Delete Food Demo" width="100%"></td>
+    <td style="border: none;"><img src="https://github.com/michaelrzg/k-cal/blob/main/k-cal/Screenshots/Edit-DeleteGif.png" alt="Edit/Delete Food Demo" width="91%"></td>
 
   </tr>
   
