@@ -1,7 +1,7 @@
 # k-cal - Your Effortless Calorie Tracking Companion
 
 k-cal is a user-friendly iOS app designed to simplify your calorie tracking journey, a free alternative to myfitnesspal. With a seamless interface and powerful features, k-cal empowers you to achieve your health and fitness goals with ease.
-Ad-free, no tracking, no subscriptions.
+Free, no tracking, no subscriptions.
 
 <table style="border-collapse: collapse; border: none;">
   <tr>
