@@ -12,6 +12,7 @@ struct ContentView: View {
     @State var isSearchExpanded: Bool = false
     @State var welcome_complete: Bool = false
     @State var header_text: String = "k-cal"
+    @State var selectedDate: Date = Date()
     var bannerView: BannerView!
     @Query private var users: [User]
     var body: some View {
@@ -69,14 +70,14 @@ struct ContentView: View {
                                 }
                                 .tag(0)
                             
-                            FoodBarcodeScanner(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
+                            FoodBarcodeScanner(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, selectedDate: $selectedDate)
                                 .tabItem {
                                     Image(systemName: "barcode.viewfinder")
                                     Text("scan/search")
                                 }
                                 .tag(1)
                             
-                            Diary(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
+                            Diary(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, selectedDate: $selectedDate)
                                 .tabItem {
                                     Image(systemName: "book")
                                     Text("diary")

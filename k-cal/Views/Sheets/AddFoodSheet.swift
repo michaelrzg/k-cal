@@ -13,14 +13,15 @@ struct AddFoodSheet: View {
     @State private var proteinPerServing: Int
     @State private var carbsPerServing: Int
     @State private var fatPerServing: Int
-
-    init(food: Food, selectedTab: Binding<Int>) {
+    @Binding var selectedDate: Date
+    init(food: Food, selectedTab: Binding<Int>, selectedDate: Binding<Date>) {
         self.food = food
         _calorie_per_serving_string = State(initialValue: "\(food.calories_per_serving)")
         _proteinPerServing = State(initialValue: food.protein / (food.servings > 0 ? food.servings : 1))
         _carbsPerServing = State(initialValue: food.carbohydrates / (food.servings > 0 ? food.servings : 1))
         _fatPerServing = State(initialValue: food.fat / (food.servings > 0 ? food.servings : 1))
         _selectedTab = selectedTab
+        _selectedDate = selectedDate
     }
 
     var body: some View {
@@ -47,10 +48,8 @@ struct AddFoodSheet: View {
                     }.frame(maxWidth: .infinity, maxHeight: .infinity)
                 }.listSectionSpacing(5)
                 if let day = food.day {
-                    DatePicker("Date", selection: Binding(
-                        get: { day.date },
-                        set: { food.day?.date = $0 }
-                    ))
+                    DatePicker("Date", selection: $selectedDate,displayedComponents: .date )
+                    
                 }
                 HStack {
                     Text("Name:").frame(maxWidth: .infinity, alignment: .leading)

@@ -8,11 +8,20 @@ struct Diary: View {
     
     @Binding var selectedTab: Int // Bind to ContentView's tab selection
     @Binding var isSearchExpanded: Bool
-    @State private var selectedDate = Date()
+    @Binding var selectedDate:Date
     @Environment(\.modelContext) private var context
     @State private var foods: [Food] = []
     @State private var showing_edit_sheet = false
     @State private var food_being_edited: Food?
+    
+    @State var todays_calories: Int = 0
+    @State var todays_progress: Float = 0.0
+    @State var protein: Int = 0
+    @State var carbs: Int = 0
+    @State var fat: Int = 0
+    @State var protein_progress: Float = 0.0
+    @State var carbs_progress: Float = 0.0
+    @State var fat_progress: Float = 0.0
     var body: some View {
         ZStack{
             
@@ -146,10 +155,13 @@ struct Diary: View {
                             Text("add")
                         }
                     }
-                    
+                   
                 }
                 .listRowBackground(Color("Foreground"))
-                AdBannerView(adUnitID: BANNER_AD_ID).frame(width: 320, height: 50).listRowBackground(Color("Foreground"))
+                //MacronutrientRingView(fat: $fat.wrappedValue, protein: $protein.wrappedValue, carbs: $carbs.wrappedValue, calories: $todays_calories.wrappedValue).padding(10).listRowBackground(Color("Foreground"))
+                Section{
+                    AdBannerView(adUnitID: BANNER_AD_ID).frame(width: 320, height: 50).listRowBackground(Color("Foreground"))
+                }
             }.scrollContentBackground(.hidden)
                 .sheet(item: $food_being_edited) { food in
                     
@@ -178,6 +190,10 @@ struct Diary: View {
             if let existingDay = try context.fetch(fetchDescriptor).first {
                 // Update the state with the total calories, p, c, f
                 foods = existingDay.foods
+                todays_calories = existingDay.foods.reduce(0) { $0 + $1.calories }
+                protein = existingDay.totalProtein
+                carbs = existingDay.totalCarbohydrates
+                fat = existingDay.totalFat
                 return existingDay
             }
             else {
@@ -218,6 +234,6 @@ struct Diary: View {
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: Food.self, Day.self, configurations: config)
-    return Diary(selectedTab: .constant(0), isSearchExpanded: .constant(false))
+    return Diary(selectedTab: .constant(0), isSearchExpanded: .constant(false), selectedDate: .constant(Date()))
         .modelContainer(container)
 }

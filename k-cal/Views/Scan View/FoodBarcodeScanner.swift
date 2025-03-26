@@ -34,6 +34,7 @@ struct FoodBarcodeScanner: View {
     @State private var enterPressed: Bool = false
     @Binding private var isSearchExpanded: Bool
     @Binding var selectedTab: Int
+    @Binding var selectedDate: Date
     @FocusState private var isFocused: Bool
     
     let loadingPrompts = [
@@ -51,9 +52,10 @@ struct FoodBarcodeScanner: View {
         "Flipping through the pancake archives... 🥞"
     ]
 
-    init(selectedTab: Binding<Int>, isSearchExpanded: Binding<Bool>) {
+    init(selectedTab: Binding<Int>, isSearchExpanded: Binding<Bool>, selectedDate: Binding<Date>) {
         dataFetcher = OpenFoodFactsFetcher()
         _selectedTab = selectedTab
+        _selectedDate = selectedDate
         self._isSearchExpanded = isSearchExpanded
     }
 
@@ -341,7 +343,7 @@ struct FoodBarcodeScanner: View {
                                     }
                                 }
                                 if let food1 = food {
-                                    AddFoodSheet(food: food1, selectedTab: $selectedTab).onAppear(){
+                                    AddFoodSheet(food: food1, selectedTab: $selectedTab, selectedDate: $selectedDate).onAppear(){
                                         isSearchExpanded = false
                                     }
                                     .onDisappear {
