@@ -76,7 +76,7 @@ struct ContentView: View {
                                 }
                                 .tag(1)
                             
-                            Diary()
+                            Diary(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
                                 .tabItem {
                                     Image(systemName: "book")
                                     Text("diary")

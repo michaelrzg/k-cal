@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CC52FCB12D9353AE00E2191D /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = CC52FCB02D9353AE00E2191D /* GoogleMobileAds */; };
+		CC6026AC2D9376FC009F3F76 /* CalendarKit in Frameworks */ = {isa = PBXBuildFile; productRef = CC6026AB2D9376FC009F3F76 /* CalendarKit */; };
 		CC7E94682D6323C200CA289F /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = CC7E94672D6323C200CA289F /* SDWebImageSwiftUI */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +72,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CC52FCB12D9353AE00E2191D /* GoogleMobileAds in Frameworks */,
+				CC6026AC2D9376FC009F3F76 /* CalendarKit in Frameworks */,
 				CC7E94682D6323C200CA289F /* SDWebImageSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -134,6 +136,7 @@
 			packageProductDependencies = (
 				CC7E94672D6323C200CA289F /* SDWebImageSwiftUI */,
 				CC52FCB02D9353AE00E2191D /* GoogleMobileAds */,
+				CC6026AB2D9376FC009F3F76 /* CalendarKit */,
 			);
 			productName = "k-cal";
 			productReference = CCC01F762D5A9F7C0058BF50 /* k-cal.app */;
@@ -220,6 +223,7 @@
 			packageReferences = (
 				CCDDBDCE2D6322DC00C5188B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				CC52FCAF2D9353AE00E2191D /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				CC6026AA2D9376FC009F3F76 /* XCRemoteSwiftPackageReference "CalendarKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CCC01F772D5A9F7C0058BF50 /* Products */;
@@ -600,6 +604,14 @@
 				minimumVersion = 12.2.0;
 			};
 		};
+		CC6026AA2D9376FC009F3F76 /* XCRemoteSwiftPackageReference "CalendarKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/richardtop/CalendarKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.11;
+			};
+		};
 		CCDDBDCE2D6322DC00C5188B /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI";
@@ -615,6 +627,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CC52FCAF2D9353AE00E2191D /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
+		};
+		CC6026AB2D9376FC009F3F76 /* CalendarKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC6026AA2D9376FC009F3F76 /* XCRemoteSwiftPackageReference "CalendarKit" */;
+			productName = CalendarKit;
 		};
 		CC7E94672D6323C200CA289F /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
