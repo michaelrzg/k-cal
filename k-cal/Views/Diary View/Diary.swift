@@ -1,7 +1,8 @@
 
 import SwiftUI
 import SwiftData
-
+import Foundation
+var global_selected_date:Date = Calendar.current.startOfDay(for: Date());
 struct Diary: View {
     
     let BANNER_AD_ID = "ca-app-pub-3940256099942544/2435281174"
@@ -177,6 +178,8 @@ struct Diary: View {
         }
         .onChange(of: selectedDate){
             fetchFoodsForDate(date_selection: selectedDate)
+            global_selected_date = Calendar.current.startOfDay(for: selectedDate);
+            
         }
     }
     func fetchFoodsForDate(date_selection: Date) -> Day {
@@ -211,6 +214,7 @@ struct Diary: View {
     func delete_food(food: Food) {
         var today = fetchFoodsForDate(date_selection: selectedDate)
         today.foods.removeAll (where:{ $0 == food } )
+        fetchFoodsForDate(date_selection: selectedDate);
     }
     private var dateSelector: some View {
         HStack {

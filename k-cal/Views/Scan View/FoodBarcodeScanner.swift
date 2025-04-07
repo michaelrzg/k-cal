@@ -292,6 +292,7 @@ struct FoodBarcodeScanner: View {
                         
                             .onAppear {
                                 startScanningIfNeeded()
+                                selectedDate = global_selected_date;
                             }
                             .onChange(of: barcode) { newValue in
                                 if let barcode = newValue {

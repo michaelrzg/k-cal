@@ -22,6 +22,7 @@ struct AddFoodSheet: View {
         _fatPerServing = State(initialValue: food.fat / (food.servings > 0 ? food.servings : 1))
         _selectedTab = selectedTab
         _selectedDate = selectedDate
+        food.day = Day(date: Calendar.current.startOfDay(for: global_selected_date));
     }
 
     var body: some View {
@@ -169,12 +170,14 @@ struct AddFoodSheet: View {
                         let search = Search(food: food, day: Date())
                         context.insert(search)
                         dismiss()
+                        global_selected_date = Date();
                         selectedTab = 0
                     }
                 }
                 ToolbarItemGroup(placement: .topBarLeading) {
                     Button("Cancel") {
                         print("Cancel...")
+                        global_selected_date = Date();
                         dismiss()
                         selectedTab = 1
                     }
@@ -184,10 +187,13 @@ struct AddFoodSheet: View {
                     .onEnded { _ in
 
                         print("Cancel...")
+                        global_selected_date = Date();
                         dismiss()
                         selectedTab = 1
                     }
             )
+        }.onAppear(){
+            selectedDate = global_selected_date;
         }
     }
 }
