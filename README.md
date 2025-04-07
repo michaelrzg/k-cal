@@ -31,7 +31,7 @@ Effortlessly log your meals with k-cal's intuitive interface. Add items, adjust 
   
 </table>
 
-### 2. (Free) Barcode Scanning with Access to Over 3 Million Foods
+### 2. Barcode Scanning with Access to Over 3 Million Foods
 
 Quickly and accurately log packaged foods using k-cal's integrated barcode scanner. Access a vast database of over 3 million food items, saving you time and ensuring accurate calorie counts.
 
