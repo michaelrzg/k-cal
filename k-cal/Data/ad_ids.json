@@ -1,0 +1,11 @@
+{
+    HomeTopBanner : "ca-app-pub-3940256099942544/2435281174",
+    HomeBottomBanner : "ca-app-pub-3940256099942544/2435281174"
+    DiaryTopBanner: "ca-app-pub-3940256099942544/2435281174",
+    DiaryBottomBanner : "ca-app-pub-3940256099942544/2435281174",
+    AddFoodSheetTopBanner : "ca-app-pub-3940256099942544/2435281174",
+    AddFoodSheetBottomBanner: "ca-app-pub-3940256099942544/2435281174",
+    UpdateFoodSheetTopBanner: "ca-app-pub-3940256099942544/2435281174",
+    UpdateFoodSheetBottomBanner: "ca-app-pub-3940256099942544/2435281174"
+    
+}

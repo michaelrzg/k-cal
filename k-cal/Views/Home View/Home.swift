@@ -11,7 +11,6 @@ import SwiftUI
 
 struct Home: View {
     @Environment(\.modelContext) private var context
-    let BANNER_AD_ID = "ca-app-pub-3940256099942544/2435281174"
     @Query private var users: [User]
     @Query private var food_items: [Food]
     @Binding var selectedTab: Int // Bind to ContentView's tab selection
@@ -96,7 +95,7 @@ struct Home: View {
                 }
                 }.listRowInsets(EdgeInsets(top: 10, leading: 30, bottom: 55, trailing: 30))
                     .frame(height: 40).listRowBackground(Color("Foreground"))
-                AdBannerView(adUnitID: BANNER_AD_ID).frame(width: 320, height: 50).listRowBackground(Color("Foreground"))
+                AdBannerView(adUnitID: HomeTopBannerId).frame(width: 320, height: 50).listRowBackground(Color("Foreground"))
 
                 Section {
                     Text("Progress")
@@ -244,7 +243,7 @@ struct Home: View {
                         }
                     }
                 }.listRowBackground(Color("Foreground"))
-                AdBannerView(adUnitID: BANNER_AD_ID).frame(width: 320, height: 50).listRowBackground(Color("Foreground"))
+                AdBannerView(adUnitID: HomeBottomBannerId).frame(width: 320, height: 50).listRowBackground(Color("Foreground"))
             }.listSectionSpacing(18)
                 .sheet(item: $food_being_edited) { food in
 

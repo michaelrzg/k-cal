@@ -7,7 +7,6 @@ struct AddFoodSheet: View {
     @Binding var selectedTab: Int
     @State var calorie_per_serving_string: String
     let mealOptions = ["Breakfast", "Lunch", "Dinner", "Snack"]
-    let BANNER_AD_ID = "ca-app-pub-3940256099942544/2435281174"
 
     // Store per-serving macronutrient values
     @State private var proteinPerServing: Int
@@ -30,7 +29,7 @@ struct AddFoodSheet: View {
            
 
             Form {
-                AdBannerView(adUnitID: BANNER_AD_ID).frame(width: 320, height: 50)
+                AdBannerView(adUnitID: AddFoodSheetTopBannerId).frame(width: 320, height: 50)
                 Section{
                     HStack{
                         if let url = URL(string: food.url){
@@ -158,7 +157,7 @@ struct AddFoodSheet: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
-                AdBannerView(adUnitID: BANNER_AD_ID).frame(width: 320, height: 50)
+                AdBannerView(adUnitID: AddFoodSheetBottomBannerId).frame(width: 320, height: 50)
             }
             .navigationTitle("\(food.name)")
             .toolbar {

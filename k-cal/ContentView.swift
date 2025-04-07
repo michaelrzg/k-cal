@@ -3,7 +3,14 @@ import Foundation
 import SwiftData
 import SwiftUI
 import GoogleMobileAds
-
+var HomeTopBannerId = "ca-app-pub-3940256099942544/2435281174"
+var HomeBottomBannerId = "ca-app-pub-3940256099942544/2435281174"
+var DiaryTopBannerId = "ca-app-pub-3940256099942544/2435281174"
+var DiaryBottomBannerId = "ca-app-pub-3940256099942544/2435281174"
+var AddFoodSheetTopBannerId = "ca-app-pub-3940256099942544/2435281174"
+var AddFoodSheetBottomBannerId = "ca-app-pub-3940256099942544/2435281174"
+var UpdateFoodSheetTopBannerId = "ca-app-pub-3940256099942544/2435281174"
+var UpdateFoodSheetBottomBannerId = "ca-app-pub-3940256099942544/2435281174"
 struct ContentView: View {
     @AppStorage("hasLaunchedBefore") var hasLaunchedBefore = false
     @State private var selectedTab = 0

@@ -5,7 +5,6 @@ import Foundation
 var global_selected_date:Date = Calendar.current.startOfDay(for: Date());
 struct Diary: View {
     
-    let BANNER_AD_ID = "ca-app-pub-3940256099942544/2435281174"
     
     @Binding var selectedTab: Int // Bind to ContentView's tab selection
     @Binding var isSearchExpanded: Bool
@@ -161,7 +160,7 @@ struct Diary: View {
                 .listRowBackground(Color("Foreground"))
                 //MacronutrientRingView(fat: $fat.wrappedValue, protein: $protein.wrappedValue, carbs: $carbs.wrappedValue, calories: $todays_calories.wrappedValue).padding(10).listRowBackground(Color("Foreground"))
                 Section{
-                    AdBannerView(adUnitID: BANNER_AD_ID).frame(width: 320, height: 50).listRowBackground(Color("Foreground"))
+                    AdBannerView(adUnitID: DiaryBottomBannerId).frame(width: 320, height: 50).listRowBackground(Color("Foreground"))
                 }
             }.scrollContentBackground(.hidden)
                 .sheet(item: $food_being_edited) { food in
