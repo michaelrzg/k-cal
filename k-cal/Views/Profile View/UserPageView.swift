@@ -91,6 +91,7 @@ struct UserPageView: View {
                 } else {
                     Text("No user found. Please add a user.")
                 }
+                FoodDatabaseSection()
             }
             .navigationTitle("User Profile")
             .toolbar {

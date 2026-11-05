@@ -6,18 +6,14 @@
 //
 
 import AVFoundation
-import SwiftData
 import SwiftUI
 
 struct BarcodeScannerView: UIViewControllerRepresentable {
     @Binding var barcode: String?
     @Binding var isScanning: Bool
-    let dataFetcher: OpenFoodFactsFetcher
-    let context: ModelContext // Add ModelContext property
-    let day: Day
 
     func makeUIViewController(context: Context) -> BarcodeScannerViewController {
-        let viewController = BarcodeScannerViewController(dataFetcher: dataFetcher, context: self.context, day: day) // Use self.context
+        let viewController = BarcodeScannerViewController()
         viewController.delegate = context.coordinator
         return viewController
     }
@@ -41,8 +37,11 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
             guard let metadataObject = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
                   let codeValue = metadataObject.stringValue else { return }
 
+            // UPC-E is an abbreviation that no food database stores.
+            let code = metadataObject.type == .upce ? Barcode.expandUPCE(codeValue) ?? codeValue : codeValue
+
             DispatchQueue.main.async {
-                self.parent.barcode = codeValue
+                self.parent.barcode = code
                 self.parent.isScanning = false
             }
         }

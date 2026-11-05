@@ -14,6 +14,14 @@ Free, no tracking, no subscriptions.
 </table>
 
 
+## Food data
+
+No API keys are needed. Foods live on the device, in `k-cal/Data/foods.sqlite` (over 1 million foods, built by `tools/food_database/build.py` from USDA FoodData Central, Open Food Facts and Health Canada's Canadian Nutrient File). A food that isn't there is looked up on Open Food Facts and kept. New products arrive through the app's food update, from the daily files Open Food Facts publishes: automatically on Wi-Fi, or from Food Database in the profile. The database is stored with Git LFS.
+
+Home Screen and Lock Screen widgets live in `k-calWidgets`. The app shares today's totals with them through the `group.rizig.k-cal` App Group.
+
+The meal-photo models also run on the device. To rebuild them, see `tools/meal_estimate/convert.py`.
+
 ## Key Features
 
 ### 1. Seamless Meal Tracking

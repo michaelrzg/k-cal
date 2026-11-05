@@ -20,19 +20,23 @@ struct FoodBarcodeScanner: View {
            }
            return uniqueItems // Return the array of unique items
        }
-    let dataFetcher: OpenFoodFactsFetcher
+    @Query(sort: \CustomFood.name) private var customFoods: [CustomFood]
+    private let repository = FoodRepository.shared
     @State private var isScanning = true
     @State private var barcode: String?
     @State private var food: Food?
-    @State private var showErrorAlert = false
-    @State private var errorMessage: String?
+    @State private var searchTask: Task<Void, Never>?
+    @State private var lookupFailure: LookupFailure?
     @State private var addFoodSheetOpen: Bool = false
     @State private var isLoading: Bool = false
     @State private var searchText: String = ""
-    @State private var searchResults: [FoodSearchItem] = []
+    @State private var searchResults: [FoodProduct] = []
     @State private var cardPosition: CardPosition = .bottom
     @State private var enterPressed: Bool = false
     @Binding private var isSearchExpanded: Bool
+    @Binding private var addFoodRoute: AddFoodRoute?
+    /// Builds the Food a finished add-food route chose, once its cover is gone.
+    @State private var pendingFood: ((Day, Meal) -> Food)?
     @Binding var selectedTab: Int
     @Binding var selectedDate: Date
     @FocusState private var isFocused: Bool
@@ -52,11 +56,11 @@ struct FoodBarcodeScanner: View {
         "Flipping through the pancake archives... 🥞"
     ]
 
-    init(selectedTab: Binding<Int>, isSearchExpanded: Binding<Bool>, selectedDate: Binding<Date>) {
-        dataFetcher = OpenFoodFactsFetcher()
+    init(selectedTab: Binding<Int>, isSearchExpanded: Binding<Bool>, addFoodRoute: Binding<AddFoodRoute?>, selectedDate: Binding<Date>) {
         _selectedTab = selectedTab
         _selectedDate = selectedDate
         self._isSearchExpanded = isSearchExpanded
+        self._addFoodRoute = addFoodRoute
     }
 
     var body: some View {
@@ -65,7 +69,7 @@ struct FoodBarcodeScanner: View {
                 ZStack {
                     ZStack {
                         if isScanning {
-                            BarcodeScannerView(barcode: $barcode, isScanning: $isScanning, dataFetcher: dataFetcher, context: context, day: fetchTodayDay(context: context))  .ignoresSafeArea(.keyboard, edges: .bottom).ignoresSafeArea().overlay(
+                            BarcodeScannerView(barcode: $barcode, isScanning: $isScanning)  .ignoresSafeArea(.keyboard, edges: .bottom).ignoresSafeArea().overlay(
                                 ZStack {
                                     // Black overlay with 60% opacity
                                     Color.black.opacity(0.3)
@@ -128,6 +132,23 @@ struct FoodBarcodeScanner: View {
                                                 enterPressed = true
                                             }
                                             .focused($isFocused)
+
+                                        Button {
+                                            addFoodRoute = .myFoods
+                                        } label: {
+                                            Image(systemName: "square.and.pencil")
+                                                .foregroundColor(.blue)
+                                        }
+                                        .accessibilityLabel("My foods")
+
+                                        Button {
+                                            addFoodRoute = .snapMeal
+                                        } label: {
+                                            Image(systemName: "camera")
+                                                .foregroundColor(.blue)
+                                                .padding(.trailing, 12)
+                                        }
+                                        .accessibilityLabel("Snap a meal")
                                     }  .ignoresSafeArea(.keyboard, edges: .bottom)
                                         .frame(height: 50)
                                         .background(RoundedRectangle(cornerRadius: 10).fill(Color("Foreground")))
@@ -138,59 +159,36 @@ struct FoodBarcodeScanner: View {
                                     
                                         .listRowBackground(Color("Background")).padding(.horizontal,10)
                                    
-                                    if !searchResults.isEmpty {
+                                    if !searchResults.isEmpty || !matchingCustomFoods.isEmpty {
                                         ZStack{
                                             Color("Background")
                                             List{
-                                                Section(header: Text("Search Results").font(.headline).foregroundColor(.primary)) {
-                                                    ForEach(searchResults) { item in
-                                                        HStack(spacing: 12) {
-                                                            AsyncImage(url: item.imageURL) { image in
-                                                                image.resizable()
-                                                                    .scaledToFill()
-                                                                    .frame(width: 50, height: 50)
-                                                                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                                                            } placeholder: {
-                                                                RoundedRectangle(cornerRadius: 8)
-                                                                    .fill(Color(.systemGray5))
-                                                                    .frame(width: 50, height: 50)
-                                                                    .overlay(ProgressView())
-                                                            }
-                                                            
-                                                            VStack(alignment: .leading, spacing: 4) {
-                                                                Text(item.name)
-                                                                    .font(.headline)
-                                                                    .foregroundColor(.primary)
-                                                                
-                                                                HStack{
-                                                                    Text(item.brand)
-                                                                        .font(.subheadline)
-                                                                        .foregroundColor(.secondary)
-                                                                    Spacer()
-                                                                    Text("\(item.protein)")
-                                                                    Text("p").foregroundStyle(Color("Protein"))
-                                                                    Text("|")
-                                                                    Text("\(item.carbohydrates)")
-                                                                    Text("c").foregroundStyle(Color("Carbohydrate"))
-                                                                    Text("|")
-                                                                    Text("\(item.fat)")
-                                                                    Text("f").foregroundStyle(Color("Fat"))
-                                                                }
-                                                            }
-                                                            
-                                                            Spacer()
-                                                            
-                                                            Button {
-                                                                addFoodFromSearch(item: item)
+                                                if !matchingCustomFoods.isEmpty {
+                                                    Section(header: Text("My Foods").font(.headline).foregroundColor(.primary)) {
+                                                        ForEach(matchingCustomFoods) { item in
+                                                            FoodProductRow(product: item.product) {
+                                                                review(item.product)
                                                                 searchText = ""
-                                                            } label: {
-                                                                Image(systemName: "plus.circle").scaleEffect(1.3)
                                                             }
+                                                            .listRowBackground(Color("Background"))
                                                         }
-                                                        .padding(.vertical, 6)
-                                                        .listRowBackground(Color("Background"))
-                                                    }
-                                                }.listRowBackground(Color("Background"))
+                                                    }.listRowBackground(Color("Background"))
+                                                }
+                                                if !searchResults.isEmpty {
+                                                    Section {
+                                                        ForEach(searchResults) { item in
+                                                            FoodProductRow(product: item) {
+                                                                review(item)
+                                                                searchText = ""
+                                                            }
+                                                            .listRowBackground(Color("Background"))
+                                                        }
+                                                    } header: {
+                                                        Text("Search Results").font(.headline).foregroundColor(.primary)
+                                                    } footer: {
+                                                        Text("Data from USDA FoodData Central, Open Food Facts and Health Canada.")
+                                                    }.listRowBackground(Color("Background"))
+                                                }
                                                 Spacer()
                                             }.listRowBackground(Color("Foreground"))
                                                 .scrollContentBackground(.hidden)
@@ -241,7 +239,7 @@ struct FoodBarcodeScanner: View {
                                                             Spacer()
                                                             
                                                             Button {
-                                                                addFoodFromBarcode(item: item.food)
+                                                                logAgain(item.food)
                                                             } label: {
                                                                 Image(systemName: "plus.circle").scaleEffect(1.3)
                                                             }
@@ -296,28 +294,8 @@ struct FoodBarcodeScanner: View {
                             }
                             .onChange(of: barcode) { newValue in
                                 if let barcode = newValue {
-                                    print("Barcode scanned: \(barcode)")
-                                    isLoading = true
-                                    addFoodSheetOpen = true
-                                    dataFetcher.fetchFoodData(forBarcode: barcode, context: context, day: fetchTodayDay(context: context)) { fetchedFood, error in
-                                        DispatchQueue.main.async {
-                                            isLoading = false
-                                            if let fetchedFood = fetchedFood {
-                                                food = fetchedFood
-                                                
-                                                isScanning = false
-                                            } else if let error = error {
-                                                errorMessage = error
-                                                showErrorAlert = true
-                                                
-                                                isScanning = true
-                                                self.barcode = nil
-                                            }
-                                        }
-                                    }
+                                    lookUp(barcode: barcode)
                                 }
-                            }.onChange(of: searchText){
-                                print("Loading")
                             }
                             .onChange(of: cardPosition){
                                 if cardPosition == .bottom{
@@ -327,22 +305,52 @@ struct FoodBarcodeScanner: View {
                                     cardPosition = .top
                                 }
                             }
-                            .sheet(isPresented: $addFoodSheetOpen) {
-                                if isLoading {
-                                    ZStack {
-                                        
-                                        VStack(spacing: 10) {
-                                            ProgressView()
-                                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                                .scaleEffect(1.5)
-                                            Text(loadingPrompts.randomElement() ?? "")
-                                                .foregroundColor(.white)
-                                                .font(.headline)
-                                        }
-                                        .padding()
-                                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray5)).opacity(0.8))
-                                    }
+                            .task(id: isSearchExpanded) {
+                                // Runs on first appearance too, for a request made as the tab opens. Focus has to
+                                // wait for the card, or it's dropped for a field that isn't on screen yet.
+                                guard isSearchExpanded else { return }
+                                cardPosition = .top
+                                try? await Task.sleep(for: .milliseconds(400))
+                                isFocused = true
+                                isSearchExpanded = false
+                            }
+                            .onChange(of: addFoodRoute?.id) {
+                                // The system camera can't start while the barcode scanner holds the capture session.
+                                if addFoodRoute != nil {
+                                    isScanning = false
                                 }
+                            }
+                            .fullScreenCover(item: $addFoodRoute, onDismiss: finishAddFoodRoute) { route in
+                                switch route {
+                                case .snapMeal:
+                                    SnapMealView { estimate, name in
+                                        pendingFood = { day, meal in Food(estimate: estimate, name: name, day: day, meal: meal) }
+                                    }
+                                case .myFoods:
+                                    MyFoodsView(onPick: reviewAfterRoute)
+                                case let .newCustomFood(barcode):
+                                    CustomFoodEditor(barcode: barcode) { reviewAfterRoute($0.product) }
+                                }
+                            }
+                            .alert(item: $lookupFailure) { failure in
+                                if let barcode = failure.unknownBarcode {
+                                    Alert(
+                                        title: Text("Product not found"),
+                                        message: Text("Add it as a custom food and it will be found next time."),
+                                        primaryButton: .default(Text("Add Food")) {
+                                            addFoodRoute = .newCustomFood(barcode: barcode)
+                                        },
+                                        secondaryButton: .cancel(Text("Keep Scanning"), action: resumeScanning)
+                                    )
+                                } else {
+                                    Alert(
+                                        title: Text("Lookup failed"),
+                                        message: Text(failure.message),
+                                        dismissButton: .default(Text("OK"), action: resumeScanning)
+                                    )
+                                }
+                            }
+                            .sheet(isPresented: $addFoodSheetOpen) {
                                 if let food1 = food {
                                     AddFoodSheet(food: food1, selectedTab: $selectedTab, selectedDate: $selectedDate).onAppear(){
                                         isSearchExpanded = false
@@ -369,70 +377,94 @@ struct FoodBarcodeScanner: View {
     }
     
 
+    private struct LookupFailure: Identifiable {
+        let id = UUID()
+        let message: String
+        var unknownBarcode: String?
+    }
+
+    private var matchingCustomFoods: [CustomFood] {
+        searchText.isEmpty ? [] : customFoods.filter { $0.matches(searchText) }
+    }
+
     func performSearch(searchTerm: String) {
-        isLoading = true // Show loading indicator
-
-        let boostedSearchTerm = searchTerm // Boost exact matches in product_name
-
-        dataFetcher.searchFood(for: boostedSearchTerm) { results, error in
-            DispatchQueue.main.async { // Update UI on the main thread
-                isLoading = false // Hide loading indicator
-
-                if let results = results {
-                    searchResults = results // Use the filtered results
-
-                    print("Search Results (Filtered): \(searchResults)") // Print the filtered results
-
-                } else if let error = error {
-                    errorMessage = error
-                    showErrorAlert = true
-                    print("Search Error: \(error)")
+        searchTask?.cancel()
+        isLoading = true
+        let repository = repository
+        searchTask = Task {
+            do {
+                let results = try await repository.search(searchTerm)
+                guard !Task.isCancelled else { return }
+                searchResults = results
+            } catch {
+                guard !Task.isCancelled else { return }
+                searchResults = []
+                // Custom foods are still on screen, so the search isn't a dead end.
+                if matchingCustomFoods.isEmpty {
+                    lookupFailure = LookupFailure(message: error.localizedDescription)
                 }
             }
+            isLoading = false
         }
     }
 
-    func addFoodFromSearch(item: FoodSearchItem) {
-        isLoading = true
-        dataFetcher.fetchFoodData(forBarcode: item.barcode, context: context, day: fetchTodayDay(context: context)) { fetchedFood, error in
-            DispatchQueue.main.async {
-                isLoading = false
-                if let fetchedFood = fetchedFood {
-                    food = fetchedFood
-                    addFoodSheetOpen = true
-                    isScanning = false
-                    
-                } else if let error = error {
-                    errorMessage = error
-                    showErrorAlert = true
-                    isScanning = true
-                    barcode = nil
-                }
-            }
+    /// Custom foods come first, so a product entered once is found offline and overrides the databases.
+    private func lookUp(barcode: String) {
+        isScanning = false
+        if let custom = customFoods.first(where: { $0.hasBarcode(barcode) }) {
+            review(custom.product)
+            return
         }
-       
-        
+        isLoading = true
+        let repository = repository
+        Task {
+            do {
+                if let product = try await repository.product(barcode: barcode) {
+                    review(product)
+                } else {
+                    lookupFailure = LookupFailure(message: "", unknownBarcode: barcode)
+                }
+            } catch {
+                lookupFailure = LookupFailure(message: error.localizedDescription)
+            }
+            isLoading = false
+        }
     }
-    func addFoodFromBarcode(item: Food) {
-        isLoading = true
-        dataFetcher.fetchFoodData(forBarcode: item.barcode, context: context, day: fetchTodayDay(context: context)) { fetchedFood, error in
-            DispatchQueue.main.async {
-                isLoading = false
-                if let fetchedFood = fetchedFood {
-                    food = fetchedFood
-                    addFoodSheetOpen = true
-                    isScanning = false
-                    
-                } else if let error = error {
-                    errorMessage = error
-                    showErrorAlert = true
-                    isScanning = true
-                    barcode = nil
-                }
-            }
+
+    private func review(_ product: FoodProduct) {
+        open(Food(product: product, day: fetchTodayDay(context: context), meal: currentMeal))
+    }
+
+    private func logAgain(_ logged: Food) {
+        open(Food(copying: logged, day: fetchTodayDay(context: context), meal: currentMeal))
+    }
+
+    private func open(_ newFood: Food) {
+        food = newFood
+        isScanning = false
+        addFoodSheetOpen = true
+    }
+
+    private var currentMeal: Meal {
+        Meal(hour: Calendar.current.component(.hour, from: Date()))
+    }
+
+    private func reviewAfterRoute(_ product: FoodProduct) {
+        pendingFood = { day, meal in Food(product: product, day: day, meal: meal) }
+    }
+
+    private func finishAddFoodRoute() {
+        guard let makeFood = pendingFood else {
+            resumeScanning()
+            return
         }
-       
-        
+        pendingFood = nil
+        open(makeFood(fetchTodayDay(context: context), currentMeal))
+    }
+
+    private func resumeScanning() {
+        barcode = nil
+        isScanning = true
     }
 
     func startScanningIfNeeded() {

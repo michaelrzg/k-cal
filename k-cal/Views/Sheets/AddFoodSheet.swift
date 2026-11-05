@@ -30,9 +30,9 @@ struct AddFoodSheet: View {
 
             Form {
                 AdBannerView(adUnitID: AddFoodSheetTopBannerId).frame(width: 320, height: 50)
-                Section{
-                    HStack{
-                        if let url = URL(string: food.url){
+                if let url = URL(string: food.url){
+                    Section{
+                        HStack{
                             AsyncImage(url: url) { image in
                                 image.resizable()
                                     .scaledToFit()
@@ -44,9 +44,9 @@ struct AddFoodSheet: View {
                                     .frame( height: 200)
                                     .overlay(ProgressView())
                             }
-                        }
-                    }.frame(maxWidth: .infinity, maxHeight: .infinity)
-                }.listSectionSpacing(5)
+                        }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }.listSectionSpacing(5)
+                }
                 if let day = food.day {
                     DatePicker("Date", selection: $selectedDate,displayedComponents: .date )
                     
@@ -75,6 +75,14 @@ struct AddFoodSheet: View {
                     food.protein = proteinPerServing * newValue
                     food.carbohydrates = carbsPerServing * newValue
                     food.fat = fatPerServing * newValue
+                }
+
+                if !food.serving.isEmpty {
+                    HStack {
+                        Text("Serving:")
+                        Spacer()
+                        Text(food.serving).foregroundStyle(.secondary).multilineTextAlignment(.trailing)
+                    }
                 }
 
                 HStack {

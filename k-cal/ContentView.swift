@@ -17,16 +17,32 @@ struct ContentView: View {
     @State var meal: Meal?
     @State private var showUserView = false
     @State var isSearchExpanded: Bool = false
+    @State var addFoodRoute: AddFoodRoute?
     @State var welcome_complete: Bool = false
     @State var header_text: String = "k-cal"
     @State var selectedDate: Date = Date()
     var bannerView: BannerView!
     @Query private var users: [User]
+    @Query private var foods: [Food]
+    @Environment(\.scenePhase) private var scenePhase
+
+    private var todaySnapshot: DailySnapshot {
+        WidgetSync.snapshot(foods: foods, user: users.first, at: Date())
+    }
+
     var body: some View {
         ZStack{}.onAppear(){
             if users.isEmpty == true{
                 hasLaunchedBefore = false
             }
+        }.task {
+            await FoodUpdater.shared.updateIfDue()
+        }.onChange(of: todaySnapshot, initial: true) { _, snapshot in
+            WidgetSync.publish(snapshot)
+        }.onChange(of: scenePhase) {
+            WidgetSync.publish(todaySnapshot)
+        }.onOpenURL { url in
+            open(AppLink(url: url))
         }.fullScreenCover(isPresented: .constant(!hasLaunchedBefore && !welcome_complete)) {
             WelcomeView(welcome_complete: $welcome_complete)
                 .onDisappear {
@@ -67,7 +83,7 @@ struct ContentView: View {
                     }
                     ZStack {
                         TabView(selection: $selectedTab) {
-                            Home(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, welcome_complete: $welcome_complete).onAppear() {
+                            Home(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, addFoodRoute: $addFoodRoute, welcome_complete: $welcome_complete).onAppear() {
                                
                             }
                                 .tabItem {
@@ -77,14 +93,14 @@ struct ContentView: View {
                                 }
                                 .tag(0)
                             
-                            FoodBarcodeScanner(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, selectedDate: $selectedDate)
+                            FoodBarcodeScanner(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, addFoodRoute: $addFoodRoute, selectedDate: $selectedDate)
                                 .tabItem {
                                     Image(systemName: "barcode.viewfinder")
                                     Text("scan/search")
                                 }
                                 .tag(1)
                             
-                            Diary(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, selectedDate: $selectedDate)
+                            Diary(selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, addFoodRoute: $addFoodRoute, selectedDate: $selectedDate)
                                 .tabItem {
                                     Image(systemName: "book")
                                     Text("diary")
@@ -120,6 +136,17 @@ struct ContentView: View {
         
     }
     
+
+    private func open(_ link: AppLink?) {
+        guard let link else { return }
+        selectedTab = 1
+        switch link {
+        case .scan: break
+        case .snap: addFoodRoute = .snapMeal
+        case .search: isSearchExpanded = true
+        case .custom: addFoodRoute = .myFoods
+        }
+    }
 
     init() {
         let appearance = UITabBarAppearance()

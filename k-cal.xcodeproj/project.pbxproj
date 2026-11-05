@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D27E3893EDE01B4A35DEE94 /* k-calWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F1ECDC48CADCA63CCDC6842D /* k-calWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		441EE190EC79CBDCD205F45E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7080393726BFE90B8CDFB8A3 /* Foundation.framework */; };
 		CC52FCB12D9353AE00E2191D /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = CC52FCB02D9353AE00E2191D /* GoogleMobileAds */; };
 		CC6026AC2D9376FC009F3F76 /* CalendarKit in Frameworks */ = {isa = PBXBuildFile; productRef = CC6026AB2D9376FC009F3F76 /* CalendarKit */; };
 		CC7E94682D6323C200CA289F /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = CC7E94672D6323C200CA289F /* SDWebImageSwiftUI */; };
@@ -27,12 +29,35 @@
 			remoteGlobalIDString = CCC01F752D5A9F7C0058BF50;
 			remoteInfo = "k-cal";
 		};
+		F4B96F52181E317CE44190DB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CCC01F6E2D5A9F7C0058BF50 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA627DEF41D2D2942BF9C682;
+			remoteInfo = "k-calWidgets";
+		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		5CAE0D556BB904B484F1E9C1 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				1D27E3893EDE01B4A35DEE94 /* k-calWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		7080393726BFE90B8CDFB8A3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		CCC01F762D5A9F7C0058BF50 /* k-cal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "k-cal.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCC01F862D5A9F7D0058BF50 /* k-calTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "k-calTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCC01F902D5A9F7D0058BF50 /* k-calUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "k-calUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1ECDC48CADCA63CCDC6842D /* k-calWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "k-calWidgets.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -46,6 +71,20 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		40957A8525A4571756BAE629 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		BFE276E437D767F499048AEE /* k-calWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			path = "k-calWidgets";
+			sourceTree = "<group>";
+		};
 		CCC01F782D5A9F7C0058BF50 /* k-cal */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -56,17 +95,29 @@
 		};
 		CCC01F892D5A9F7D0058BF50 /* k-calTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = "k-calTests";
 			sourceTree = "<group>";
 		};
 		CCC01F932D5A9F7D0058BF50 /* k-calUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = "k-calUITests";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8A3119B4410132F1AD34C1F3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				441EE190EC79CBDCD205F45E /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CCC01F732D5A9F7C0058BF50 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -94,6 +145,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		38032D48A38C85452DF72699 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3AFF6BC42C6499EF7AE7CD5E /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3AFF6BC42C6499EF7AE7CD5E /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				7080393726BFE90B8CDFB8A3 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 		CCC01F6D2D5A9F7C0058BF50 = {
 			isa = PBXGroup;
 			children = (
@@ -101,6 +168,9 @@
 				CCC01F892D5A9F7D0058BF50 /* k-calTests */,
 				CCC01F932D5A9F7D0058BF50 /* k-calUITests */,
 				CCC01F772D5A9F7C0058BF50 /* Products */,
+				38032D48A38C85452DF72699 /* Frameworks */,
+				40957A8525A4571756BAE629 /* Shared */,
+				BFE276E437D767F499048AEE /* k-calWidgets */,
 			);
 			sourceTree = "<group>";
 		};
@@ -110,6 +180,7 @@
 				CCC01F762D5A9F7C0058BF50 /* k-cal.app */,
 				CCC01F862D5A9F7D0058BF50 /* k-calTests.xctest */,
 				CCC01F902D5A9F7D0058BF50 /* k-calUITests.xctest */,
+				F1ECDC48CADCA63CCDC6842D /* k-calWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -117,6 +188,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AA627DEF41D2D2942BF9C682 /* k-calWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A260D8250E92B96A3FF71FB9 /* Build configuration list for PBXNativeTarget "k-calWidgets" */;
+			buildPhases = (
+				FD84EB04850A5F002003F041 /* Sources */,
+				8A3119B4410132F1AD34C1F3 /* Frameworks */,
+				ECED14203D3F7F7320C5685C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				40957A8525A4571756BAE629 /* Shared */,
+				BFE276E437D767F499048AEE /* k-calWidgets */,
+			);
+			name = "k-calWidgets";
+			productName = "k-calWidgets";
+			productReference = F1ECDC48CADCA63CCDC6842D /* k-calWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		CCC01F752D5A9F7C0058BF50 /* k-cal */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CCC01F9A2D5A9F7D0058BF50 /* Build configuration list for PBXNativeTarget "k-cal" */;
@@ -124,13 +216,16 @@
 				CCC01F722D5A9F7C0058BF50 /* Sources */,
 				CCC01F732D5A9F7C0058BF50 /* Frameworks */,
 				CCC01F742D5A9F7C0058BF50 /* Resources */,
+				5CAE0D556BB904B484F1E9C1 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				57B35F3EB8EFEC2A364033BD /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				CCC01F782D5A9F7C0058BF50 /* k-cal */,
+				40957A8525A4571756BAE629 /* Shared */,
 			);
 			name = "k-cal";
 			packageProductDependencies = (
@@ -159,8 +254,6 @@
 				CCC01F892D5A9F7D0058BF50 /* k-calTests */,
 			);
 			name = "k-calTests";
-			packageProductDependencies = (
-			);
 			productName = "k-calTests";
 			productReference = CCC01F862D5A9F7D0058BF50 /* k-calTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -182,8 +275,6 @@
 				CCC01F932D5A9F7D0058BF50 /* k-calUITests */,
 			);
 			name = "k-calUITests";
-			packageProductDependencies = (
-			);
 			productName = "k-calUITests";
 			productReference = CCC01F902D5A9F7D0058BF50 /* k-calUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -233,6 +324,7 @@
 				CCC01F752D5A9F7C0058BF50 /* k-cal */,
 				CCC01F852D5A9F7D0058BF50 /* k-calTests */,
 				CCC01F8F2D5A9F7D0058BF50 /* k-calUITests */,
+				AA627DEF41D2D2942BF9C682 /* k-calWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -253,6 +345,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CCC01F8E2D5A9F7D0058BF50 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED14203D3F7F7320C5685C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -283,9 +382,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FD84EB04850A5F002003F041 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		57B35F3EB8EFEC2A364033BD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "k-calWidgets";
+			target = AA627DEF41D2D2942BF9C682 /* k-calWidgets */;
+			targetProxy = F4B96F52181E317CE44190DB /* PBXContainerItemProxy */;
+		};
 		CCC01F882D5A9F7D0058BF50 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CCC01F752D5A9F7C0058BF50 /* k-cal */;
@@ -299,6 +411,63 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		4A028D9F548D3216BF55DDCB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = "Config/k-calWidgets.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WRDKQDVMU9;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/k-cal-widgets.Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "k-cal";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "rizig.k-cal.widgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B86FB48A33926D20841DA646 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = "Config/k-calWidgets.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WRDKQDVMU9;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/k-cal-widgets.Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "k-cal";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "rizig.k-cal.widgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		CCC01F982D5A9F7D0058BF50 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -425,6 +594,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Config/k-cal.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"k-cal/Preview Content\"";
@@ -432,7 +602,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "k-cal/Info.plist";
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to the camera to scan barcodes.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to the camera to scan barcodes and photograph meals.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -456,6 +626,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Config/k-cal.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"k-cal/Preview Content\"";
@@ -463,7 +634,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "k-cal/Info.plist";
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to the camera to scan barcodes.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to the camera to scan barcodes and photograph meals.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -557,6 +728,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A260D8250E92B96A3FF71FB9 /* Build configuration list for PBXNativeTarget "k-calWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A028D9F548D3216BF55DDCB /* Release */,
+				B86FB48A33926D20841DA646 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CCC01F712D5A9F7C0058BF50 /* Build configuration list for PBXProject "k-cal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

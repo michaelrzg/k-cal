@@ -26,6 +26,8 @@ class Food: Identifiable {
     var url: String = ""
     var barcode: String = ""
     var brand: String?
+    /// What one serving is, e.g. "2 Tbsp (30 g)". Empty when unknown.
+    var serving: String = ""
     @Relationship var day: Day?
 
     init(name: String, day: Day, protein: Int, carbohydrates: Int, fat: Int, meal: Meal, servings: Int, calories_per_serving: Int, sodium: Int?, sugars: Int?, fiber: Int?, ingredients: String?, url: String?, barcode: String?, brand: String?) {

@@ -8,6 +8,7 @@ struct Diary: View {
     
     @Binding var selectedTab: Int // Bind to ContentView's tab selection
     @Binding var isSearchExpanded: Bool
+    @Binding var addFoodRoute: AddFoodRoute?
     @Binding var selectedDate:Date
     @Environment(\.modelContext) private var context
     @State private var foods: [Food] = []
@@ -60,7 +61,7 @@ struct Diary: View {
 
                         Menu {
                             HStack {
-                               Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
+                               Add_Food_Submenu(meal: .breakfast, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, addFoodRoute: $addFoodRoute)
                             }
 
                         } label: {
@@ -90,7 +91,7 @@ struct Diary: View {
 
                         Menu {
                             HStack {
-                                Add_Food_Submenu(meal: .lunch, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
+                                Add_Food_Submenu(meal: .lunch, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, addFoodRoute: $addFoodRoute)
                             }
 
                         } label: {
@@ -119,7 +120,7 @@ struct Diary: View {
 
                         Menu {
                             HStack {
-                               Add_Food_Submenu(meal: .dinner, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
+                               Add_Food_Submenu(meal: .dinner, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, addFoodRoute: $addFoodRoute)
                             }
 
                         } label: {
@@ -148,7 +149,7 @@ struct Diary: View {
 
                         Menu {
                             HStack {
-                                Add_Food_Submenu(meal: .snack, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded)
+                                Add_Food_Submenu(meal: .snack, selectedTab: $selectedTab, isSearchExpanded: $isSearchExpanded, addFoodRoute: $addFoodRoute)
                             }
 
                         } label: {
@@ -237,6 +238,6 @@ struct Diary: View {
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: Food.self, Day.self, configurations: config)
-    return Diary(selectedTab: .constant(0), isSearchExpanded: .constant(false), selectedDate: .constant(Date()))
+    return Diary(selectedTab: .constant(0), isSearchExpanded: .constant(false), addFoodRoute: .constant(nil), selectedDate: .constant(Date()))
         .modelContainer(container)
 }

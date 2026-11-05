@@ -5,7 +5,6 @@
 //
 
 import AVFoundation
-import SwiftData
 import SwiftUI
 
 class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
@@ -22,23 +21,7 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
         }
     }
 
-    let dataFetcher: OpenFoodFactsFetcher
-    let context: ModelContext
-    let day: Day
-
     weak var delegate: BarcodeScannerView.Coordinator?
-
-    init(dataFetcher: OpenFoodFactsFetcher, context: ModelContext, day: Day) {
-        self.dataFetcher = dataFetcher
-        self.context = context
-        self.day = day
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,7 +48,7 @@ class BarcodeScannerViewController: UIViewController, AVCaptureMetadataOutputObj
             captureSession.addOutput(captureOutput)
 
             captureOutput.setMetadataObjectsDelegate(delegate, queue: DispatchQueue.main)
-            captureOutput.metadataObjectTypes = [.ean8, .ean13, .qr, .pdf417]
+            captureOutput.metadataObjectTypes = [.ean8, .ean13, .upce]
         } else {
             return
         }
