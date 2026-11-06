@@ -25,6 +25,8 @@ enum FoodRepositoryError: LocalizedError {
 final class FoodRepository: Sendable {
     /// With fewer matches than this, a search also asks online.
     private static let enoughResults = 10
+    /// With fewer exact matches than this, a search also tries other spellings.
+    private static let enoughStrictResults = 20
     private static let resultLimit = 40
 
     static let shared: FoodRepository = {
@@ -40,6 +42,7 @@ final class FoodRepository: Sendable {
     let bundled: BundledFoodDatabase?
     let local: LocalFoodDatabase?
     private let online: any OnlineFoodSource
+    private let vocabularyLoader = VocabularyLoader()
 
     init(bundled: BundledFoodDatabase?, local: LocalFoodDatabase?, online: any OnlineFoodSource) {
         self.bundled = bundled
@@ -47,25 +50,44 @@ final class FoodRepository: Sendable {
         self.online = online
     }
 
-    func search(_ query: String) async throws -> [FoodProduct] {
+    /// Searches on the device, loosening only as far as it has to, then online if that still comes up thin.
+    /// - Parameters:
+    ///   - online: whether a thin result may go online. Off while typing, which would use up the limit.
+    ///   - familiar: lowercased names of foods the user has logged, which rank higher.
+    func search(_ query: String, online allowOnline: Bool = true, familiar: Set<String> = []) async throws -> [FoodProduct] {
         let (bundled, local) = (bundled, local)
+        let vocabulary = await vocabulary()
+        let plan = FoodSearchPlan(query: query, vocabulary: vocabulary)
         // On a background thread: a broad search takes tens of milliseconds.
         let onDevice = await Task.detached(priority: .userInitiated) {
-            let found = (try? local?.search(query)) ?? []
-            return found + ((try? bundled?.search(query)) ?? [])
+            var found: [FoodProduct] = []
+            func run(_ match: String?) {
+                guard let match else { return }
+                found += (try? local?.search(match)) ?? []
+                found += (try? bundled?.search(match)) ?? []
+            }
+            run(plan.strict)
+            if plan.hasCorrections || found.count < Self.enoughStrictResults { run(plan.corrected) }
+            if found.count < Self.enoughResults { run(plan.partial) }
+            return found
         }.value
-        var ranked = Self.rank(onDevice, query: query)
-        guard ranked.count < Self.enoughResults else { return Array(ranked.prefix(Self.resultLimit)) }
+        var ranked = FoodRanking.rank(onDevice, plan: plan, familiar: familiar)
+        guard allowOnline, ranked.count < Self.enoughResults else { return Array(ranked.prefix(Self.resultLimit)) }
 
         do {
             let fetched = try await online.search(query)
             try? local?.save(fetched)
-            ranked = Self.rank(ranked + fetched, query: query)
+            ranked = FoodRanking.rank(ranked + fetched, plan: plan, familiar: familiar)
         } catch {
             // Offline with something to show is still a good answer.
             if ranked.isEmpty { throw FoodRepositoryError.unavailable }
         }
         return Array(ranked.prefix(Self.resultLimit))
+    }
+
+    /// Loaded on the first search rather than at launch, because reading the whole word list takes a moment.
+    private func vocabulary() async -> FoodVocabulary? {
+        await vocabularyLoader.value(loadingFrom: bundled)
     }
 
     /// - Returns: nil when nothing knows the barcode.
@@ -81,51 +103,23 @@ final class FoodRepository: Sendable {
             throw FoodRepositoryError.unavailable
         }
     }
+}
 
-    /// Removes duplicates, then puts the best name matches first. Among equals the shorter name wins, as
-    /// "Banana, raw" is plainer than "Banana Nut Granola", and after that the original order.
-    static func rank(_ products: [FoodProduct], query: String) -> [FoodProduct] {
-        var seen = Set<String>()
-        let unique = products.filter { product in
-            let barcode = product.barcode.flatMap(Barcode.canonical)
-            let keys = [barcode, "\(product.name)|\(product.brand ?? "")".lowercased()].compactMap { $0 }
-            let isNew = keys.allSatisfy { !seen.contains($0) }
-            seen.formUnion(keys)
-            return isNew
+/// Hands out one vocabulary, however many searches ask for it while it loads.
+private actor VocabularyLoader {
+    private var task: Task<FoodVocabulary?, Never>?
+
+    func value(loadingFrom database: BundledFoodDatabase?) async -> FoodVocabulary? {
+        if task == nil {
+            task = Task.detached(priority: .userInitiated) { try? database?.loadVocabulary() }
         }
-        return unique.enumerated()
-            .sorted { lhs, rhs in
-                let scores = (score(lhs.element, query: query), score(rhs.element, query: query))
-                if scores.0 != scores.1 { return scores.0 > scores.1 }
-                let lengths = (lhs.element.name.count, rhs.element.name.count)
-                return lengths.0 == lengths.1 ? lhs.offset < rhs.offset : lengths.0 < lengths.1
-            }
-            .map(\.element)
-    }
-
-    private static func score(_ product: FoodProduct, query: String) -> Int {
-        let name = product.name.lowercased()
-        let phrase = query.lowercased().trimmingCharacters(in: .whitespaces)
-        let terms = FoodText.words(in: query)
-        let searchable = Set(FoodText.words(in: "\(product.name) \(product.brand ?? "")"))
-        let words = FoodText.words(in: product.name)
-        var score = 0
-        // A plain food with no brand or barcode is what a plain search wants: USDA's "Bananas, raw".
-        if product.brand == nil && product.barcode == nil { score += 9 }
-        if name == phrase { score += 2 }
-        if name.hasPrefix(phrase) { score += 4 }
-        if name.contains(phrase) { score += 2 }
-        // "Banana, raw" has the query as a whole word; "Bananamilk" only starts with it.
-        // USDA's own names are often plural, so "banana" has to count as a match for "Bananas, raw".
-        if terms.allSatisfy({ term in words.contains { $0 == term || $0 == term + "s" } }) { score += 8 }
-        if terms.allSatisfy(searchable.contains) { score += 1 }
-        return score
+        return await task?.value
     }
 }
 
 enum FoodText {
     static func words(in text: String) -> [String] {
-        text.lowercased().split { !$0.isLetter && !$0.isNumber }.map(String.init)
+        FoodSearchText.words(in: text)
     }
 }
 

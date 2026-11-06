@@ -48,6 +48,7 @@ struct MyFoodsView: View {
                     let shown = visibleFoods
                     offsets.forEach { context.delete(shown[$0]) }
                 }
+                .listRowBackground(Theme.card)
             }
             .overlay {
                 if foods.isEmpty {
@@ -60,6 +61,7 @@ struct MyFoodsView: View {
                     ContentUnavailableView.search(text: searchText)
                 }
             }
+            .themedList()
             .searchable(text: $searchText, prompt: "Search my foods")
             .navigationTitle("My Foods")
             .navigationBarTitleDisplayMode(.inline)

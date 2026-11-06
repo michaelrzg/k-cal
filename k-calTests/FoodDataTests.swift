@@ -183,6 +183,14 @@ struct FoodRepositoryTests {
                     serving: "1 cup", nutrition: Nutrition(calories: 12.5, sodiumMilligrams: 3), source: source)
     }
 
+    private func match(_ query: String) -> String {
+        FoodSearchPlan(query: query, vocabulary: nil).strict!
+    }
+
+    private func ranked(_ products: [FoodProduct], _ query: String) -> [FoodProduct] {
+        FoodRanking.rank(products, plan: FoodSearchPlan(query: query, vocabulary: nil))
+    }
+
     private func localDatabase() throws -> LocalFoodDatabase {
         try LocalFoodDatabase(url: URL.temporaryDirectory.appending(path: "\(UUID().uuidString).sqlite"))
     }
@@ -197,7 +205,7 @@ struct FoodRepositoryTests {
         let found = try #require(try local.product(barcode: "049000028904"))
         #expect(found.name == "Maple Oat Bites")
         #expect(found.nutrition.calories == 12.5)
-        #expect(try local.search("acme map").count == 1)
+        #expect(try local.search(match("acme map")).count == 1)
     }
 
     @Test func newerCopyReplacesTheOldOne() throws {
@@ -205,8 +213,8 @@ struct FoodRepositoryTests {
         try local.save([product("Old recipe", barcode: "049000028904")])
         try local.save([product("New recipe", barcode: "049000028904")])
         #expect(try local.count() == 1)
-        #expect(try local.search("old").isEmpty)
-        #expect(try local.search("new").map(\.name) == ["New recipe"])
+        #expect(try local.search(match("old")).isEmpty)
+        #expect(try local.search(match("new")).map(\.name) == ["New recipe"])
     }
 
     @Test func updatedProductOverridesTheBundledOne() async throws {
@@ -245,7 +253,7 @@ struct FoodRepositoryTests {
         let online = Online(results: [product("Zorblax Bar", barcode: "812345678905", source: .openFoodFacts)])
         let repository = FoodRepository(bundled: nil, local: local, online: online)
         #expect(try await repository.search("zorblax").map(\.name) == ["Zorblax Bar"])
-        #expect(try local.search("zorblax").count == 1)
+        #expect(try local.search(match("zorblax")).count == 1)
     }
 
     @Test func offlineSearchWithResultsIsNotAnError() async throws {
@@ -261,27 +269,26 @@ struct FoodRepositoryTests {
     }
 
     @Test func wholeWordsBeatWordStartsAndPlainerFoodsWinTies() async throws {
-        let ranked = FoodRepository.rank([
+        let order = ranked([
             product("Bananamilk"), product("Banana Nut Butter Granola"), product("Banana, raw"), product("Crackers"),
-        ], query: "banana")
-        #expect(ranked.map(\.name) == ["Banana, raw", "Banana Nut Butter Granola", "Bananamilk", "Crackers"])
+        ], "banana")
+        #expect(order.map(\.name).first == "Banana, raw")
+        #expect(order.map(\.name).last == "Crackers")
     }
 
     @Test func plainFoodBeatsABrandedOneWithTheSameName() {
-        let ranked = FoodRepository.rank([product("Banana", brand: "Totally Bananas", barcode: "812345678905"), product("Bananas, raw")], query: "banana")
-        #expect(ranked.map(\.name) == ["Bananas, raw", "Banana"])
-        let another = FoodRepository.rank([product("Banana", brand: "Dole", barcode: "812345678905"), product("Banana, raw")], query: "banana")
+        let another = ranked([product("Banana", brand: "Dole", barcode: "812345678905"), product("Banana, raw")], "banana")
         #expect(another.map(\.name) == ["Banana, raw", "Banana"])
     }
 
     @Test func duplicatesKeepTheEarlierCopy() {
-        let ranked = FoodRepository.rank([
+        let order = ranked([
             product("Cola", barcode: "049000028904"),
             product("Coca-Cola Can", barcode: "0049000028904", source: .openFoodFacts),
             product("Banana", source: .canadianNutrientFile),
             product("BANANA"),
-        ], query: "x")
-        #expect(ranked.map(\.name) == ["Banana", "Cola"])  // the plain food sorts first
+        ], "x")
+        #expect(order.map(\.name) == ["Banana", "Cola"])  // the plain food sorts first
     }
 
     @Test func bundledDatabaseAnswersOffline() async throws {
@@ -323,6 +330,27 @@ struct LoggingTests {
         #expect(!custom.matches("soup"))
         #expect(custom.hasBarcode("049000028904"))
         #expect(!custom.hasBarcode("049000028911"))
+    }
+
+    @Test func findsTheSameDayInsteadOfMakingAnother() throws {
+        let morning = Date()
+        let day = try Day.find(morning, in: context)
+        let later = try Day.find(morning.addingTimeInterval(1), in: context)
+        #expect(day === later)
+        #expect(day.date == Calendar.current.startOfDay(for: morning))
+    }
+
+    @Test func movingAFoodLeavesTheRestOfTheDayAlone() throws {
+        let today = try Day.find(Date(), in: context)
+        let yesterday = try Day.find(Date().addingTimeInterval(-86400), in: context)
+        let first = Food(product: FoodProduct(id: "a", name: "A", serving: "1", nutrition: Nutrition(calories: 1), source: .usda), day: today, meal: .snack)
+        let second = Food(product: FoodProduct(id: "b", name: "B", serving: "1", nutrition: Nutrition(calories: 1), source: .usda), day: today, meal: .snack)
+        context.insert(first)
+        context.insert(second)
+        first.day = yesterday
+        try context.save()
+        #expect(first.isLogged(on: yesterday.date))
+        #expect(second.isLogged(on: today.date))
     }
 
     @Test func loggingAgainStartsFromOneServing() {

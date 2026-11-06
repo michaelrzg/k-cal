@@ -59,6 +59,15 @@ struct MealEstimateTests {
         #expect(meal.suggestions.map(\.label) == ["pizza"])
     }
 
+    @Test func activityLevelsKeepTheirMacroSplits() {
+        let light = ActivityLevel.lightlyActive.macros(forCalories: 2000)
+        #expect(light.protein == 100)
+        #expect(light.carbohydrates == 275)
+        #expect(light.fat == 55)
+        #expect(ActivityLevel.veryActive.macros(forCalories: 3000).protein == 225)
+        #expect(ActivityLevel.moderatelyActive.suggestedCalories == 2500)
+    }
+
     @Test func picksMealByHour() {
         #expect(Meal(hour: 8) == .breakfast)
         #expect(Meal(hour: 12) == .lunch)

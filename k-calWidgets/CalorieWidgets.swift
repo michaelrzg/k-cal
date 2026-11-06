@@ -11,7 +11,7 @@ struct DailyCaloriesWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "DailyCalories", provider: DailyProvider()) { entry in
             DailyCaloriesView(snapshot: entry.snapshot)
-                .containerBackground(.background, for: .widget)
+                .containerBackground(WidgetColor.background, for: .widget)
                 .widgetURL(AppLink.scan.url)
         }
         .configurationDisplayName("Daily Calories")
@@ -75,7 +75,7 @@ struct CalorieRingWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "CalorieRing", provider: DailyProvider()) { entry in
             CalorieRingView(snapshot: entry.snapshot)
-                .containerBackground(.background, for: .widget)
+                .containerBackground(WidgetColor.background, for: .widget)
                 .widgetURL(AppLink.scan.url)
         }
         .configurationDisplayName("Calorie Ring")

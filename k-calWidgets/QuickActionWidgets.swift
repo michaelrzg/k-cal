@@ -44,7 +44,7 @@ struct QuickScanWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "QuickScan", provider: StaticProvider()) { _ in
             SingleActionView(action: .scan)
-                .containerBackground(.background, for: .widget)
+                .containerBackground(WidgetColor.background, for: .widget)
                 .widgetURL(AppLink.scan.url)
         }
         .configurationDisplayName("Quick Scan")
@@ -57,7 +57,7 @@ struct QuickSnapWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "QuickSnap", provider: StaticProvider()) { _ in
             SingleActionView(action: .snap)
-                .containerBackground(.background, for: .widget)
+                .containerBackground(WidgetColor.background, for: .widget)
                 .widgetURL(AppLink.snap.url)
         }
         .configurationDisplayName("Snap a Meal")
@@ -71,7 +71,7 @@ struct QuickAddWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "QuickAdd", provider: StaticProvider()) { _ in
             QuickAddView()
-                .containerBackground(.background, for: .widget)
+                .containerBackground(WidgetColor.background, for: .widget)
         }
         .configurationDisplayName("Quick Add")
         .description("Scan, snap, search or pick one of your foods.")

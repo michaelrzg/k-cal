@@ -26,7 +26,7 @@ struct FoodDatabaseSection: View {
                     Text("Never")
                 }
             }
-            Toggle("Update automatically on Wi-Fi", isOn: $updatesAutomatically)
+            Toggle("Update automatically on Wi-Fi", isOn: $updatesAutomatically).tint(Theme.brand)
             if updater.isUpdating {
                 HStack {
                     ProgressView()
@@ -43,7 +43,7 @@ struct FoodDatabaseSection: View {
             if let failure = updater.failure {
                 Text(failure)
                     .font(.subheadline)
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(Theme.brand)
             }
         } header: {
             Text("Food Database")

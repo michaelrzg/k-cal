@@ -54,6 +54,7 @@ struct CustomFoodEditor: View {
     var body: some View {
         NavigationStack {
             Form {
+                Group {
                 Section("Food") {
                     TextField("Name", text: $name)
                     TextField("Brand (optional)", text: $brand)
@@ -70,7 +71,10 @@ struct CustomFoodEditor: View {
                     amount("Sugar", $sugars, unit: "g")
                     amount("Fiber", $fiber, unit: "g")
                 }
+                }
+                .listRowBackground(Theme.card)
             }
+            .themedList()
             .navigationTitle(food == nil ? "New Food" : "Edit Food")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -28,7 +28,7 @@ struct SnapMealView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color("Background").ignoresSafeArea()
+                Theme.background.ignoresSafeArea()
                 switch stage {
                 case .choosing:
                     choosing
@@ -72,7 +72,7 @@ struct SnapMealView: View {
             Spacer()
             Image(systemName: "fork.knife.circle")
                 .font(.system(size: 72))
-                .foregroundStyle(Color("k-cal"))
+                .foregroundStyle(Theme.brand)
             Text("Estimate calories from a photo")
                 .font(.title3).bold()
             Text("Shoot straight down from above with the whole plate in frame. The photo stays on your phone.")
@@ -85,7 +85,7 @@ struct SnapMealView: View {
                 Button {
                     showingCamera = true
                 } label: {
-                    Label("Take Photo", systemImage: "camera").frame(maxWidth: .infinity)
+                    Label("Take Photo", systemImage: "camera").foregroundStyle(Theme.onBrand).frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
@@ -174,11 +174,12 @@ private struct SnapMealReview: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .listRowBackground(Color.clear)
             }
+            Group {
             if !result.looksLikeFood {
                 Section {
                     Label("This doesn't look like food, so the numbers below may be meaningless.", systemImage: "exclamationmark.triangle")
                         .font(.subheadline)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Theme.brand)
                 }
             }
             Section("Meal") {
@@ -190,7 +191,7 @@ private struct SnapMealReview: View {
                                 Button(dish.name) { name = dish.name }
                                     .buttonStyle(.bordered)
                                     .controlSize(.small)
-                                    .tint(name == dish.name ? Color("k-cal") : .secondary)
+                                    .tint(name == dish.name ? Theme.brand : .secondary)
                             }
                         }
                     }
@@ -200,7 +201,7 @@ private struct SnapMealReview: View {
                 VStack(spacing: 4) {
                     Text("\(Int(estimate.calories.rounded()))")
                         .font(.system(size: 44, weight: .bold))
-                        .foregroundStyle(Color("k-cal"))
+                        .foregroundStyle(Theme.brand)
                         .accessibilityIdentifier("snap-calories")
                     Text("estimated calories")
                         .font(.subheadline)
@@ -208,9 +209,9 @@ private struct SnapMealReview: View {
                 }
                 .frame(maxWidth: .infinity)
                 HStack {
-                    macro("Protein", estimate.protein, color: "Protein")
-                    macro("Carbs", estimate.carbohydrates, color: "Carbohydrate")
-                    macro("Fat", estimate.fat, color: "Fat")
+                    macro("Protein", estimate.protein, color: Theme.protein)
+                    macro("Carbs", estimate.carbohydrates, color: Theme.carbohydrate)
+                    macro("Fat", estimate.fat, color: Theme.fat)
                 }
             }
             Section {
@@ -228,8 +229,10 @@ private struct SnapMealReview: View {
             } footer: {
                 Text("Photo estimates can easily be off by 20% or more, and hidden oil, butter and sauces are hard to see. If you know the weight of your food, enter it here.")
             }
+            }
+            .listRowBackground(Theme.card)
         }
-        .scrollContentBackground(.hidden)
+        .themedList()
         .scrollDismissesKeyboard(.interactively)
         .safeAreaInset(edge: .bottom) {
             HStack {
@@ -239,20 +242,20 @@ private struct SnapMealReview: View {
                 Button {
                     onUse(estimate, name)
                 } label: {
-                    Text("Use Estimate").frame(maxWidth: .infinity)
+                    Text("Use Estimate").foregroundStyle(Theme.onBrand).frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
                 .disabled(!MealEstimate.gramsRange.contains(grams))
             }
             .padding()
-            .background(Color("Background"))
+            .background(Theme.background.ignoresSafeArea())
         }
     }
 
-    private func macro(_ title: String, _ value: Double, color: String) -> some View {
+    private func macro(_ title: String, _ value: Double, color: Color) -> some View {
         VStack {
-            Text(title).foregroundStyle(Color(color))
+            Text(title).foregroundStyle(color)
             Text("\(Int(value.rounded())) g")
         }
         .frame(maxWidth: .infinity)

@@ -35,6 +35,7 @@ struct FoodProduct: Identifiable, Equatable, Sendable {
         case usda = "USDA"
         case openFoodFacts = "Open Food Facts"
         case canadianNutrientFile = "Health Canada"
+        case restaurant = "Restaurant"
     }
 
     let id: String
@@ -47,6 +48,8 @@ struct FoodProduct: Identifiable, Equatable, Sendable {
     var ingredients: String?
     var nutrition: Nutrition
     var source: Source
+    /// How many people have scanned it, where known.
+    var popularity = 0
 }
 
 extension Food {

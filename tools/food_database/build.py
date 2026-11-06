@@ -4,8 +4,8 @@
     python tools/food_database/build.py --data <dir> --out k-cal/Data/foods.sqlite [--open-food-facts]
 
 <dir> holds the extracted USDA FoodData Central CSV folders (x_branded, x_foundation, x_sr, x_survey), the
-Canadian Nutrient File CSVs (x_cnf), and en.openfoodfacts.org.products.csv.gz as off.csv.gz. All are public
-downloads needing no key. Foundation releases sometimes omit food.csv: use the latest one that has it.
+Canadian Nutrient File CSVs (x_cnf), en.openfoodfacts.org.products.csv.gz as off.csv.gz, and NYC Open Data's
+DOHMH MenuStat (Historical) CSV as menustat.csv. All are public downloads needing no key. Foundation releases sometimes omit food.csv: use the latest one that has it.
 All values are stored per serving, multiplied by 10, as integers.
 """
 from __future__ import annotations
@@ -17,16 +17,41 @@ import gzip
 import re
 import sqlite3
 import sys
+import unicodedata
 from pathlib import Path
 
 csv.field_size_limit(sys.maxsize)
 
-USDA, OPEN_FOOD_FACTS, HEALTH_CANADA = 1, 2, 3
+USDA, OPEN_FOOD_FACTS, HEALTH_CANADA, RESTAURANT = 1, 2, 3, 4
 DATA_DATE_MARGIN = 2 * 24 * 60 * 60
+LARGEST_RESTAURANT_ITEM = 5000   # past this it's a catering platter, not something one person logs
+MINIMUM_WORD_FREQUENCY = 3     # rarer words are mostly typos, which must not count as correct spellings
 # Survey files key food_nutrient by nutrient number, the others by nutrient id.
 NUTRIENTS = {"1008": 0, "208": 0, "1003": 1, "203": 1, "1005": 2, "205": 2, "1004": 3, "204": 3,
              "1093": 4, "307": 4, "2000": 5, "269": 5, "1079": 6, "291": 6}
 ATWATER = {"2047": 0, "957": 0, "2048": 0, "958": 0}   # only used when plain energy is missing
+
+
+def normalized(text: str) -> str:
+    """What gets indexed. FoodSearchText.normalized in the app must do exactly the same to a query."""
+    folded = "".join(c for c in unicodedata.normalize("NFKD", text) if not unicodedata.combining(c))
+    return re.sub(r"['\u2019`]", "", folded.lower()).replace("&", " and ")
+
+
+def words(text: str) -> list[str]:
+    return re.findall(r"[^\W_]+", normalized(text))
+
+
+def aliases(name: str, brand: str) -> str:
+    """Joined spellings the tokenizer would otherwise split: Chick-fil-A as chickfila, Dr Pepper as drpepper."""
+    found = set()
+    brand_words = words(brand)
+    if len(brand_words) > 1:
+        found.add("".join(brand_words))
+        found.add("".join(w for w in brand_words if w != "and"))
+    for compound in re.findall(r"[^\W_]+(?:-[^\W_]+)+", normalized(name)):
+        found.add(compound.replace("-", ""))
+    return " ".join(sorted(found))
 
 
 def readable(text: str) -> str:
@@ -174,7 +199,39 @@ def canadian(data: Path) -> list[tuple]:
     return rows
 
 
-def open_food_facts(data: Path, known: set[int], report: collections.Counter) -> list[tuple]:
+def restaurants(data: Path) -> list[tuple]:
+    """Chain menus from MenuStat, each item once at its latest year. Labelled with that year, as menus change."""
+    latest: dict[str, dict] = {}
+    for row in read(data / "menustat.csv"):
+        if not row["Calories"].strip():
+            continue
+        current = latest.get(row["Menu_Item_ID"])
+        if current is None or row["Year"] > current["Year"]:
+            latest[row["Menu_Item_ID"]] = row
+
+    def amount(row: dict, key: str) -> float:
+        try:
+            return float(row[key])
+        except ValueError:
+            return 0.0
+
+    rows: dict[tuple[str, str], tuple] = {}
+    for row in sorted(latest.values(), key=lambda r: r["Year"]):
+        calories = amount(row, "Calories")
+        # Toppings are parts of an item, like "Bacon, for Small Hand Tossed Pizza", and would bury the item itself.
+        if calories > LARGEST_RESTAURANT_ITEM or row["Food_Category"] == "Toppings & Ingredients":
+            continue
+        brand = "Chick-fil-A" if row["restaurant"] == "Chick-Fil-A" else row["restaurant"]
+        name = re.sub(r"(?i)chick[- ]fil[- ]a", "Chick-fil-A", " ".join(row["Item_Name"].split()))
+        size, unit = row["Serving_Size"].strip(), row["Serving_Size_Unit"].strip()
+        portion = row["Serving_Size_household"].strip() or (f"{float(size):g} {unit}" if size and unit else "1 item")
+        values = [calories, amount(row, "Protein"), amount(row, "Carbohydrates"), amount(row, "Total_Fat"),
+                  amount(row, "Sodium"), amount(row, "Sugar"), amount(row, "Dietary_Fiber")]
+        rows[(brand.lower(), name.lower())] = (name, brand, None, f"{portion}, {row['Year']} menu", RESTAURANT, *scaled(values, 100))
+    return list(rows.values())
+
+
+def open_food_facts(data: Path, known: set[int], report: collections.Counter, scans: dict[int, int]) -> list[tuple]:
     def number(row: dict, key: str) -> float | None:
         try:
             return float(row[key])
@@ -192,6 +249,8 @@ def open_food_facts(data: Path, known: set[int], report: collections.Counter) ->
             if canada:
                 report["off Canada rows"] += 1
             code, name = canonical(row.get("code") or ""), (row.get("product_name") or "").strip()
+            if code is not None:
+                scans[code] = int(number(row, "unique_scans_n") or 0)
             energy = number(row, "energy-kcal_100g")
             if code is None or not name or energy is None or not 0 <= energy <= 900:
                 report["off no barcode, name or energy"] += 1
@@ -212,7 +271,7 @@ def open_food_facts(data: Path, known: set[int], report: collections.Counter) ->
     return rows
 
 
-def write(rows: list[tuple], out: Path, data_date: int) -> None:
+def write(rows: list[tuple], out: Path, data_date: int, scans: dict[int, int]) -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.unlink(missing_ok=True)
     db = sqlite3.connect(out)
@@ -221,12 +280,15 @@ def write(rows: list[tuple], out: Path, data_date: int) -> None:
         CREATE TABLE brand(id INTEGER PRIMARY KEY, name TEXT NOT NULL);
         CREATE TABLE food(id INTEGER PRIMARY KEY, name TEXT NOT NULL, brand INTEGER, barcode INTEGER, serving TEXT NOT NULL,
             source INTEGER NOT NULL, calories INTEGER, protein INTEGER, carbohydrates INTEGER, fat INTEGER,
-            sodium INTEGER, sugars INTEGER, fiber INTEGER);
+            sodium INTEGER, sugars INTEGER, fiber INTEGER, popularity INTEGER NOT NULL DEFAULT 0);
+        CREATE TABLE vocabulary(word TEXT PRIMARY KEY, frequency INTEGER NOT NULL) WITHOUT ROWID;
         CREATE TABLE meta(key TEXT PRIMARY KEY, value INTEGER NOT NULL);
-        CREATE VIRTUAL TABLE food_search USING fts5(text, content='', tokenize="unicode61 remove_diacritics 2", prefix='2 3');
+        CREATE VIRTUAL TABLE food_search USING fts5(name, brand, alias, content='',
+            tokenize="porter unicode61 remove_diacritics 2", prefix='2 3');
     """)
     db.execute("INSERT INTO meta VALUES ('data_date', ?)", (data_date,))
     brands: dict[str, int] = {}
+    vocabulary: collections.Counter = collections.Counter()
     for index, row in enumerate(rows, start=1):
         name, brand, code, serving, source, *values = row
         brand_id = None
@@ -235,8 +297,14 @@ def write(rows: list[tuple], out: Path, data_date: int) -> None:
             if brand_id is None:
                 brand_id = brands[brand] = len(brands) + 1
                 db.execute("INSERT INTO brand VALUES (?, ?)", (brand_id, brand))
-        db.execute("INSERT INTO food VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", (index, name, brand_id, code, serving, source, *values))
-        db.execute("INSERT INTO food_search(rowid, text) VALUES (?, ?)", (index, f"{name} {brand}"))
+        db.execute("INSERT INTO food VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                   (index, name, brand_id, code, serving, source, *values, scans.get(code, 0) if code else 0))
+        alias = aliases(name, brand)
+        db.execute("INSERT INTO food_search(rowid, name, brand, alias) VALUES (?, ?, ?, ?)",
+                   (index, normalized(name), normalized(brand), alias))
+        vocabulary.update(set(words(f"{name} {brand} {alias}")))
+    db.executemany("INSERT INTO vocabulary VALUES (?, ?)",
+                   ((w, n) for w, n in vocabulary.items() if n >= MINIMUM_WORD_FREQUENCY and 2 <= len(w) <= 24))
     db.execute("CREATE INDEX food_barcode ON food(barcode) WHERE barcode IS NOT NULL")
     db.execute("INSERT INTO food_search(food_search) VALUES ('optimize')")
     db.commit()
@@ -253,14 +321,17 @@ def main() -> None:
 
     report: collections.Counter = collections.Counter()
     generic = usda_generic(args.data) + canadian(args.data)
+    menus = restaurants(args.data)
+    print(f"{len(menus):>10,}  restaurant items", flush=True)
     branded, known = usda_branded(args.data, report)
-    extra = open_food_facts(args.data, known, report) if args.open_food_facts else []
+    scans: dict[int, int] = {}
+    extra = open_food_facts(args.data, known, report, scans) if args.open_food_facts else []
     # When the export was downloaded, less a margin so updates overlap it instead of leaving a gap.
     source = args.data / "off.csv.gz" if args.open_food_facts else only(args.data / "x_branded", "branded_food.csv")
-    write(generic + branded + extra, args.out, int(source.stat().st_mtime) - DATA_DATE_MARGIN)
+    write(generic + menus + branded + extra, args.out, int(source.stat().st_mtime) - DATA_DATE_MARGIN, scans)
     for key, value in sorted(report.items(), key=lambda kv: (-kv[1], kv[0])):
         print(f"{value:>10,}  {key}")
-    print(f"{len(generic):>10,}  generic foods\n{len(generic) + len(branded) + len(extra):>10,}  total")
+    print(f"{len(generic):>10,}  generic foods\n{len(generic) + len(menus) + len(branded) + len(extra):>10,}  total")
     print(f"{args.out.stat().st_size / 1e6:.1f} MB", flush=True)
 
 

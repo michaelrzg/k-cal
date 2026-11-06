@@ -9,16 +9,11 @@
 import Foundation
 
 private enum FoodSQL {
-    /// An FTS5 query that needs every word, each as a prefix. Words are letters and digits only.
-    static func match(_ query: String) -> String? {
-        let words = FoodText.words(in: query)
-        return words.isEmpty ? nil : words.map { "\"\($0)\"*" }.joined(separator: " ")
-    }
-
     static func source(_ value: Int?) -> FoodProduct.Source {
         switch value {
         case 2: .openFoodFacts
         case 3: .canadianNutrientFile
+        case 4: .restaurant
         default: .usda
         }
     }
@@ -43,9 +38,13 @@ private enum FoodSQL {
 /// The database in the app bundle.
 final class BundledFoodDatabase: @unchecked Sendable {
     private static let columns = """
-    f.id, f.name, b.name, f.barcode, f.serving, f.source, f.calories, f.protein, f.carbohydrates, f.fat, f.sodium, f.sugars, f.fiber
+    f.id, f.name, b.name, f.barcode, f.serving, f.source, f.calories, f.protein, f.carbohydrates, f.fat, f.sodium, f.sugars, f.fiber, f.popularity
     """
-    private static let searchLimit = 400
+    private static let bestMatchLimit = 300
+    private static let popularLimit = 120
+    private static let plainFoodLimit = 60
+    /// A name counts for more than a brand, and either for more than a joined-up alias.
+    private static let columnWeights = "8.0, 3.0, 3.0"
 
     private let database: SQLite
     private let lock = NSLock()
@@ -54,16 +53,36 @@ final class BundledFoodDatabase: @unchecked Sendable {
         database = try SQLite(url: url, readOnly: true, immutable: true)
     }
 
-    func search(_ query: String) throws -> [FoodProduct] {
-        guard let match = FoodSQL.match(query) else { return [] }
+    /// The best text matches, plus two groups bm25 alone would miss for a broad word like "milk": the most
+    /// popular products, and the plainest generic foods.
+    func search(_ match: String) throws -> [FoodProduct] {
         lock.lock()
         defer { lock.unlock() }
-        // bm25 favours short text, which suits food names: "Banana" before "Banana Nut Granola".
-        return try database.query("""
+        let best = try database.query("""
         SELECT \(Self.columns) FROM food_search s
         JOIN food f ON f.id = s.rowid LEFT JOIN brand b ON b.id = f.brand
-        WHERE food_search MATCH ? ORDER BY bm25(food_search) LIMIT \(Self.searchLimit)
+        WHERE food_search MATCH ? ORDER BY bm25(food_search, \(Self.columnWeights)) LIMIT \(Self.bestMatchLimit)
         """, [match], row: Self.product)
+        let popular = try database.query("""
+        SELECT \(Self.columns) FROM food_search s
+        JOIN food f ON f.id = s.rowid LEFT JOIN brand b ON b.id = f.brand
+        WHERE food_search MATCH ? AND f.popularity > 0 ORDER BY f.popularity DESC LIMIT \(Self.popularLimit)
+        """, [match], row: Self.product)
+        let plain = try database.query("""
+        SELECT \(Self.columns) FROM food_search s
+        JOIN food f ON f.id = s.rowid LEFT JOIN brand b ON b.id = f.brand
+        WHERE food_search MATCH ? AND f.brand IS NULL AND f.barcode IS NULL ORDER BY length(f.name) LIMIT \(Self.plainFoodLimit)
+        """, [match], row: Self.product)
+        return best + popular + plain
+    }
+
+    /// The words of the database, for spelling correction. Takes a moment, so it's loaded once, off the main thread.
+    func loadVocabulary() throws -> FoodVocabulary {
+        lock.lock()
+        defer { lock.unlock() }
+        return FoodVocabulary(entries: try database.query("SELECT word, frequency FROM vocabulary") {
+            (SQLite.text($0, 0) ?? "", SQLite.integer($0, 1) ?? 0)
+        })
     }
 
     func product(barcode: String) throws -> FoodProduct? {
@@ -100,7 +119,8 @@ final class BundledFoodDatabase: @unchecked Sendable {
             barcode: SQLite.integer(row, 3).map(String.init),
             serving: SQLite.text(row, 4) ?? "",
             nutrition: FoodSQL.nutrition(row, first: 6),
-            source: source
+            source: source,
+            popularity: SQLite.integer(row, 13) ?? 0
         )
     }
 }
@@ -111,6 +131,7 @@ final class LocalFoodDatabase: @unchecked Sendable {
     barcode, name, brand, serving, image, ingredients, calories, protein, carbohydrates, fat, sodium, sugars, fiber
     """
     private static let searchLimit = 100
+    private static let searchIndexVersion = 2
 
     private let database: SQLite
     private let lock = NSLock()
@@ -123,8 +144,32 @@ final class LocalFoodDatabase: @unchecked Sendable {
         CREATE TABLE IF NOT EXISTS food(barcode INTEGER PRIMARY KEY, name TEXT NOT NULL, brand TEXT, serving TEXT NOT NULL,
             image TEXT, ingredients TEXT, calories INTEGER, protein INTEGER, carbohydrates INTEGER, fat INTEGER,
             sodium INTEGER, sugars INTEGER, fiber INTEGER);
-        CREATE VIRTUAL TABLE IF NOT EXISTS food_search USING fts5(text, tokenize="unicode61 remove_diacritics 2");
         """)
+        try migrateSearchIndex()
+    }
+
+    /// Foods fetched under an older index are reindexed from the table, so they keep being found.
+    private func migrateSearchIndex() throws {
+        let version = try database.query("PRAGMA user_version") { SQLite.integer($0, 0) ?? 0 }.first ?? 0
+        guard version < Self.searchIndexVersion else { return }
+        try database.execute("""
+        DROP TABLE IF EXISTS food_search;
+        CREATE VIRTUAL TABLE food_search USING fts5(name, brand, alias, tokenize="porter unicode61 remove_diacritics 2");
+        PRAGMA user_version = \(Self.searchIndexVersion);
+        """)
+        let rows = try database.query("SELECT barcode, name, brand FROM food") {
+            (SQLite.integer($0, 0) ?? 0, SQLite.text($0, 1) ?? "", SQLite.text($0, 2))
+        }
+        try database.transaction {
+            for row in rows { try index(code: row.0, name: row.1, brand: row.2) }
+        }
+    }
+
+    private func index(code: Int, name: String, brand: String?) throws {
+        try database.run("INSERT INTO food_search(rowid, name, brand, alias) VALUES (?, ?, ?, ?)", [
+            code, FoodSearchText.normalized(name), FoodSearchText.normalized(brand ?? ""),
+            FoodSearchText.aliases(name: name, brand: brand),
+        ])
     }
 
     /// Foods that have no usable barcode are skipped: the barcode is what identifies them.
@@ -144,13 +189,12 @@ final class LocalFoodDatabase: @unchecked Sendable {
                     + amounts.map { Int(($0 * 10).rounded()) }
                 try database.run("INSERT OR REPLACE INTO food(\(Self.columns)) VALUES (\(Array(repeating: "?", count: 13).joined(separator: ",")))", values)
                 try database.run("DELETE FROM food_search WHERE rowid = ?", [code])
-                try database.run("INSERT INTO food_search(rowid, text) VALUES (?, ?)", [code, "\(product.name) \(product.brand ?? "")"])
+                try index(code: code, name: product.name, brand: product.brand)
             }
         }
     }
 
-    func search(_ query: String) throws -> [FoodProduct] {
-        guard let match = FoodSQL.match(query) else { return [] }
+    func search(_ match: String) throws -> [FoodProduct] {
         lock.lock()
         defer { lock.unlock() }
         return try database.query("""

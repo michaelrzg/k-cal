@@ -5,6 +5,8 @@ Open Food Facts, https://world.openfoodfacts.org. The Open Food Facts rows in k-
   foods the app downloads are a database made available under the Open Database Licence,
   https://opendatacommons.org/licenses/odbl/1-0/ Individual contents are under the Database Contents Licence,
   https://opendatacommons.org/licenses/dbcl/1-0/
+MenuStat, chain restaurant menus for 2017-2018, from the NYC Department of Health and Mental Hygiene through
+  NYC Open Data, https://data.cityofnewyork.us/Health/DOHMH-MenuStat-Historical-/qgc5-ecnb
 Canadian Nutrient File, Health Canada. Contains information licensed under the Open Government
   Licence - Canada, https://open.canada.ca/en/open-government-licence-canada
 

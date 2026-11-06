@@ -65,12 +65,21 @@ struct StaticProvider: TimelineProvider {
     }
 }
 
-/// The app's asset colours, which aren't available to the extension.
+/// The app's palette. Its asset catalog isn't available to the extension, so these mirror it.
 enum WidgetColor {
-    static let brand = Color(red: 79 / 255, green: 124 / 255, blue: 225 / 255)
-    static let protein = Color(red: 1.0, green: 0.706, blue: 0.327)
-    static let carbohydrate = Color(red: 0.475, green: 0.884, blue: 1.0)
-    static let fat = Color(red: 0.815, green: 0.546, blue: 1.0)
+    static let background = adaptive(0xF4F2EC, 0x1E1D1B)
+    static let brand = adaptive(0xB4553A, 0xDD8866)
+    static let protein = adaptive(0x96671F, 0xDBAA60)
+    static let carbohydrate = adaptive(0x4C7157, 0x93B79A)
+    static let fat = adaptive(0x7A5880, 0xBB9CC0)
+
+    private static func adaptive(_ light: Int, _ dark: Int) -> Color {
+        Color(UIColor { $0.userInterfaceStyle == .dark ? color(dark) : color(light) })
+    }
+
+    private static func color(_ hex: Int) -> UIColor {
+        UIColor(red: CGFloat(hex >> 16 & 255) / 255, green: CGFloat(hex >> 8 & 255) / 255, blue: CGFloat(hex & 255) / 255, alpha: 1)
+    }
 }
 
 struct ProgressBar: View {

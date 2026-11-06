@@ -11,7 +11,7 @@ struct DailyMacrosWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "DailyMacros", provider: DailyProvider()) { entry in
             DailyMacrosView(snapshot: entry.snapshot)
-                .containerBackground(.background, for: .widget)
+                .containerBackground(WidgetColor.background, for: .widget)
                 .widgetURL(AppLink.scan.url)
         }
         .configurationDisplayName("Daily Macros")
