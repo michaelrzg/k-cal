@@ -50,6 +50,8 @@ struct FoodProduct: Identifiable, Equatable, Sendable {
     var source: Source
     /// How many people have scanned it, where known.
     var popularity = 0
+    /// What one serving weighs, where known.
+    var servingGrams: Double? = nil
 }
 
 extension Food {

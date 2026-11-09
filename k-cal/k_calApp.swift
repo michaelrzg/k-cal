@@ -35,6 +35,6 @@ struct k_calApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [User.self, Day.self, Food.self, Search.self, CustomFood.self])
+        .modelContainer(for: [User.self, Day.self, Food.self, Search.self, CustomFood.self, LiftPlan.self, LiftMax.self, LiftSwap.self, WorkoutLog.self, SetLog.self])
     }
 }

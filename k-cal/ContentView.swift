@@ -15,17 +15,26 @@ struct ContentView: View {
         case today
         case add
         case diary
+        case lifts
     }
 
     @Environment(\.scenePhase) private var scenePhase
     @Query private var users: [User]
     @Query private var foods: [Food]
+    @Query(sort: \LiftPlan.started, order: .reverse) private var plans: [LiftPlan]
+    @Query private var maxes: [LiftMax]
+    @Query private var swaps: [LiftSwap]
+    @Query private var logs: [WorkoutLog]
     @State private var flow = AddFoodFlow()
     @State private var tab = Tab.today
     @State private var showingProfile = false
 
     private var todaySnapshot: DailySnapshot {
-        WidgetSync.snapshot(foods: foods, user: users.first, at: Date())
+        WidgetSync.snapshot(foods: foods, user: users.first, plan: plans.first, at: Date())
+    }
+
+    private var liftSnapshot: LiftSnapshot? {
+        WidgetSync.liftSnapshot(plan: plans.first, maxes: maxes, swaps: swaps, logs: logs)
     }
 
     init() {
@@ -57,6 +66,9 @@ struct ContentView: View {
             DiaryView(showingProfile: $showingProfile)
                 .tabItem { Label("Diary", systemImage: "book.fill") }
                 .tag(Tab.diary)
+            LiftsView(showingProfile: $showingProfile)
+                .tabItem { Label("Lifts", systemImage: "dumbbell.fill") }
+                .tag(Tab.lifts)
         }
         .tint(Theme.brand)
         .environment(flow)
@@ -69,6 +81,9 @@ struct ContentView: View {
         }
         .onChange(of: flow.searchRequests) { tab = .add }
         .onChange(of: todaySnapshot, initial: true) { _, snapshot in
+            WidgetSync.publish(snapshot)
+        }
+        .onChange(of: liftSnapshot, initial: true) { _, snapshot in
             WidgetSync.publish(snapshot)
         }
         .onChange(of: scenePhase) {
@@ -88,6 +103,7 @@ struct ContentView: View {
         case .snap: flow.start(.snapMeal)
         case .search: flow.startSearch()
         case .custom: flow.start(.myFoods)
+        case .lifts: tab = .lifts
         case nil: break
         }
     }

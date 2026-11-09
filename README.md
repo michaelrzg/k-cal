@@ -20,7 +20,9 @@ No API keys are needed. Foods live on the device, in `k-cal/Data/foods.sqlite` (
 
 Home Screen and Lock Screen widgets live in `k-calWidgets`. The app shares today's totals with them through the `group.rizig.k-cal` App Group.
 
-The meal-photo models also run on the device. To rebuild them, see `tools/meal_estimate/convert.py`.
+The Lifts tab builds a 13-week program from your goal, schedule and strength, in `k-cal/Lifting`. Exercise animations are drawn by the app from joint keyframes, so there are no media files.
+
+Snapping food also happens entirely on the device. For packaged food, the in-app camera takes two photos in a row, the front and then the nutrition label, and both are read while you shoot: a barcode on either side names the exact product, the label gives the numbers (read by `k-cal/Services/NutritionLabel.swift` from Apple's OCR), and the front gives the name, matched against the food database. For a plate, one photo is estimated. A photo from the library tries what's printed first and only then estimates a meal. A single food such as a banana or a bagel is recognised by Apple's image classifier and uses database numbers. For anything else, `MealPlate` estimates the calories and macros: SigLIP 2, fine-tuned on real phone photos. On iOS 27, Apple's on-device model reads brands and logos and suggests meal names, but its own numbers aren't used: on the January Food Benchmark they came out far worse than this model's. To rebuild the models, see `tools/meal_estimate`.
 
 ## Key Features
 

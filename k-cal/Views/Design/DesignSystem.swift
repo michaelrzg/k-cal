@@ -28,6 +28,12 @@ extension View {
     }
 }
 
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+
 extension Font {
     static func numeral(_ size: CGFloat, weight: Font.Weight = .bold) -> Font {
         .system(size: size, weight: weight, design: .rounded)
@@ -108,19 +114,26 @@ struct MacroMeter: View {
 /// The day at a glance, on Today and in the Diary.
 struct DaySummaryCard: View {
     let foods: [Food]
-    let user: User?
+    let goals: DayGoals
+    /// Says which goals apply, when they follow your training.
+    var caption: String?
 
     private func total(_ amount: (Food) -> Int) -> Int {
         foods.reduce(0) { $0 + amount($1) }
     }
 
     var body: some View {
-        HStack(spacing: 20) {
-            CalorieRing(calories: total(\.calories), goal: user?.calorie_goal ?? 2000)
-            VStack(spacing: 10) {
-                MacroMeter(name: "Protein", value: total(\.protein), goal: user?.protein_goal ?? 0, color: Theme.protein)
-                MacroMeter(name: "Carbs", value: total(\.carbohydrates), goal: user?.carb_goal ?? 0, color: Theme.carbohydrate)
-                MacroMeter(name: "Fat", value: total(\.fat), goal: user?.fat_goal ?? 0, color: Theme.fat)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 20) {
+                CalorieRing(calories: total(\.calories), goal: goals.calories)
+                VStack(spacing: 10) {
+                    MacroMeter(name: "Protein", value: total(\.protein), goal: goals.protein, color: Theme.protein)
+                    MacroMeter(name: "Carbs", value: total(\.carbohydrates), goal: goals.carbohydrates, color: Theme.carbohydrate)
+                    MacroMeter(name: "Fat", value: total(\.fat), goal: goals.fat, color: Theme.fat)
+                }
+            }
+            if let caption {
+                Label(caption, systemImage: "dumbbell.fill").font(.caption).foregroundStyle(.secondary)
             }
         }
         .padding(16)

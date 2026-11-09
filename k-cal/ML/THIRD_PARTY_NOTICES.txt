@@ -12,15 +12,13 @@ Canadian Nutrient File, Health Canada. Contains information licensed under the O
 
 k-cal's meal-photo estimate uses these models, converted to Core ML by tools/meal_estimate/convert.py.
 
-MealPortion.mlpackage
-  Derived from Calorie Lens, https://huggingface.co/shalev396/calorie-lens
-  Copyright (c) 2026 Shalev Ben Moshe. MIT License.
-  Only the image backbone and totals head are included. The weights were quantized.
-  The backbone was fine-tuned from DINOv2 with registers (facebook/dinov2-with-registers-base),
-  https://github.com/facebookresearch/dinov2, Copyright (c) Meta Platforms, Inc. and affiliates,
-  licensed under the Apache License 2.0, https://www.apache.org/licenses/LICENSE-2.0
-  Trained on Nutrition5k (Thames et al., CVPR 2021, CC BY 4.0) and FlavoriaFoodWeight1700
-  (Sarapisto et al., 2022, CC BY 4.0).
+MealPlate.mlpackage
+  Derived from SigLIP 2 (google/siglip2-base-patch16-384), https://huggingface.co/google/siglip2-base-patch16-384
+  Copyright 2025 Google LLC, licensed under the Apache License 2.0, https://www.apache.org/licenses/LICENSE-2.0
+  Changed for k-cal: the last layers were fine-tuned, new output layers were added, and the weights were quantized.
+  Trained on the January Food Benchmark, https://github.com/January-ai/food-scan-benchmarks (January AI, CC BY 4.0),
+  and Nutrition5k (Thames et al., CVPR 2021, CC BY 4.0), by way of the calorie-lens-data repackaging by Shalev Ben Moshe,
+  https://huggingface.co/datasets/shalev396/calorie-lens-data (CC BY 4.0).
 
 DishClassifier.mlpackage
   Derived from FoodVision Big, https://huggingface.co/shalev396/foodvision-big

@@ -11,65 +11,77 @@ struct DishGuess: Equatable, Identifiable {
     /// A Food-101 class name such as "spaghetti_bolognese".
     let label: String
     let confidence: Double
+    /// A name of its own, where the label doesn't make one.
+    var title: String? = nil
 
     var id: String { label }
 
     var name: String {
-        label.replacingOccurrences(of: "_", with: " ").capitalized
+        title ?? label.replacingOccurrences(of: "_", with: " ").capitalized
     }
 }
 
 struct MealEstimate: Equatable {
-    /// Weights outside this range are not meaningful for a photographed meal.
-    static let gramsRange = 10.0 ... 3000.0
-    /// Below this the dish classifier is usually wrong, so it isn't offered as the name.
-    static let minimumNameConfidence = 0.35
+    /// Portions to offer, as a share of what the photo model saw.
+    static let portions: [Double] = [0.5, 0.75, 1, 1.25, 1.5, 2]
+    /// Below this the name comes from the ingredients, which describe a mixed plate better than any one of 101 dishes.
+    static let minimumNameConfidence = 0.6
+    /// Below this an ingredient isn't worth putting in a meal's name.
+    static let minimumIngredientChance = 0.9
     /// Below this a guess isn't worth offering at all.
     static let minimumSuggestionConfidence = 0.1
     static let fallbackName = "Photo meal"
 
-    var grams: Double
     var calories: Double
-    var fat: Double
     var carbohydrates: Double
     var protein: Double
+    var fat: Double
+    /// The weight, known only once the meal is matched to a food. A photo gives calories, not grams.
+    var grams: Double?
     /// Best first.
     var dishes: [DishGuess]
+    /// What the plate model thinks is on the plate, likeliest first. For naming the meal, not for adding up.
+    var ingredients: [String] = []
 
-    /// - Parameter logTotals: the portion model's output, log1p of kcal, grams, fat, carbs, protein.
+    /// - Parameter logTotals: the plate model's output, log1p of kcal, carbs, protein, fat.
     init?(logTotals: [Double], dishes: [DishGuess]) {
-        guard logTotals.count == 5, logTotals.allSatisfy(\.isFinite) else { return nil }
-        // Same clamp as upstream: negative logs mean zero, e^8 is about 3 kg.
-        let totals = logTotals.map { expm1(min(max($0, 0), 8)) }
+        guard logTotals.count == 4, logTotals.allSatisfy(\.isFinite) else { return nil }
+        // Negative logs mean zero, and e^9 is 8,000 kcal, more than any plate.
+        let totals = logTotals.map { expm1(min(max($0, 0), 9)) }
         calories = totals[0]
-        grams = totals[1]
-        fat = totals[2]
-        carbohydrates = totals[3]
-        protein = totals[4]
+        carbohydrates = totals[1]
+        protein = totals[2]
+        fat = totals[3]
         self.dishes = dishes
-        guard grams > 0 else { return nil }
+        guard calories > 0 else { return nil }
     }
 
     var suggestedName: String {
-        guard let best = dishes.first, best.confidence >= Self.minimumNameConfidence else {
-            return Self.fallbackName
-        }
-        return best.name
+        if let best = dishes.first, best.confidence >= Self.minimumNameConfidence { return best.name }
+        return PhotoFoodNamer.title(from: ingredients) ?? Self.fallbackName
+    }
+
+    /// Picks the likeliest ingredients out of the plate model's output.
+    /// - Parameters:
+    ///   - chances: the chance of each ingredient, in the order of `names`.
+    static func likelyIngredients(_ chances: [Double], names: [String]) -> [String] {
+        var seen = Set<String>()
+        return zip(chances, names).filter { $0.0 >= minimumIngredientChance }.sorted { $0.0 > $1.0 }.map(\.1)
+            .filter { seen.insert($0.hasSuffix("s") ? String($0.dropLast()) : $0).inserted }
     }
 
     var suggestions: [DishGuess] {
         dishes.filter { $0.confidence >= Self.minimumSuggestionConfidence }
     }
 
-    /// The same meal at a different weight. Energy and macros scale with it.
-    func scaled(toGrams newGrams: Double) -> MealEstimate {
+    /// The same meal in a bigger or smaller portion.
+    func scaled(by portion: Double) -> MealEstimate {
         var copy = self
-        let ratio = newGrams / grams
-        copy.grams = newGrams
-        copy.calories *= ratio
-        copy.fat *= ratio
-        copy.carbohydrates *= ratio
-        copy.protein *= ratio
+        copy.grams = grams.map { $0 * portion }
+        copy.calories *= portion
+        copy.fat *= portion
+        copy.carbohydrates *= portion
+        copy.protein *= portion
         return copy
     }
 }
@@ -102,7 +114,7 @@ extension Food {
             sodium: nil,
             sugars: nil,
             fiber: nil,
-            ingredients: "Estimated from a photo, about \(Int(estimate.grams.rounded())) g.",
+            ingredients: estimate.grams.map { "Estimated from a photo, about \(Int($0.rounded())) g." } ?? "Estimated from a photo.",
             url: nil,
             barcode: nil,
             brand: "Photo estimate"

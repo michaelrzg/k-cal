@@ -1,0 +1,1305 @@
+{
+"apple": {
+"food": "Apple, raw, with skin",
+"itemGrams": 182,
+"perGram": [
+0.5198,
+0.003,
+0.1376,
+0.002,
+0.0099,
+0.104,
+0.0188
+],
+"source": 3
+},
+"apple_pie": {
+"food": "Pie, apple",
+"perGram": [
+2.96,
+0.0267,
+0.376,
+0.1533,
+2.1707,
+0.1587,
+0.0187
+],
+"source": 1
+},
+"avocado": {
+"food": "Avocado, raw",
+"itemGrams": 150,
+"perGram": [
+1.6,
+0.02,
+0.0853,
+0.1467,
+0.07,
+0.0067,
+0.0667
+],
+"source": 1
+},
+"baby_back_ribs": {
+"food": "Pork, back ribs, lean and fat, roasted",
+"perGram": [
+3.65,
+0.284,
+0.0,
+0.27,
+1.33,
+0.0,
+0.0
+],
+"source": 3
+},
+"bagel": {
+"food": "Bagel",
+"itemGrams": 105,
+"perGram": [
+2.64,
+0.1057,
+0.5238,
+0.0133,
+4.22,
+0.0848,
+0.0162
+],
+"source": 1
+},
+"baklava": {
+"food": "Baklava",
+"perGram": [
+4.4,
+0.0663,
+0.375,
+0.2938,
+3.11,
+0.1275,
+0.025
+],
+"source": 1
+},
+"banana": {
+"food": "Bananas, raw",
+"itemGrams": 118,
+"perGram": [
+0.8901,
+0.0109,
+0.2287,
+0.003,
+0.0099,
+0.1228,
+0.0257
+],
+"source": 1
+},
+"beef_tartare": {
+"food": "Steak tartare",
+"perGram": [
+2.16,
+0.1747,
+0.0036,
+0.156,
+3.7,
+0.0009,
+0.0018
+],
+"source": 1
+},
+"beer": {
+"food": "Beer",
+"itemGrams": 356,
+"perGram": [
+0.43,
+0.0033,
+0.0367,
+0.0,
+0.04,
+0.0,
+0.0
+],
+"source": 1,
+"title": "Beer"
+},
+"beignets": {
+"food": "Beignet",
+"perGram": [
+4.1689,
+0.0556,
+0.5378,
+0.2022,
+2.8089,
+0.3111,
+0.02
+],
+"source": 1
+},
+"bread_pudding": {
+"food": "Bread pudding, with raisins, homemade",
+"perGram": [
+1.5348,
+0.0528,
+0.2348,
+0.0483,
+2.3079,
+0.1472,
+0.009
+],
+"source": 3
+},
+"breakfast_burrito": {
+"food": "Fast foods, breakfast burrito, with egg, cheese, and sausage",
+"perGram": [
+2.7697,
+0.111,
+0.2294,
+0.156,
+7.4404,
+0.0257,
+0.0119
+],
+"source": 1
+},
+"bruschetta": {
+"food": "Bruschetta",
+"perGram": [
+1.7102,
+0.0424,
+0.2136,
+0.0763,
+2.6407,
+0.0339,
+0.0153
+],
+"source": 1
+},
+"ceviche": {
+"food": "Ceviche",
+"perGram": [
+0.63,
+0.1052,
+0.036,
+0.0076,
+1.49,
+0.0136,
+0.0048
+],
+"source": 1
+},
+"cheesecake": {
+"food": "Cheesecake, plain",
+"perGram": [
+3.9897,
+0.0531,
+0.348,
+0.2651,
+2.7703,
+0.2663,
+0.0051
+],
+"source": 1
+},
+"chicken_curry": {
+"food": "Chicken curry",
+"perGram": [
+1.07,
+0.065,
+0.0654,
+0.065,
+3.76,
+0.0254,
+0.0142
+],
+"source": 1
+},
+"chicken_quesadilla": {
+"food": "Quesadilla, chicken",
+"perGram": [
+2.8695,
+0.1442,
+0.2737,
+0.1295,
+6.0105,
+0.0211,
+0.0189
+],
+"source": 1
+},
+"chicken_wings": {
+"food": "Chicken wing, NS as to cooking method",
+"perGram": [
+2.5714,
+0.2343,
+0.0057,
+0.18,
+5.7886,
+0.0057,
+0.0
+],
+"source": 1
+},
+"chocolate_mousse": {
+"food": "Dessert, mousse, chocolate, homemade",
+"perGram": [
+2.2468,
+0.0415,
+0.1602,
+0.1596,
+0.3795,
+0.148,
+0.0058
+],
+"source": 3
+},
+"churros": {
+"food": "Churros",
+"perGram": [
+4.1911,
+0.06,
+0.4889,
+0.2222,
+3.0889,
+0.2333,
+0.0267
+],
+"source": 1
+},
+"clam_chowder": {
+"food": "Soup, New England clam chowder",
+"perGram": [
+0.9302,
+0.0314,
+0.0925,
+0.0478,
+2.4698,
+0.0094,
+0.0102
+],
+"source": 1
+},
+"club_sandwich": {
+"food": "Club sandwich on white",
+"perGram": [
+2.22,
+0.1508,
+0.2308,
+0.0746,
+7.69,
+0.0262,
+0.01
+],
+"source": 1
+},
+"coffee": {
+"food": "Coffee, brewed",
+"itemGrams": 240,
+"perGram": [
+0.01,
+0.0,
+0.0,
+0.0,
+0.02,
+0.0,
+0.0
+],
+"source": 1,
+"title": "Coffee"
+},
+"cookie": {
+"food": "Cookie, chocolate chip",
+"itemGrams": 30,
+"perGram": [
+4.9198,
+0.0506,
+0.6531,
+0.2469,
+3.1099,
+0.3284,
+0.0198
+],
+"source": 1
+},
+"croissant": {
+"food": "Croissant",
+"itemGrams": 60,
+"perGram": [
+4.0603,
+0.0822,
+0.4575,
+0.2096,
+3.0,
+0.1123,
+0.026
+],
+"source": 1
+},
+"cup_cakes": {
+"food": "Cake or cupcake, NFS",
+"perGram": [
+3.52,
+0.028,
+0.536,
+0.148,
+3.04,
+0.395,
+0.01
+],
+"source": 1
+},
+"cupcake": {
+"food": "Cake or cupcake, NFS",
+"itemGrams": 70,
+"perGram": [
+3.52,
+0.028,
+0.536,
+0.148,
+3.04,
+0.395,
+0.01
+],
+"source": 1
+},
+"deviled_eggs": {
+"food": "Egg, deviled",
+"perGram": [
+1.98,
+0.1167,
+0.01,
+0.16,
+4.3,
+0.01,
+0.0
+],
+"source": 1
+},
+"donut": {
+"food": "Doughnut, NFS",
+"itemGrams": 75,
+"perGram": [
+4.26,
+0.0547,
+0.4947,
+0.228,
+3.78,
+0.2347,
+0.0187
+],
+"source": 1
+},
+"donuts": {
+"food": "Doughnut, NFS",
+"perGram": [
+4.26,
+0.0547,
+0.4947,
+0.228,
+3.78,
+0.2347,
+0.0187
+],
+"source": 1
+},
+"dumplings": {
+"food": "Potsticker or wonton, pork and vegetable, frozen, unprepared",
+"perGram": [
+1.36,
+0.0828,
+0.1331,
+0.0552,
+4.4097,
+0.0276,
+0.0138
+],
+"source": 1
+},
+"edamame": {
+"food": "Edamame, cooked",
+"perGram": [
+1.4,
+0.1156,
+0.0863,
+0.0756,
+1.27,
+0.0212,
+0.05
+],
+"source": 1
+},
+"eggs_benedict": {
+"food": "Egg Benedict",
+"perGram": [
+1.8503,
+0.109,
+0.0974,
+0.1129,
+6.5,
+0.0,
+0.0052
+],
+"source": 3
+},
+"escargots": {
+"food": "Escargot",
+"perGram": [
+1.58,
+0.2,
+0.02,
+0.06,
+2.88,
+0.0,
+0.0
+],
+"source": 1
+},
+"falafel": {
+"food": "Falafel",
+"perGram": [
+5.1412,
+0.0824,
+0.2882,
+0.4118,
+4.9882,
+0.0471,
+0.0471
+],
+"source": 1
+},
+"filet_mignon": {
+"food": "Beef, steak, tenderloin",
+"perGram": [
+1.96,
+0.305,
+0.0,
+0.0825,
+3.66,
+0.0,
+0.0
+],
+"source": 1
+},
+"foie_gras": {
+"food": "Pate de foie gras, canned (goose liver pate), smoked",
+"perGram": [
+4.6786,
+0.1143,
+0.0464,
+0.4429,
+7.0571,
+0.0,
+0.0
+],
+"source": 1
+},
+"french_fries": {
+"food": "DENNY'S, french fries",
+"perGram": [
+2.82,
+0.0339,
+0.3521,
+0.1412,
+0.44,
+0.0085,
+0.0352
+],
+"source": 1
+},
+"french_onion_soup": {
+"food": "Soup, French onion",
+"perGram": [
+1.08,
+0.0547,
+0.1184,
+0.0449,
+3.78,
+0.0249,
+0.011
+],
+"source": 1
+},
+"french_toast": {
+"food": "French toast, NFS",
+"perGram": [
+2.7292,
+0.1031,
+0.3231,
+0.1138,
+3.02,
+0.1015,
+0.0123
+],
+"source": 1
+},
+"fried_calamari": {
+"food": "Calamari, fried",
+"perGram": [
+2.34,
+0.1378,
+0.1407,
+0.1319,
+3.7704,
+0.0022,
+0.0052
+],
+"source": 1
+},
+"fried_rice": {
+"food": "Chicken fried rice, with peas, onion and eggs",
+"perGram": [
+1.6333,
+0.0562,
+0.2076,
+0.0619,
+3.7857,
+0.0067,
+0.0057
+],
+"source": 3
+},
+"frozen_yogurt": {
+"food": "Frozen yogurt, NFS",
+"perGram": [
+1.27,
+0.03,
+0.2162,
+0.0362,
+0.63,
+0.1994,
+0.0
+],
+"source": 1
+},
+"garlic_bread": {
+"food": "Garlic bread, frozen",
+"perGram": [
+3.5,
+0.0831,
+0.4169,
+0.1661,
+5.4407,
+0.0373,
+0.0254
+],
+"source": 1
+},
+"gnocchi": {
+"food": "Gnocchi, potato",
+"perGram": [
+1.35,
+0.0231,
+0.1731,
+0.0615,
+2.7885,
+0.0115,
+0.0115
+],
+"source": 1
+},
+"grilled_cheese_sandwich": {
+"food": "Grilled cheese sandwich, NFS",
+"perGram": [
+3.4302,
+0.1103,
+0.281,
+0.2078,
+8.2198,
+0.0448,
+0.0121
+],
+"source": 1
+},
+"guacamole": {
+"food": "Guacamole, NFS",
+"perGram": [
+1.55,
+0.02,
+0.0843,
+0.1414,
+3.44,
+0.0071,
+0.0657
+],
+"source": 1
+},
+"gyoza": {
+"food": "Potsticker or wonton, pork and vegetable, frozen, unprepared",
+"perGram": [
+1.36,
+0.0828,
+0.1331,
+0.0552,
+4.4097,
+0.0276,
+0.0138
+],
+"source": 1
+},
+"hamburger": {
+"food": "Hamburger, NFS",
+"perGram": [
+2.88,
+0.1752,
+0.2069,
+0.1441,
+3.5503,
+0.0303,
+0.0069
+],
+"source": 1
+},
+"hot_and_sour_soup": {
+"food": "Soup, hot and sour",
+"perGram": [
+0.3902,
+0.0257,
+0.0437,
+0.0122,
+3.76,
+0.0041,
+0.0049
+],
+"source": 1
+},
+"hot_dog": {
+"food": "Hot dog, NFS",
+"perGram": [
+3.1,
+0.117,
+0.0284,
+0.2795,
+8.2795,
+0.0125,
+0.0
+],
+"source": 1
+},
+"huevos_rancheros": {
+"food": "Huevos rancheros",
+"perGram": [
+1.2102,
+0.0669,
+0.0881,
+0.0661,
+4.1797,
+0.0229,
+0.0169
+],
+"source": 1
+},
+"hummus": {
+"food": "Hummus, plain",
+"perGram": [
+2.43,
+0.0729,
+0.1486,
+0.1714,
+4.38,
+0.0029,
+0.0543
+],
+"source": 1
+},
+"ice_cream": {
+"food": "Ice cream, NFS",
+"perGram": [
+2.21,
+0.0358,
+0.2633,
+0.1133,
+0.9,
+0.2283,
+0.0083
+],
+"source": 1
+},
+"kiwi": {
+"food": "Kiwi fruit, raw",
+"itemGrams": 75,
+"perGram": [
+0.64,
+0.0107,
+0.14,
+0.004,
+0.0507,
+0.0893,
+0.0293
+],
+"source": 1
+},
+"lasagna": {
+"food": "Lasagna with meat",
+"perGram": [
+1.3714,
+0.0714,
+0.1571,
+0.0476,
+3.8429,
+0.0333,
+0.0143
+],
+"source": 1
+},
+"macaroni_and_cheese": {
+"food": "Macaroni or noodles with cheese",
+"perGram": [
+2.23,
+0.087,
+0.2309,
+0.1052,
+3.58,
+0.0243,
+0.0122
+],
+"source": 1
+},
+"macarons": {
+"food": "Cookie, macaroon",
+"perGram": [
+4.6,
+0.0292,
+0.6125,
+0.225,
+2.4083,
+0.45,
+0.05
+],
+"source": 1
+},
+"mandarine": {
+"food": "Clementine, raw",
+"itemGrams": 75,
+"perGram": [
+0.5294,
+0.0082,
+0.1329,
+0.0035,
+0.02,
+0.1059,
+0.0176
+],
+"source": 1,
+"title": "Mandarin"
+},
+"mango": {
+"food": "Mango, raw",
+"itemGrams": 200,
+"perGram": [
+0.6,
+0.0085,
+0.1497,
+0.0036,
+0.0097,
+0.1364,
+0.0158
+],
+"source": 1
+},
+"miso_soup": {
+"food": "Soup, miso or tofu",
+"perGram": [
+0.24,
+0.022,
+0.0229,
+0.0086,
+4.6702,
+0.0078,
+0.0061
+],
+"source": 1
+},
+"muffin": {
+"food": "Muffin, blueberry, commercial",
+"itemGrams": 113,
+"perGram": [
+3.7496,
+0.0451,
+0.5301,
+0.1611,
+3.3602,
+0.315,
+0.0106
+],
+"source": 3
+},
+"mussels": {
+"food": "Mussels",
+"perGram": [
+1.0904,
+0.1504,
+0.0467,
+0.0281,
+3.62,
+0.0,
+0.0
+],
+"source": 1
+},
+"nachos": {
+"food": "Nachos, NFS",
+"perGram": [
+2.6504,
+0.0763,
+0.2385,
+0.1585,
+4.88,
+0.0037,
+0.017
+],
+"source": 1
+},
+"nectarine": {
+"food": "Nectarine, raw",
+"itemGrams": 140,
+"perGram": [
+0.43,
+0.0107,
+0.0921,
+0.0029,
+0.13,
+0.0786,
+0.015
+],
+"source": 1
+},
+"omelette": {
+"food": "Egg, whole, cooked, omelet",
+"perGram": [
+1.5393,
+0.1049,
+0.0066,
+0.1164,
+1.5508,
+0.0033,
+0.0
+],
+"source": 1
+},
+"onion_rings": {
+"food": "Onion rings, breaded, par fried, frozen, heated in oven",
+"perGram": [
+2.76,
+0.0412,
+0.3376,
+0.1435,
+3.7,
+0.0506,
+0.0235
+],
+"source": 3
+},
+"oranges": {
+"food": "Orange, raw",
+"itemGrams": 140,
+"perGram": [
+0.5,
+0.0091,
+0.1175,
+0.0013,
+0.0403,
+0.0896,
+0.0221
+],
+"source": 1,
+"title": "Orange"
+},
+"oysters": {
+"food": "Oysters, raw",
+"perGram": [
+0.5067,
+0.06,
+0.0267,
+0.02,
+0.8533,
+0.0067,
+0.0
+],
+"source": 1
+},
+"pad_thai": {
+"food": "Pad Thai, NFS",
+"perGram": [
+1.54,
+0.0815,
+0.1435,
+0.075,
+3.84,
+0.0405,
+0.012
+],
+"source": 1
+},
+"paella": {
+"food": "Paella, NFS",
+"perGram": [
+1.69,
+0.0954,
+0.1575,
+0.0717,
+7.37,
+0.0067,
+0.0058
+],
+"source": 1
+},
+"pancakes": {
+"food": "Pancakes, NFS",
+"perGram": [
+2.82,
+0.0744,
+0.3533,
+0.1211,
+5.08,
+0.07,
+0.0211
+],
+"source": 1
+},
+"peach": {
+"food": "Peach, raw",
+"itemGrams": 150,
+"perGram": [
+0.46,
+0.0093,
+0.1013,
+0.0027,
+0.13,
+0.084,
+0.0147
+],
+"source": 1
+},
+"pear": {
+"food": "Pear, raw",
+"itemGrams": 178,
+"perGram": [
+0.5904,
+0.004,
+0.152,
+0.0016,
+0.0304,
+0.0976,
+0.0312
+],
+"source": 1
+},
+"peking_duck": {
+"food": "Duck, Peking",
+"perGram": [
+1.54,
+0.0529,
+0.065,
+0.1179,
+2.87,
+0.0443,
+0.0029
+],
+"source": 1
+},
+"pho": {
+"food": "Soup, pho, with meat",
+"perGram": [
+0.7698,
+0.058,
+0.0559,
+0.0335,
+3.6498,
+0.0045,
+0.0041
+],
+"source": 1
+},
+"pizza": {
+"food": "Pizza, cheese, from frozen, thin crust",
+"perGram": [
+2.6299,
+0.1196,
+0.2876,
+0.1103,
+4.7103,
+0.0371,
+0.0299
+],
+"source": 1
+},
+"plum": {
+"food": "Plum, raw",
+"itemGrams": 66,
+"perGram": [
+0.46,
+0.0067,
+0.1147,
+0.0027,
+0.0,
+0.0987,
+0.0133
+],
+"source": 1
+},
+"poutine": {
+"food": "Poutine",
+"perGram": [
+2.2732,
+0.0756,
+0.1537,
+0.1537,
+6.178,
+0.0,
+0.011
+],
+"source": 3
+},
+"pretzel": {
+"food": "Pretzels, soft",
+"itemGrams": 115,
+"perGram": [
+3.38,
+0.0817,
+0.6939,
+0.0313,
+2.0296,
+0.0026,
+0.0174
+],
+"source": 1,
+"title": "Soft Pretzel"
+},
+"pulled_pork_sandwich": {
+"food": "Barbecue pork sandwich, on white bun",
+"perGram": [
+2.43,
+0.15,
+0.2489,
+0.0878,
+5.67,
+0.0911,
+0.0078
+],
+"source": 1
+},
+"ramen": {
+"food": "Ramen bowl, NFS",
+"perGram": [
+1.2702,
+0.0714,
+0.1396,
+0.0457,
+3.3298,
+0.0041,
+0.009
+],
+"source": 1
+},
+"ravioli": {
+"food": "Ravioli, NS as to filling, no sauce",
+"perGram": [
+1.85,
+0.1031,
+0.1988,
+0.07,
+2.84,
+0.0019,
+0.0069
+],
+"source": 1
+},
+"red_velvet_cake": {
+"food": "Cake or cupcake, red velvet",
+"perGram": [
+3.55,
+0.0278,
+0.5433,
+0.1456,
+2.96,
+0.4022,
+0.0122
+],
+"source": 1
+},
+"red_wine": {
+"food": "Wine, red",
+"itemGrams": 147,
+"perGram": [
+0.85,
+0.0,
+0.0267,
+0.0,
+0.04,
+0.0067,
+0.0
+],
+"source": 1,
+"title": "Red Wine"
+},
+"samosa": {
+"food": "Samosa",
+"perGram": [
+3.1,
+0.051,
+0.332,
+0.175,
+3.88,
+0.013,
+0.018
+],
+"source": 1
+},
+"sashimi": {
+"food": "Fish, tuna, raw",
+"perGram": [
+1.0904,
+0.2437,
+0.0,
+0.0052,
+0.4504,
+0.0,
+0.0
+],
+"source": 1
+},
+"scallops": {
+"food": "Scallops, grilled",
+"perGram": [
+1.08,
+0.1533,
+0.0407,
+0.0289,
+4.12,
+0.0,
+0.0
+],
+"source": 1
+},
+"spaghetti_bolognese": {
+"food": "Spaghetti with meat sauce",
+"perGram": [
+1.6171,
+0.0819,
+0.1962,
+0.0571,
+3.8629,
+0.0352,
+0.019
+],
+"source": 3
+},
+"spring_rolls": {
+"food": "Egg roll, with beef and/or pork",
+"perGram": [
+2.72,
+0.076,
+0.2704,
+0.1472,
+4.4704,
+0.0504,
+0.02
+],
+"source": 1
+},
+"steak": {
+"food": "Steak, NS as to type of meat, NS as to fat eaten",
+"perGram": [
+2.3,
+0.2692,
+0.0,
+0.13,
+3.67,
+0.0,
+0.0
+],
+"source": 1
+},
+"strawberry_shortcake": {
+"food": "Cake, strawberry shortcake",
+"perGram": [
+2.14,
+0.0333,
+0.4007,
+0.0473,
+3.13,
+0.2587,
+0.0093
+],
+"source": 1
+},
+"sushi": {
+"food": "Sushi, NFS",
+"perGram": [
+0.94,
+0.0293,
+0.184,
+0.0067,
+4.28,
+0.0213,
+0.01
+],
+"source": 1
+},
+"tacos": {
+"food": "Taco, NFS",
+"perGram": [
+2.46,
+0.1533,
+0.1562,
+0.1352,
+3.6705,
+0.0029,
+0.0219
+],
+"source": 1
+},
+"tiramisu": {
+"food": "Tiramisu",
+"perGram": [
+3.5297,
+0.0566,
+0.2945,
+0.2386,
+1.7297,
+0.1869,
+0.0062
+],
+"source": 1
+},
+"tuna_tartare": {
+"food": "Fish, tuna, raw",
+"perGram": [
+1.0904,
+0.2437,
+0.0,
+0.0052,
+0.4504,
+0.0,
+0.0
+],
+"source": 1
+},
+"waffles": {
+"food": "Waffle, NFS",
+"perGram": [
+3.0907,
+0.0747,
+0.484,
+0.0947,
+4.6,
+0.044,
+0.0267
+],
+"source": 1
+},
+"white_wine": {
+"food": "Wine, white",
+"itemGrams": 147,
+"perGram": [
+0.82,
+0.0,
+0.0267,
+0.0,
+0.05,
+0.01,
+0.0
+],
+"source": 1,
+"title": "White Wine"
+}
+}

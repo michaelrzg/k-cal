@@ -38,7 +38,7 @@ private enum FoodSQL {
 /// The database in the app bundle.
 final class BundledFoodDatabase: @unchecked Sendable {
     private static let columns = """
-    f.id, f.name, b.name, f.barcode, f.serving, f.source, f.calories, f.protein, f.carbohydrates, f.fat, f.sodium, f.sugars, f.fiber, f.popularity
+    f.id, f.name, b.name, f.barcode, f.serving, f.source, f.calories, f.protein, f.carbohydrates, f.fat, f.sodium, f.sugars, f.fiber, f.popularity, f.grams
     """
     private static let bestMatchLimit = 300
     private static let popularLimit = 120
@@ -120,7 +120,8 @@ final class BundledFoodDatabase: @unchecked Sendable {
             serving: SQLite.text(row, 4) ?? "",
             nutrition: FoodSQL.nutrition(row, first: 6),
             source: source,
-            popularity: SQLite.integer(row, 13) ?? 0
+            popularity: SQLite.integer(row, 13) ?? 0,
+            servingGrams: SQLite.integer(row, 14).map(Double.init)
         )
     }
 }

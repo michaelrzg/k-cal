@@ -86,7 +86,7 @@ final class FoodRepository: Sendable {
     }
 
     /// Loaded on the first search rather than at launch, because reading the whole word list takes a moment.
-    private func vocabulary() async -> FoodVocabulary? {
+    func vocabulary() async -> FoodVocabulary? {
         await vocabularyLoader.value(loadingFrom: bundled)
     }
 

@@ -12,6 +12,7 @@ enum AppLink: String, CaseIterable {
     case snap
     case search
     case custom
+    case lifts
 
     private static let scheme = "kcal"
 

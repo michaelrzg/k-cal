@@ -15,5 +15,6 @@ struct KcalWidgetBundle: WidgetBundle {
         QuickScanWidget()
         QuickSnapWidget()
         QuickAddWidget()
+        NextWorkoutWidget()
     }
 }

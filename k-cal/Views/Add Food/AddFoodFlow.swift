@@ -157,7 +157,7 @@ struct AddFoodPresenter: ViewModifier {
                 case .scan:
                     BarcodeScannerScreen(onCode: flow.scanned)
                 case .snapMeal:
-                    SnapMealView(onUse: flow.reviewAfterRoute(estimate:name:))
+                    SnapMealView(onUse: flow.reviewAfterRoute(estimate:name:), onProduct: flow.reviewAfterRoute)
                 case .myFoods:
                     MyFoodsView(onPick: flow.reviewAfterRoute)
                 case let .newCustomFood(barcode):

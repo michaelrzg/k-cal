@@ -10,13 +10,14 @@ struct ProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Query private var users: [User]
+    @Query(sort: \LiftPlan.started, order: .reverse) private var plans: [LiftPlan]
 
     var body: some View {
         NavigationStack {
             Form {
                 Group {
                     if let user = users.first {
-                        UserSections(user: user)
+                        UserSections(user: user, followsTraining: plans.first?.matchesNutrition == true)
                     }
                     FoodDatabaseSection()
                     Section {
@@ -44,6 +45,7 @@ struct ProfileView: View {
 
 private struct UserSections: View {
     @Bindable var user: User
+    let followsTraining: Bool
 
     var body: some View {
         Section {
@@ -56,11 +58,17 @@ private struct UserSections: View {
                 TextField("Your name", text: $user.name).font(.title3.weight(.semibold))
             }
         }
-        Section("Daily goals") {
+        Section {
             goal("Calories", $user.calorie_goal, unit: "cal")
             goal("Protein", $user.protein_goal, unit: "g", color: Theme.protein)
             goal("Carbs", $user.carb_goal, unit: "g", color: Theme.carbohydrate)
             goal("Fat", $user.fat_goal, unit: "g", color: Theme.fat)
+        } header: {
+            Text("Daily goals")
+        } footer: {
+            if followsTraining {
+                Text("Your Lifts plan is setting your daily goals. These are kept for when you turn that off.")
+            }
         }
     }
 

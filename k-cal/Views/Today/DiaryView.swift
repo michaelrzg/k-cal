@@ -10,6 +10,7 @@ struct DiaryView: View {
     @Binding var showingProfile: Bool
     @Query private var foods: [Food]
     @Query private var users: [User]
+    @Query(sort: \LiftPlan.started, order: .reverse) private var plans: [LiftPlan]
     @State private var date = Calendar.current.startOfDay(for: Date())
     @State private var showingCalendar = false
 
@@ -34,7 +35,7 @@ struct DiaryView: View {
                 }
                 .listRowBackground(Theme.card)
                 Section {
-                    DaySummaryCard(foods: daysFoods, user: users.first)
+                    DaySummaryCard(foods: daysFoods, goals: .resolved(user: users.first, plan: plans.first, on: date), caption: plans.first?.goalCaption(on: date))
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
                 }

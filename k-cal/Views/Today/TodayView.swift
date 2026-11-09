@@ -10,6 +10,7 @@ struct TodayView: View {
     @Binding var showingProfile: Bool
     @Query private var foods: [Food]
     @Query private var users: [User]
+    @Query(sort: \LiftPlan.started, order: .reverse) private var plans: [LiftPlan]
 
     private var today: Date {
         Calendar.current.startOfDay(for: Date())
@@ -23,7 +24,7 @@ struct TodayView: View {
         NavigationStack {
             List {
                 Section {
-                    DaySummaryCard(foods: todaysFoods, user: users.first)
+                    DaySummaryCard(foods: todaysFoods, goals: .resolved(user: users.first, plan: plans.first, on: today), caption: plans.first?.goalCaption(on: today))
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
                 }

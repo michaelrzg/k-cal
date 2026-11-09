@@ -8,6 +8,22 @@
 
 import Foundation
 
+/// One day's food goals.
+struct DayGoals: Codable, Equatable {
+    var calories: Int
+    var protein: Int
+    var carbohydrates: Int
+    var fat: Int
+}
+
+/// Goals that change with the training schedule, so a widget can roll over at midnight without the app.
+struct ScheduledGoals: Codable, Equatable {
+    var training: DayGoals
+    var rest: DayGoals
+    /// Training days, as Calendar weekdays.
+    var weekdays: [Int]
+}
+
 struct DailySnapshot: Codable, Equatable {
     static let appGroup = "group.rizig.k-cal"
     private static let key = "dailySnapshot"
@@ -22,6 +38,7 @@ struct DailySnapshot: Codable, Equatable {
     var proteinGoal = 150
     var carbohydrateGoal = 200
     var fatGoal = 65
+    var scheduledGoals: ScheduledGoals?
 
     var caloriesLeft: Int {
         calorieGoal - calories
@@ -38,9 +55,16 @@ struct DailySnapshot: Codable, Equatable {
     }
 
     /// The same goals with nothing eaten, for when the saved totals are from an earlier day.
-    func cleared(for day: Date) -> DailySnapshot {
+    func cleared(for day: Date, calendar: Calendar = .current) -> DailySnapshot {
         var fresh = self
         fresh.day = day
+        if let scheduledGoals {
+            let goals = scheduledGoals.weekdays.contains(calendar.component(.weekday, from: day)) ? scheduledGoals.training : scheduledGoals.rest
+            fresh.calorieGoal = goals.calories
+            fresh.proteinGoal = goals.protein
+            fresh.carbohydrateGoal = goals.carbohydrates
+            fresh.fatGoal = goals.fat
+        }
         fresh.calories = 0
         fresh.protein = 0
         fresh.carbohydrates = 0

@@ -97,7 +97,9 @@ def nutrients(path: Path, wanted: set[str] | None = None) -> dict[str, list]:
 
 
 def scaled(values: list, grams: float) -> list[int]:
-    return [round((v or 0) * grams / 100 * 10) for v in values]
+    """Per-100 g values for a serving, followed by the serving's weight. The weight is what lets the app work out
+    nutrition for any amount, as it must for a photographed portion."""
+    return [round((v or 0) * grams / 100 * 10) for v in values] + [round(grams)]
 
 
 def nearest_portion(portions: list[tuple[float, str]]) -> tuple[float, str]:
@@ -227,7 +229,8 @@ def restaurants(data: Path) -> list[tuple]:
         portion = row["Serving_Size_household"].strip() or (f"{float(size):g} {unit}" if size and unit else "1 item")
         values = [calories, amount(row, "Protein"), amount(row, "Carbohydrates"), amount(row, "Total_Fat"),
                   amount(row, "Sodium"), amount(row, "Sugar"), amount(row, "Dietary_Fiber")]
-        rows[(brand.lower(), name.lower())] = (name, brand, None, f"{portion}, {row['Year']} menu", RESTAURANT, *scaled(values, 100))
+        weight = float(size) if size and unit == "g" else None
+        rows[(brand.lower(), name.lower())] = (name, brand, None, f"{portion}, {row['Year']} menu", RESTAURANT, *scaled(values, 100)[:-1], weight and round(weight))
     return list(rows.values())
 
 
@@ -280,7 +283,7 @@ def write(rows: list[tuple], out: Path, data_date: int, scans: dict[int, int]) -
         CREATE TABLE brand(id INTEGER PRIMARY KEY, name TEXT NOT NULL);
         CREATE TABLE food(id INTEGER PRIMARY KEY, name TEXT NOT NULL, brand INTEGER, barcode INTEGER, serving TEXT NOT NULL,
             source INTEGER NOT NULL, calories INTEGER, protein INTEGER, carbohydrates INTEGER, fat INTEGER,
-            sodium INTEGER, sugars INTEGER, fiber INTEGER, popularity INTEGER NOT NULL DEFAULT 0);
+            sodium INTEGER, sugars INTEGER, fiber INTEGER, popularity INTEGER NOT NULL DEFAULT 0, grams INTEGER);
         CREATE TABLE vocabulary(word TEXT PRIMARY KEY, frequency INTEGER NOT NULL) WITHOUT ROWID;
         CREATE TABLE meta(key TEXT PRIMARY KEY, value INTEGER NOT NULL);
         CREATE VIRTUAL TABLE food_search USING fts5(name, brand, alias, content='',
@@ -290,15 +293,15 @@ def write(rows: list[tuple], out: Path, data_date: int, scans: dict[int, int]) -
     brands: dict[str, int] = {}
     vocabulary: collections.Counter = collections.Counter()
     for index, row in enumerate(rows, start=1):
-        name, brand, code, serving, source, *values = row
+        name, brand, code, serving, source, *values, grams = row
         brand_id = None
         if brand:
             brand_id = brands.get(brand)
             if brand_id is None:
                 brand_id = brands[brand] = len(brands) + 1
                 db.execute("INSERT INTO brand VALUES (?, ?)", (brand_id, brand))
-        db.execute("INSERT INTO food VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                   (index, name, brand_id, code, serving, source, *values, scans.get(code, 0) if code else 0))
+        db.execute("INSERT INTO food VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                   (index, name, brand_id, code, serving, source, *values, scans.get(code, 0) if code else 0, grams))
         alias = aliases(name, brand)
         db.execute("INSERT INTO food_search(rowid, name, brand, alias) VALUES (?, ?, ?, ?)",
                    (index, normalized(name), normalized(brand), alias))
